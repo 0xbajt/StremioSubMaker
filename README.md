@@ -32,13 +32,11 @@
 
 ## 🎉 Try It Now
 
-**No setup required!**
+**Live instance hosted on Render:**
 
-### **[https://submaker.elfhosted.com](https://submaker.elfhosted.com?utm_source=github&utm_medium=readme&utm_campaign=stremiosubmaker-readme)**
+### **[https://stremiosubmaker-n47r.onrender.com](https://stremiosubmaker-n47r.onrender.com)**
 
-Configure, install, done. A huge thanks to [ElfHosted](https://elfhosted.com?utm_source=github&utm_medium=readme&utm_campaign=stremiosubmaker-readme) for the free community hosting!
-
-Check their [FREE Stremio Addons Guide](https://stremio-addons-guide.elfhosted.com/?utm_source=github&utm_medium=readme&utm_campaign=stremiosubmaker-readme) for more great addons and features!
+Configure, install, and start translating subtitles in Stremio or Nuvio!
 
 > For self-hosting, see [Quick Start](#-quick-start) below.
 
