@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: stremio-submaker
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: STORAGE_TYPE
+        value: filesystem
+      - key: TRUST_PROXY
+        value: "1"
+      - key: LOG_LEVEL
+        value: warn
