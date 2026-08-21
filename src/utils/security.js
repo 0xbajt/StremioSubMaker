@@ -222,17 +222,28 @@ function sanitizeApiKeyForHeader(apiKey) {
     return null;
   }
 
+  let cleaned = apiKey.trim();
+
+  // Strip accidental surrounding single/double quotes (e.g., from .env or JSON copy-pasting)
+  cleaned = cleaned.replace(/^["'](.*)["']$/, '$1').trim();
+
+  // Strip accidental "Bearer " prefix if user pasted key as authorization header
+  cleaned = cleaned.replace(/^Bearer\s+/i, '').trim();
+
+  // Strip quotes again in case quotes were after Bearer
+  cleaned = cleaned.replace(/^["'](.*)["']$/, '$1').trim();
+
   // Remove control characters (U+0000-U+001F except tab U+0009) and other problematic chars
   // HTTP headers can only contain printable ASCII (0x20-0x7E) plus tab (0x09)
   // Also remove DEL (0x7F) and non-ASCII characters for safety
-  const sanitized = apiKey
+  const sanitized = cleaned
     .replace(/[\x00-\x08\x0A-\x1F\x7F]/g, '') // Remove control chars except tab
     .replace(/[\u0080-\uFFFF]/g, '') // Remove non-ASCII
     .trim();
 
   // If sanitization changed the key significantly, it's probably corrupted
-  // Return the sanitized version but log a warning if too much was removed
-  if (sanitized.length < apiKey.length * 0.5) {
+  // Compare against cleaned length rather than raw input length
+  if (sanitized.length < cleaned.length * 0.5) {
     // More than 50% of the key was invalid characters - likely corrupted
     return null;
   }

@@ -3419,7 +3419,11 @@ app.post('/api/validate-gemini', validationLimiter, async (req, res) => {
     try {
         const t = res.locals?.t || getTranslatorFromRequest(req, res);
         const { apiKey } = req.body || {};
-        const geminiApiKey = typeof apiKey === 'string' ? apiKey.trim() : '';
+        const { sanitizeApiKeyForHeader } = require('./src/utils/security');
+        const { isGeminiAuthFailure, getGeminiErrorMessage } = require('./src/services/gemini');
+
+        const rawApiKey = typeof apiKey === 'string' ? apiKey.trim() : '';
+        const geminiApiKey = sanitizeApiKeyForHeader(rawApiKey) || rawApiKey;
 
         if (!geminiApiKey) {
             return res.status(400).json({
@@ -3440,8 +3444,9 @@ app.post('/api/validate-gemini', validationLimiter, async (req, res) => {
         const axios = require('axios');
         const { httpAgent, httpsAgent } = require('./src/utils/httpAgents');
 
-        // Use v1 endpoint and API key header for validation
-        const geminiUrl = 'https://generativelanguage.googleapis.com/v1/models';
+        // Use v1beta endpoint (or GEMINI_API_BASE) and sanitized API key header for validation
+        const geminiBaseUrl = process.env.GEMINI_API_BASE || 'https://generativelanguage.googleapis.com/v1beta';
+        const geminiUrl = `${geminiBaseUrl}/models`;
 
         try {
             const response = await axios.get(geminiUrl, {
@@ -3466,35 +3471,24 @@ app.post('/api/validate-gemini', validationLimiter, async (req, res) => {
                 });
             }
         } catch (apiError) {
-            // Check for authentication errors
-            if (apiError.response?.status === 401 || apiError.response?.status === 403) {
+            if (isGeminiAuthFailure(apiError)) {
                 await cacheProviderAuthFailure(geminiAuthFailureCacheKey);
-                res.json({
+                return res.json({
                     valid: false,
                     error: t('server.errors.invalidApiKeyAuth', {}, 'Invalid API key - authentication failed')
                 });
-            } else if (apiError.response?.status === 400) {
-                // Extract error message, handling both string and object responses
-                let errorMessage = 'Invalid API key';
-                const errorData = apiError.response?.data?.error || apiError.response?.data?.message;
-                if (typeof errorData === 'string') {
-                    errorMessage = errorData;
-                } else if (errorData && typeof errorData === 'object') {
-                    errorMessage = errorData.message || JSON.stringify(errorData);
-                }
-                if (String(errorMessage || '').toLowerCase().includes('api key')) {
-                    await cacheProviderAuthFailure(geminiAuthFailureCacheKey);
-                }
-                res.json({
-                    valid: false,
-                    error: t('server.errors.invalidApiKey', {}, errorMessage)
-                });
-            } else {
-                throw apiError;
             }
+
+            const errorMessage = getGeminiErrorMessage(apiError) || apiError.message || 'Invalid API key';
+            res.json({
+                valid: false,
+                error: t('server.errors.invalidApiKey', {}, errorMessage)
+            });
         }
     } catch (error) {
-        const isAuthError = error.response?.status === 401 ||
+        const { isGeminiAuthFailure } = require('./src/services/gemini');
+        const isAuthError = isGeminiAuthFailure(error) ||
+            error.response?.status === 401 ||
             error.response?.status === 403 ||
             error.message?.toLowerCase().includes('api key') ||
             error.message?.toLowerCase().includes('invalid') ||

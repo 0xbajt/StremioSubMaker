@@ -964,9 +964,21 @@ Translate to {target_language}.`;
     const DEFAULT_GEMINI_MODEL = 'gemini-flash-lite-latest';
 
     function normalizeGeminiModelName(modelName) {
-        const normalized = typeof modelName === 'string' ? modelName.trim() : '';
+        let normalized = typeof modelName === 'string' ? modelName.trim() : '';
         if (normalized === `${GEMINI_31_FLASH_LITE_MODEL}-preview`) {
             return GEMINI_31_FLASH_LITE_MODEL;
+        }
+        if (normalized === 'gemini-3-flash-preview') {
+            return 'gemini-3.7-flash';
+        }
+        if (normalized === 'gemini-3-pro-preview' || normalized === 'gemini-2.5-pro-preview-05-06' || normalized === 'gemini-2.5-pro') {
+            return 'gemini-3.1-pro-preview';
+        }
+        if (normalized === 'gemini-2.5-flash-preview-09-2025') {
+            return 'gemini-2.5-flash';
+        }
+        if (normalized === 'gemini-2.5-flash-lite-preview-09-2025' || normalized === 'gemini-2.5-flash-lite-09-2025') {
+            return 'gemini-2.5-flash-lite';
         }
         if (normalized === GEMINI_FLASH_LATEST_MODEL) {
             return DEFAULT_GEMINI_MODEL;
@@ -975,42 +987,45 @@ Translate to {target_language}.`;
     }
 
     const MODEL_SPECIFIC_DEFAULTS = {
-
-        'gemini-2.5-flash-lite': {
+        'gemma-3-27b-it': {
             thinkingBudget: 0,
             temperature: 0.7
         },
-        'gemini-2.5-flash-lite-preview-09-2025': {
+        'gemini-3.7-flash': {
+            thinkingBudget: -1,
+            temperature: 0.5
+        },
+        'gemini-3.6-flash': {
+            thinkingBudget: -1,
+            temperature: 0.5
+        },
+        'gemini-3.5-flash': {
+            thinkingBudget: -1,
+            temperature: 0.5
+        },
+        'gemini-3.5-flash-lite': {
             thinkingBudget: 0,
-            temperature: 0.7
+            temperature: 0.8
+        },
+        'gemini-3.1-flash-lite': {
+            thinkingBudget: 0,
+            temperature: 0.8
+        },
+        'gemini-3.1-pro-preview': {
+            thinkingBudget: 1000,
+            temperature: 0.5
         },
         'gemini-2.5-flash': {
             thinkingBudget: -1,
             temperature: 0.5
         },
-        'gemini-3-flash-preview': {
-            thinkingBudget: -1,
-            temperature: 0.5
-        },
-        'gemini-3-flash-preview': {
-            thinkingBudget: -1,
-            temperature: 0.5
-        },
-        'gemini-3.1-flash-lite': {
+        'gemini-2.5-flash-lite': {
             thinkingBudget: 0,
             temperature: 0.8
         },
         'gemini-flash-lite-latest': {
             thinkingBudget: 0,
             temperature: 0.8
-        },
-        'gemini-2.5-pro': {
-            thinkingBudget: 1000,
-            temperature: 0.5
-        },
-        'gemini-3-pro-preview': {
-            thinkingBudget: 1000,
-            temperature: 0.5
         }
     };
 
@@ -9836,13 +9851,14 @@ Translate to {target_language}.`;
 
         // Define hardcoded multi-model options
         const hardcodedModels = [
-
+            { name: 'gemini-3.7-flash', displayName: 'Gemini 3.7 Flash' },
+            { name: 'gemini-3.6-flash', displayName: 'Gemini 3.6 Flash' },
+            { name: 'gemini-3.5-flash', displayName: 'Gemini 3.5 Flash' },
+            { name: 'gemini-3.5-flash-lite', displayName: 'Gemini 3.5 Flash-Lite' },
             { name: 'gemini-3.1-flash-lite', displayName: 'Gemini 3.1 Flash Lite' },
-            { name: 'gemini-2.5-flash-lite', displayName: 'Gemini 2.5 Flash-Lite' },
+            { name: 'gemini-3.1-pro-preview', displayName: 'Gemini 3.1 Pro (beta)' },
             { name: 'gemini-2.5-flash', displayName: 'Gemini 2.5 Flash' },
-            { name: 'gemini-3-flash-preview', displayName: 'Gemini 3.0 Flash (beta)' },
-            { name: 'gemini-2.5-pro', displayName: 'Gemini 2.5 Pro (beta)' },
-            { name: 'gemini-3-pro-preview', displayName: 'Gemini 3.0 Pro (beta)' }
+            { name: 'gemini-2.5-flash-lite', displayName: 'Gemini 2.5 Flash-Lite' }
         ];
 
         // Track added models to avoid duplicates

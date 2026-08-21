@@ -30,7 +30,14 @@ function getGeminiErrorMessage(error) {
     return dataError;
   }
   if (dataError && typeof dataError === 'object') {
-    return dataError.message || JSON.stringify(dataError);
+    if (dataError.message) {
+      return dataError.message;
+    }
+    const reason = dataError.details?.[0]?.reason;
+    if (reason) {
+      return `${dataError.status || 'Error'}: ${reason}`;
+    }
+    return JSON.stringify(dataError);
   }
   return String(error?.response?.data?.message || error?.message || '');
 }
@@ -45,12 +52,34 @@ function isGeminiAuthFailure(error) {
   }
 
   const message = getGeminiErrorMessage(error).toLowerCase();
-  return message.includes('api key') && (
+  const errorStatus = String(error?.response?.data?.error?.status || '').toLowerCase();
+  const detailsReason = String(error?.response?.data?.error?.details?.[0]?.reason || '').toLowerCase();
+
+  const isAuthReason = detailsReason.includes('api_key') ||
+    detailsReason.includes('unauthenticated') ||
+    detailsReason.includes('permission_denied') ||
+    detailsReason.includes('access_token');
+
+  const isAuthStatus = errorStatus === 'unauthenticated' ||
+    errorStatus === 'permission_denied';
+
+  const isAuthMessage = (
+    message.includes('api key') ||
+    message.includes('api_key') ||
+    message.includes('unregistered caller') ||
+    message.includes('consumer identity')
+  ) && (
     message.includes('invalid') ||
     message.includes('not valid') ||
     message.includes('permission') ||
-    message.includes('authentication')
+    message.includes('authentication') ||
+    message.includes('unregistered') ||
+    message.includes('blocked') ||
+    message.includes('restricted') ||
+    message.includes('expired')
   );
+
+  return isAuthReason || isAuthStatus || isAuthMessage;
 }
 
 // Default translation prompt (base - thinking rules added conditionally)
@@ -211,10 +240,10 @@ class GeminiService {
       // Fallback heuristics by model family if not provided
       if (!limits.outputTokenLimit) {
         const modelName = String(this.model).toLowerCase();
-        // Gemini 2.0 models have 8k output, 2.5 models have 65k output
+        // Gemini 2.0 models have 8k output, 2.5 and 3.x models have 65k output
         if (modelName.includes('2.0') || modelName.includes('-flash-001') || modelName.includes('-flash-lite-001')) {
           limits.outputTokenLimit = 8192;
-        } else if (modelName.includes('2.5')) {
+        } else if (modelName.includes('2.5') || modelName.includes('3.') || modelName.includes('3-') || modelName.includes('flash-latest') || modelName.includes('flash-lite-latest')) {
           limits.outputTokenLimit = 65536;
         } else {
           // Unknown model - use conservative 8k limit for safety
@@ -238,7 +267,7 @@ class GeminiService {
       const modelName = String(this.model).toLowerCase();
       const limits = {
         inputTokenLimit: undefined,
-        outputTokenLimit: modelName.includes('2.5') ? 65536 : 8192 // 2.0 = 8k, 2.5 = 65k
+        outputTokenLimit: (modelName.includes('2.5') || modelName.includes('3.') || modelName.includes('3-') || modelName.includes('flash-latest') || modelName.includes('flash-lite-latest')) ? 65536 : 8192
       };
       log.debug(() => `[Gemini] Fallback limits for ${this.model}: ${limits.outputTokenLimit} output tokens`);
       this._modelLimits = limits;
@@ -908,6 +937,8 @@ class GeminiService {
 
 module.exports = GeminiService;
 module.exports.DEFAULT_TRANSLATION_PROMPT = DEFAULT_TRANSLATION_PROMPT;
+module.exports.isGeminiAuthFailure = isGeminiAuthFailure;
+module.exports.getGeminiErrorMessage = getGeminiErrorMessage;
 module.exports.__testing = {
   getGeminiErrorMessage,
   isGeminiAuthFailure

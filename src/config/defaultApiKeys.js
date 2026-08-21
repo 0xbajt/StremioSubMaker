@@ -25,7 +25,7 @@ const DEFAULT_API_KEYS = {
   WYZIE: '',
 
   // Gemini API Key
-  // Get your own at: https://makersuite.google.com/app/apikey
+  // Get your own at: https://aistudio.google.com/app/apikey
   GEMINI: '',
 
   // AssemblyAI API Key

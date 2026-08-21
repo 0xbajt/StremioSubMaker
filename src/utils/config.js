@@ -218,9 +218,21 @@ const GEMINI_FLASH_LATEST_MODEL = 'gemini-flash-latest';
 const DEFAULT_GEMINI_MODEL = 'gemini-flash-lite-latest';
 
 function normalizeGeminiModelName(modelName) {
-  const normalized = typeof modelName === 'string' ? modelName.trim() : '';
+  let normalized = typeof modelName === 'string' ? modelName.trim() : '';
   if (normalized === `${GEMINI_31_FLASH_LITE_MODEL}-preview`) {
     return GEMINI_31_FLASH_LITE_MODEL;
+  }
+  if (normalized === 'gemini-3-flash-preview') {
+    return 'gemini-3.7-flash';
+  }
+  if (normalized === 'gemini-3-pro-preview' || normalized === 'gemini-2.5-pro-preview-05-06' || normalized === 'gemini-2.5-pro') {
+    return 'gemini-3.1-pro-preview';
+  }
+  if (normalized === 'gemini-2.5-flash-preview-09-2025') {
+    return 'gemini-2.5-flash';
+  }
+  if (normalized === 'gemini-2.5-flash-lite-preview-09-2025' || normalized === 'gemini-2.5-flash-lite-09-2025') {
+    return 'gemini-2.5-flash-lite';
   }
   if (normalized === GEMINI_FLASH_LATEST_MODEL) {
     return DEFAULT_GEMINI_MODEL;
@@ -233,13 +245,25 @@ function normalizeGeminiModelName(modelName) {
  * This prevents old saved configs from using outdated or experimental models
  */
 const DEPRECATED_MODEL_NAMES = [
+  'gemini-1.5-pro',
+  'gemini-1.5-pro-latest',
+  'gemini-1.5-flash',
+  'gemini-1.5-flash-latest',
+  'gemini-1.5-flash-8b',
   'gemini-2.0-flash-exp',
-  'gemini-2.5-flash-lite-09-2025', // Old name before preview version
-  GEMINI_FLASH_LATEST_MODEL,
+  'gemini-2.0-flash',
+  'gemini-2.0-flash-lite-preview-02-05',
+  'gemini-2.5-flash-lite-09-2025',
+  'gemini-2.5-flash-lite-preview-09-2025',
+  'gemini-2.5-flash-preview-09-2025',
   'gemini-2.5-flash-latest',
   'gemini-pro-latest',
   'gemini-2.5-pro-latest',
-  'gemini-2.5-flash-preview-09-2025' // Renamed to gemini-2.5-flash
+  'gemini-2.5-pro-preview-05-06',
+  'gemini-2.5-pro',
+  'gemini-3-flash-preview',
+  'gemini-3-pro-preview',
+  GEMINI_FLASH_LATEST_MODEL
 ];
 
 /**
@@ -1100,37 +1124,41 @@ const MODEL_SPECIFIC_DEFAULTS = {
     thinkingBudget: 0,      // Gemma models don't support thinking
     temperature: 0.7        // Balanced temperature for Gemma
   },
-  'gemini-2.5-flash-lite': {
+  'gemini-3.7-flash': {
+    thinkingBudget: -1,     // Dynamic thinking
+    temperature: 0.5        // Lower temperature for consistency
+  },
+  'gemini-3.6-flash': {
+    thinkingBudget: -1,     // Dynamic thinking
+    temperature: 0.5        // Lower temperature for consistency
+  },
+  'gemini-3.5-flash': {
+    thinkingBudget: -1,     // Dynamic thinking
+    temperature: 0.5        // Lower temperature for consistency
+  },
+  'gemini-3.5-flash-lite': {
     thinkingBudget: 0,      // No thinking for lite model
     temperature: 0.8        // Higher temperature for creativity
   },
-  'gemini-2.5-flash-lite-preview-09-2025': {
+  'gemini-3.1-flash-lite': {
     thinkingBudget: 0,      // No thinking for lite model
     temperature: 0.8        // Higher temperature for creativity
+  },
+  'gemini-3.1-pro-preview': {
+    thinkingBudget: 1000,   // Fixed thinking budget for pro model
+    temperature: 0.5        // Lower temperature for consistency
   },
   'gemini-2.5-flash': {
     thinkingBudget: -1,     // Dynamic thinking for flash model
     temperature: 0.5        // Lower temperature for consistency
   },
-  'gemini-3-flash-preview': {
-    thinkingBudget: -1,     // Dynamic thinking for flash model
-    temperature: 0.5        // Lower temperature for consistency
-  },
-  'gemini-3.1-flash-lite': {
+  'gemini-2.5-flash-lite': {
     thinkingBudget: 0,      // No thinking for lite model
     temperature: 0.8        // Higher temperature for creativity
   },
   'gemini-flash-lite-latest': {
     thinkingBudget: 0,      // No thinking for lite model (latest alias)
     temperature: 0.8        // Higher temperature for creativity
-  },
-  'gemini-2.5-pro': {
-    thinkingBudget: 1000,   // Fixed thinking budget for pro model
-    temperature: 0.5        // Lower temperature for consistency
-  },
-  'gemini-3-pro-preview': {
-    thinkingBudget: 1000,   // Fixed thinking budget for pro model
-    temperature: 0.5        // Lower temperature for consistency
   }
 };
 
@@ -1677,6 +1705,8 @@ module.exports = {
   encodeConfig,
   getDefaultConfig,
   getModelSpecificDefaults,
+  normalizeGeminiModelName,
+  DEPRECATED_MODEL_NAMES,
   validateConfig,
   buildManifest,
   // Exported for async token resolution paths in routes

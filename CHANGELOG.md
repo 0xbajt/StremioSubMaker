@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file.
 
+## SubMaker v1.4.89
+
+**New Features & Improvements:**
+
+- **Added New Gemini 3.x Models Lineup:** Added full support for Google's newest Gemini 3 model family in base and advanced model selectors, Quick Setup, and configuration defaults:
+  - `gemini-3.7-flash` (Gemini 3.7 Flash) — Flagship reasoning and high throughput with dynamic thinking.
+  - `gemini-3.6-flash` (Gemini 3.6 Flash) — Fast, reliable production workhorse.
+  - `gemini-3.5-flash` (Gemini 3.5 Flash) — Lightweight, fast translation.
+  - `gemini-3.5-flash-lite` (Gemini 3.5 Flash-Lite) — High-volume cost-effective translation.
+  - `gemini-3.1-pro-preview` (Gemini 3.1 Pro beta) — Advanced reasoning for complex subtitle translations.
+
+- **Cleaned Up Deprecated & Shut-Down Models:** Removed shut-down and deprecated models (`gemini-1.5-pro`, `gemini-1.5-flash`, `gemini-1.5-flash-8b`, `gemini-2.0-flash`, `gemini-2.0-flash-exp`, `gemini-2.0-flash-lite-preview-02-05`, `gemini-2.5-pro`, `gemini-3-flash-preview`, `gemini-3-pro-preview`) from dropdown menus and active selections.
+
+- **Seamless Model Migration for Existing Configurations:** Saved configurations and legacy preview slugs are automatically migrated to active equivalents (`gemini-3-flash-preview` ➔ `gemini-3.7-flash`, `gemini-3-pro-preview` / `gemini-2.5-pro` ➔ `gemini-3.1-pro-preview`, `gemini-2.5-flash-preview-09-2025` ➔ `gemini-2.5-flash`, `gemini-2.5-flash-lite-preview-09-2025` ➔ `gemini-2.5-flash-lite`), ensuring uninterrupted translations.
+
+- **Expanded Output Token Caps for Gemini 3.x:** Increased the fallback output token limit to 65,536 tokens for all Gemini 3.x models, allowing larger subtitle batch sizes without truncation.
+
+**Bug Fixes:**
+
+- **Added Full Support for Google's New Authorization Keys (`AQ....` Format):** Updated API key validation, sanitization, and headers to handle Google's new Authorization Keys (`AQ....`). Key sanitization now automatically strips surrounding quotes (`"..."`, `'...'`) and accidental `Bearer ` prefixes.
+
+- **Updated Gemini Key Validation to `v1beta` Endpoint:** Switched `/api/validate-gemini` from legacy `v1` to `v1beta` to ensure consistent validation across modern preview and production models, and improved error handling for specific Google rejection codes (`API_KEY_INVALID`, `API_KEY_SERVICE_BLOCKED`, `ACCESS_TOKEN_TYPE_UNSUPPORTED`, `UNAUTHENTICATED`).
+
+- **Updated Documentation & Google AI Studio Links:** Replaced outdated MakerSuite references with direct links to `https://aistudio.google.com/app/apikey` across configuration helpers, troubleshooting guides, and UI hints.
+
 ## SubMaker v1.4.88
 
 **Improvements:**
