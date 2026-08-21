@@ -25,6 +25,9 @@
   <a href="#-troubleshooting">Troubleshooting</a>
 </p>
 
+> [!NOTE]
+> **Fork Notice**: This repository is a fork of the original [SubMaker by xtremexq](https://github.com/xtremexq/StremioSubMaker). All credits and appreciation go to **xtremexq** for creating SubMaker. This is maintained as a personal project and may or may not receive future updates.
+
 ---
 
 ## 🎉 Try It Now
@@ -69,7 +72,7 @@ Check their [FREE Stremio Addons Guide](https://stremio-addons-guide.elfhosted.c
 
 | Provider | Notes |
 |----------|-------|
-| **Google Gemini** | Default, free tier available, key rotation supported |
+| **Google Gemini** | Default, Gemini 3.x family (3.7 Flash, 3.6 Flash, 3.5 Flash-Lite, 3.1 Flash Lite, 3.1 Pro), free tier available, key rotation supported |
 | OpenAI | GPT models |
 | Anthropic | Claude models |
 | DeepL | Traditional translation API |
@@ -88,7 +91,7 @@ Check their [FREE Stremio Addons Guide](https://stremio-addons-guide.elfhosted.c
 ### Prerequisites
 
 - **Node.js** 18+ — [nodejs.org](https://nodejs.org)
-- **Gemini API Key** — [Get free](https://aistudio.google.com/app/api-keys)
+- **Gemini API Key** — [Get free](https://aistudio.google.com/app/apikey)
 - At least one subtitle provider key (optional but recommended)
 
 ### Installation
@@ -222,6 +225,9 @@ Click the **Reset** button at the bottom of the config page.
 
 ## 🙏 Acknowledgments
 
+**Original Project & Creator**
+- **[xtremexq/StremioSubMaker](https://github.com/xtremexq/StremioSubMaker)** — All credits go to **xtremexq** for creating SubMaker.
+
 **Built With**
 - [Stremio Addon SDK](https://github.com/Stremio/stremio-addon-sdk) — Addon framework
 - [OpenSubtitles](https://www.opensubtitles.com/) — Primary subtitle database
@@ -230,6 +236,7 @@ Click the **Reset** button at the bottom of the config page.
 - [Google Gemini](https://ai.google.dev/) — AI translation
 
 **Special Thanks**
+- **xtremexq** for the original codebase
 - Stremio team for excellent addon SDK
 - Google for free Gemini API access
 - All subtitle communities
