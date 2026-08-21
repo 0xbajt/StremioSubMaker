@@ -258,7 +258,7 @@ Click the **Reset** button at the bottom of the config page.
 </p>
 
 <p align="center">
-  <a href="https://github.com/xtremexq/StremioSubMaker">⭐ Star this repo</a> •
-  <a href="https://github.com/xtremexq/StremioSubMaker/issues">🐛 Report Bug</a> •
-  <a href="https://github.com/xtremexq/StremioSubMaker/issues">✨ Request Feature</a>
+  <a href="https://github.com/0xbajt/StremioSubMaker">⭐ Star this repo</a> •
+  <a href="https://github.com/0xbajt/StremioSubMaker/issues">🐛 Report Bug</a> •
+  <a href="https://github.com/0xbajt/StremioSubMaker/issues">✨ Request Feature</a>
 </p>
