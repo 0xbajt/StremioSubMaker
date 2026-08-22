@@ -2,7 +2,7 @@ const log = require('../utils/logger');
 const StorageAdapter = require('./StorageAdapter');
 const FilesystemStorageAdapter = require('./FilesystemStorageAdapter');
 const RedisStorageAdapter = require('./RedisStorageAdapter');
-const { getRedisPassword } = require('../utils/redisHelper');
+const { getRedisPassword, parseRedisUrl } = require('../utils/redisHelper');
 
 function scheduleBackgroundInterval(callback, intervalMs) {
   const timer = setInterval(callback, intervalMs);
@@ -59,13 +59,14 @@ class StorageFactory {
 
     if (storageType === 'redis') {
       log.debug(() => 'Initializing Redis storage adapter...');
+      const fromUrl = parseRedisUrl(process.env.REDIS_URL) || {};
       adapter = new RedisStorageAdapter({
-        host: process.env.REDIS_HOST,
-        port: process.env.REDIS_PORT ? parseInt(process.env.REDIS_PORT, 10) : undefined,
-        password: getRedisPassword() || undefined,
-        db: process.env.REDIS_DB ? parseInt(process.env.REDIS_DB, 10) : undefined,
+        host: process.env.REDIS_HOST || fromUrl.host,
+        port: process.env.REDIS_PORT ? parseInt(process.env.REDIS_PORT, 10) : fromUrl.port,
+        password: getRedisPassword() || fromUrl.password || undefined,
+        db: process.env.REDIS_DB ? parseInt(process.env.REDIS_DB, 10) : fromUrl.db,
         keyPrefix: process.env.REDIS_KEY_PREFIX,
-        tls: process.env.REDIS_TLS === 'true' ? {} : undefined
+        tls: (process.env.REDIS_TLS === 'true' || fromUrl.tls) ? (fromUrl.tls || {}) : undefined
       });
     } else {
       log.debug(() => 'Initializing Filesystem storage adapter...');

@@ -1,6 +1,6 @@
 const log = require('./logger');
 const { getEncryptionKey } = require('./encryption');
-const { getRedisPassword } = require('./redisHelper');
+const { getRedisPassword, parseRedisUrl } = require('./redisHelper');
 const Redis = require('ioredis');
 
 /**
@@ -18,21 +18,17 @@ class StartupValidator {
    */
   async validateEncryptionKey() {
     try {
-      const key = getEncryptionKey();
-      if (!key) {
-        this.errors.push('Encryption key is null or undefined');
-        return false;
-      }
+      getEncryptionKey();
       log.debug(() => '[Startup Validation] ✓ Encryption key available');
       return true;
-    } catch (err) {
-      this.errors.push(`Failed to load encryption key: ${err.message}`);
+    } catch (error) {
+      this.errors.push(`Encryption key validation failed: ${error.message}`);
       return false;
     }
   }
 
   /**
-   * Validate Redis connection and configuration (if using Redis)
+   * Validate Redis connectivity and configuration
    */
   async validateRedisConnection() {
     const storageType = process.env.STORAGE_TYPE || 'redis';
@@ -42,16 +38,18 @@ class StartupValidator {
     }
 
     try {
+      const fromUrl = parseRedisUrl(process.env.REDIS_URL) || {};
       const redisOptions = {
-        host: process.env.REDIS_HOST || 'localhost',
-        port: process.env.REDIS_PORT || 6379,
-        password: getRedisPassword() || undefined,
-        db: process.env.REDIS_DB ? parseInt(process.env.REDIS_DB, 10) : 0,
+        host: process.env.REDIS_HOST || fromUrl.host || 'localhost',
+        port: process.env.REDIS_PORT || fromUrl.port || 6379,
+        password: getRedisPassword() || fromUrl.password || undefined,
+        db: (process.env.REDIS_DB ? parseInt(process.env.REDIS_DB, 10) : fromUrl.db) || 0,
         // Use a raw client (no keyPrefix) for validation so SCAN/EXISTS operate on exact keys
         keyPrefix: '',
         maxRetriesPerRequest: 1,
         retryStrategy: () => null, // Don't retry for validation
-        lazyConnect: true
+        lazyConnect: true,
+        ...(process.env.REDIS_TLS === 'true' || fromUrl.tls ? { tls: fromUrl.tls || {} } : {})
       };
 
       const testClient = new Redis(redisOptions);

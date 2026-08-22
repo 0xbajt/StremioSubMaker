@@ -52,11 +52,38 @@ function generatePassword() {
     return crypto.randomBytes(PASSWORD_BYTES).toString('hex');
 }
 
+function parseRedisUrl(redisUrl) {
+    const raw = redisUrl || process.env.REDIS_URL;
+    if (!raw || typeof raw !== 'string') {
+        return null;
+    }
+    try {
+        const parsed = new URL(raw.trim());
+        const isTls = parsed.protocol === 'rediss:';
+        const password = parsed.password ? decodeURIComponent(parsed.password) : undefined;
+        const host = parsed.hostname;
+        const port = parsed.port ? parseInt(parsed.port, 10) : 6379;
+        const pathname = parsed.pathname ? parsed.pathname.replace(/^\//, '') : '';
+        const db = pathname ? parseInt(pathname, 10) : undefined;
+        return {
+            host,
+            port,
+            password,
+            db: Number.isFinite(db) ? db : undefined,
+            tls: (isTls || process.env.REDIS_TLS === 'true') ? {} : undefined
+        };
+    } catch (e) {
+        log.warn(() => `[RedisHelper] Failed to parse REDIS_URL: ${e.message}`);
+        return null;
+    }
+}
+
 /**
  * Get Redis password from environment or persistent file.
  * Priority:
  * 1. REDIS_PASSWORD (env var)
- * 2. REDIS_PASSWORD_FILE (auto-generated and persisted)
+ * 2. REDIS_URL (parsed password)
+ * 3. REDIS_PASSWORD_FILE (auto-generated and persisted)
  * @returns {string|undefined} Redis password or undefined if not configured
  */
 function getRedisPassword() {
@@ -68,6 +95,13 @@ function getRedisPassword() {
     if (envPassword) {
         cachedPassword = envPassword;
         log.debug(() => '[RedisHelper] Using Redis password from environment variable');
+        return cachedPassword;
+    }
+
+    const fromUrl = parseRedisUrl(process.env.REDIS_URL);
+    if (fromUrl && fromUrl.password) {
+        cachedPassword = fromUrl.password;
+        log.debug(() => '[RedisHelper] Using Redis password from REDIS_URL');
         return cachedPassword;
     }
 
@@ -91,5 +125,6 @@ function getRedisPassword() {
 }
 
 module.exports = {
-    getRedisPassword
+    getRedisPassword,
+    parseRedisUrl
 };

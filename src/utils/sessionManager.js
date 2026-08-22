@@ -12,7 +12,7 @@ const sentry = require('./sentry');
 const { handleCaughtError } = require('./errorClassifier');
 const { encryptUserConfig, decryptUserConfig, normalizeSensitiveInputsForStorage, getDecryptionWarnings } = require('./encryption');
 const { redactToken } = require('./security');
-const { getRedisPassword } = require('./redisHelper');
+const { getRedisPassword, parseRedisUrl } = require('./redisHelper');
 const { MAX_SESSION_BRIEF_BATCH, SESSION_BRIEF_LOOKUP_CONCURRENCY, normalizeSessionBriefTokens } = require('./sessionBriefBatch');
 
 // Cache decrypted configs briefly to avoid redundant decryption on rapid navigation
@@ -417,14 +417,15 @@ async function getPubSubClient() {
                 sentinelRetryStrategy: (times) => Math.min(times * 100, 3000)
             };
         } else {
+            const fromUrl = parseRedisUrl(process.env.REDIS_URL) || {};
             clientOptions = {
-                host: process.env.REDIS_HOST || 'localhost',
-                port: process.env.REDIS_PORT || 6379,
-                password,
-                db: process.env.REDIS_DB ? parseInt(process.env.REDIS_DB, 10) : 0,
+                host: process.env.REDIS_HOST || fromUrl.host || 'localhost',
+                port: process.env.REDIS_PORT || fromUrl.port || 6379,
+                password: password || fromUrl.password || undefined,
+                db: (process.env.REDIS_DB ? parseInt(process.env.REDIS_DB, 10) : fromUrl.db) || 0,
                 keyPrefix: '',
                 maxRetriesPerRequest: 3,
-                ...(process.env.REDIS_TLS === 'true' ? { tls: {} } : {}),
+                ...(process.env.REDIS_TLS === 'true' || fromUrl.tls ? { tls: fromUrl.tls || {} } : {}),
                 retryStrategy: (times) => Math.min(times * 50, 2000)
             };
         }
@@ -479,13 +480,15 @@ async function getPublishClient() {
                 sentinelRetryStrategy: (times) => Math.min(times * 100, 3000)
             };
         } else {
+            const fromUrl = parseRedisUrl(process.env.REDIS_URL) || {};
             clientOptions = {
-                host: process.env.REDIS_HOST || 'localhost',
-                port: process.env.REDIS_PORT || 6379,
-                password,
-                db: process.env.REDIS_DB ? parseInt(process.env.REDIS_DB, 10) : 0,
+                host: process.env.REDIS_HOST || fromUrl.host || 'localhost',
+                port: process.env.REDIS_PORT || fromUrl.port || 6379,
+                password: password || fromUrl.password || undefined,
+                db: (process.env.REDIS_DB ? parseInt(process.env.REDIS_DB, 10) : fromUrl.db) || 0,
                 keyPrefix: '',
                 maxRetriesPerRequest: 3,
+                ...(process.env.REDIS_TLS === 'true' || fromUrl.tls ? { tls: fromUrl.tls || {} } : {}),
                 retryStrategy: (times) => Math.min(times * 50, 2000)
             };
         }

@@ -4,7 +4,7 @@ const { StorageUnavailableError } = require('./errors');
 const Redis = require('ioredis');
 const crypto = require('crypto');
 const { getIsolationKey } = require('../utils/isolation');
-const { getRedisPassword } = require('../utils/redisHelper');
+const { getRedisPassword, parseRedisUrl } = require('../utils/redisHelper');
 const { handleCaughtError } = require('../utils/errorClassifier');
 
 const SESSION_INDEX_KEY = 'session:index';
@@ -93,16 +93,17 @@ class RedisStorageAdapter extends StorageAdapter {
       log.debug(() => `[Redis] Sentinel mode enabled: ${sentinelName} with ${sentinels.length} sentinel(s)`);
     } else {
       // Standard Redis configuration (default for single-user deployments)
+      const fromUrl = parseRedisUrl(process.env.REDIS_URL) || {};
       this.options = {
-        host: restOptions.host || process.env.REDIS_HOST || 'localhost',
-        port: restOptions.port || process.env.REDIS_PORT || 6379,
-        password: restOptions.password || getRedisPassword() || undefined,
-        db: restOptions.db || process.env.REDIS_DB || 0,
+        host: restOptions.host || process.env.REDIS_HOST || fromUrl.host || 'localhost',
+        port: restOptions.port || process.env.REDIS_PORT || fromUrl.port || 6379,
+        password: restOptions.password || getRedisPassword() || fromUrl.password || undefined,
+        db: restOptions.db || (process.env.REDIS_DB ? parseInt(process.env.REDIS_DB, 10) : fromUrl.db) || 0,
         keyPrefix: canonicalPrefix,
         commandTimeout,
         enableOfflineQueue: false,
         maxRetriesPerRequest: 3,
-        ...(process.env.REDIS_TLS === 'true' || restOptions.tls ? { tls: restOptions.tls || {} } : {}),
+        ...(process.env.REDIS_TLS === 'true' || fromUrl.tls || restOptions.tls ? { tls: restOptions.tls || fromUrl.tls || {} } : {}),
         retryStrategy: (times) => {
           const delay = Math.min(times * 50, 2000);
           return delay;

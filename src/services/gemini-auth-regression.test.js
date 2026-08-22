@@ -204,3 +204,26 @@ test('Gemini models normalization and defaults support all new Gemini 3.x and ac
   assert.ok(DEPRECATED_MODEL_NAMES.includes('gemini-3-flash-preview'));
   assert.ok(DEPRECATED_MODEL_NAMES.includes('gemini-3-pro-preview'));
 });
+
+test('parseRedisUrl correctly parses rediss:// and redis:// connection strings', () => {
+  const { parseRedisUrl } = require('../utils/redisHelper');
+
+  // Standard Upstash TLS URL
+  const upstash = parseRedisUrl('rediss://default:mySecretToken123@legal-camel-69494.upstash.io:6379');
+  assert.equal(upstash.host, 'legal-camel-69494.upstash.io');
+  assert.equal(upstash.port, 6379);
+  assert.equal(upstash.password, 'mySecretToken123');
+  assert.deepEqual(upstash.tls, {});
+
+  // Standard redis URL with db number
+  const standard = parseRedisUrl('redis://:secretPass@127.0.0.1:6380/2');
+  assert.equal(standard.host, '127.0.0.1');
+  assert.equal(standard.port, 6380);
+  assert.equal(standard.password, 'secretPass');
+  assert.equal(standard.db, 2);
+  assert.equal(standard.tls, undefined);
+
+  // Empty or invalid input
+  assert.equal(parseRedisUrl(''), null);
+  assert.equal(parseRedisUrl(null), null);
+});
