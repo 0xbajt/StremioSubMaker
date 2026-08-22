@@ -424,6 +424,7 @@ async function getPubSubClient() {
                 db: process.env.REDIS_DB ? parseInt(process.env.REDIS_DB, 10) : 0,
                 keyPrefix: '',
                 maxRetriesPerRequest: 3,
+                ...(process.env.REDIS_TLS === 'true' ? { tls: {} } : {}),
                 retryStrategy: (times) => Math.min(times * 50, 2000)
             };
         }
