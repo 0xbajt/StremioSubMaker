@@ -8,7 +8,7 @@
     "start": "node index.js",
     "dev": "nodemon index.js",
     "test": "npm run test:tracked && node scripts/run-tests.js",
-    "test:tracked": "node --test --test-force-exit src/handlers/subtitles-timeout-regression.test.js src/services/opensubtitles-no-backoff-regression.test.js src/services/gemini-auth-regression.test.js src/utils/embeddedCache-regression.test.js src/utils/localCache-index-regression.test.js src/utils/logger-sampling-regression.test.js src/utils/addon-request-hardening-regression.test.js src/storage/redis-command-timeout-regression.test.js",
+    "test:tracked": "node --test --test-force-exit src/handlers/subtitles-timeout-regression.test.js src/services/opensubtitles-no-backoff-regression.test.js src/services/gemini-auth-regression.test.js src/services/subtitle-intelligence.test.js src/utils/embeddedCache-regression.test.js src/utils/localCache-index-regression.test.js src/utils/logger-sampling-regression.test.js src/utils/addon-request-hardening-regression.test.js src/storage/redis-command-timeout-regression.test.js",
     "test:release": "npm run test:tracked && node scripts/run-tests.js --release",
     "test:manual": "npm run test:tracked && node scripts/run-tests.js --standalone",
     "update:anime-list": "node update-anime-list.js"

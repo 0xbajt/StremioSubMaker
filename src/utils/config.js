@@ -609,6 +609,18 @@ function normalizeConfig(config) {
   // Deduplication is enabled by default (only disabled if explicitly set to false)
   mergedConfig.deduplicateSubtitles = mergedConfig.deduplicateSubtitles !== false;
 
+  // Subtitle & Translation Intelligence settings normalization
+  mergedConfig.smartGlossaryEnabled = mergedConfig.smartGlossaryEnabled !== false;
+  mergedConfig.customGlossary = Array.isArray(config.customGlossary)
+    ? config.customGlossary
+    : (typeof config.customGlossary === 'object' && config.customGlossary ? config.customGlossary : []);
+  mergedConfig.cleanSdhSubtitles = mergedConfig.cleanSdhSubtitles === true;
+  mergedConfig.smartLineWrap = mergedConfig.smartLineWrap !== false;
+  const rawCpl = parseInt(mergedConfig.maxCharactersPerLine, 10);
+  mergedConfig.maxCharactersPerLine = Number.isFinite(rawCpl)
+    ? Math.max(25, Math.min(70, rawCpl))
+    : 40;
+
   // Normalize subtitle provider timeout (min: 8s, max: 30s, default: 12s)
   // Use 12s as fallback for backwards compatibility with old sessions without this setting
   const rawTimeout = parseInt(mergedConfig.subtitleProviderTimeout, 10);
@@ -1333,6 +1345,12 @@ function getDefaultConfig(modelName = null) {
     subToolboxEnabled: false, // unified toolbox entry for file translation, sync, and upcoming tools
     fileTranslationEnabled: false, // legacy flag (mirrors subToolboxEnabled)
     syncSubtitlesEnabled: false, // legacy flag (mirrors subToolboxEnabled)
+    // Subtitle & Translation Intelligence settings
+    smartGlossaryEnabled: true, // Automatically fetch media context (cast, characters, lore) and inject into AI prompt
+    customGlossary: [], // User-defined glossary & locked proper nouns
+    cleanSdhSubtitles: false, // Clean non-speech SDH audio cues and normalize shouting
+    smartLineWrap: true, // Optimize line breaks and enforce Characters Per Line (CPL) limits
+    maxCharactersPerLine: 40, // Target max characters per line for subtitle cues
     // If true, filter out SDH/HI (hearing impaired) subtitles from provider results
     excludeHearingImpairedSubtitles: false,
     // If true, include season pack subtitles in results (default: enabled for backwards compatibility)

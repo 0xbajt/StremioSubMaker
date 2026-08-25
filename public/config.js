@@ -10586,6 +10586,28 @@ Translate to {target_language}.`;
         if (mobileModeEl) mobileModeEl.checked = currentConfig.mobileMode === true;
         const singleBatchEl = document.getElementById('singleBatchMode');
         if (singleBatchEl) singleBatchEl.checked = currentConfig.singleBatchMode === true;
+        const smartGlossaryEl = document.getElementById('smartGlossaryEnabled');
+        if (smartGlossaryEl) smartGlossaryEl.checked = currentConfig.smartGlossaryEnabled !== false;
+        const customGlossaryEl = document.getElementById('customGlossaryInput');
+        if (customGlossaryEl) {
+            if (Array.isArray(currentConfig.customGlossary)) {
+                customGlossaryEl.value = currentConfig.customGlossary.map(item => {
+                    if (typeof item === 'string') return item;
+                    if (item?.from && item?.to) return `${item.from} -> ${item.to}`;
+                    if (item?.term || item?.locked) return item.term || item.locked;
+                    return '';
+                }).filter(Boolean).join('\n');
+            } else if (typeof currentConfig.customGlossary === 'object' && currentConfig.customGlossary) {
+                customGlossaryEl.value = Object.entries(currentConfig.customGlossary).map(([k, v]) => `${k} -> ${v}`).join('\n');
+            } else {
+                customGlossaryEl.value = '';
+            }
+        }
+        const cleanSdhEl = document.getElementById('cleanSdhSubtitles');
+        if (cleanSdhEl) cleanSdhEl.checked = currentConfig.cleanSdhSubtitles === true;
+        const smartLineWrapEl = document.getElementById('smartLineWrap');
+        if (smartLineWrapEl) smartLineWrapEl.checked = currentConfig.smartLineWrap !== false;
+
         const forceSRTEl = document.getElementById('forceSRTOutput');
         const forceSRTElNoTranslation = document.getElementById('forceSRTOutputNoTranslation');
         if (forceSRTEl) forceSRTEl.checked = currentConfig.forceSRTOutput === true;
@@ -11046,6 +11068,26 @@ Translate to {target_language}.`;
                 return currentConfig?.mobileMode === true;
             })(),
             singleBatchMode: singleBatchEnabled,
+            smartGlossaryEnabled: (function () {
+                const el = document.getElementById('smartGlossaryEnabled');
+                return el ? el.checked === true : (currentConfig?.smartGlossaryEnabled !== false);
+            })(),
+            customGlossary: (function () {
+                const el = document.getElementById('customGlossaryInput');
+                if (!el || !el.value.trim()) return [];
+                return el.value.split('\n').map(line => line.trim()).filter(Boolean);
+            })(),
+            cleanSdhSubtitles: (function () {
+                const el = document.getElementById('cleanSdhSubtitles');
+                return el ? el.checked === true : (currentConfig?.cleanSdhSubtitles === true);
+            })(),
+            smartLineWrap: (function () {
+                const el = document.getElementById('smartLineWrap');
+                return el ? el.checked === true : (currentConfig?.smartLineWrap !== false);
+            })(),
+            maxCharactersPerLine: (function () {
+                return currentConfig?.maxCharactersPerLine || 40;
+            })(),
             parallelBatchesEnabled: (function () { const el = document.getElementById('parallelBatchesEnabled'); return el ? el.checked === true : false; })(),
             parallelBatchesCount: (function () { const el = document.getElementById('parallelBatchesCount'); return el ? parseInt(el.value, 10) : 3; })(),
             advancedSettings: {

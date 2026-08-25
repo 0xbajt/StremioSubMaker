@@ -4825,7 +4825,7 @@ async function handleTranslation(sourceFileId, targetLanguage, config, options =
       sourceFileId,
       targetLanguage,
       config,
-      { cacheKey, runtimeKey, baseKey, sharedInFlightKey },
+      { cacheKey, runtimeKey, baseKey, sharedInFlightKey, videoId: fallbackVideoId },
       effectiveUserHash,
       allowPermanent,
       sourceContent,
@@ -4911,7 +4911,7 @@ async function handleTranslation(sourceFileId, targetLanguage, config, options =
  * @param {string} userHash - User hash for concurrency tracking
  * @param {string} preDownloadedContent - Optional pre-downloaded source content (from pre-flight validation)
  */
-async function performTranslation(sourceFileId, targetLanguage, config, { cacheKey, runtimeKey, baseKey, sharedInFlightKey = null }, userHash, allowPermanent, preDownloadedContent = null, embeddedSource = null) {
+async function performTranslation(sourceFileId, targetLanguage, config, { cacheKey, runtimeKey, baseKey, sharedInFlightKey = null, videoId = null }, userHash, allowPermanent, preDownloadedContent = null, embeddedSource = null) {
   let translationEngine = null;
   // Hoisted so the catch block can include them in error translationStats for history correction
   let providerName = '';
@@ -5090,6 +5090,20 @@ async function performTranslation(sourceFileId, targetLanguage, config, { cacheK
       advancedSettings: config.advancedSettings || {}
     } : null;
 
+    // Subtitle & Translation Intelligence: Resolve media context (characters, synopsis, lore)
+    let mediaContext = null;
+    if (config.smartGlossaryEnabled !== false) {
+      try {
+        const { resolveMediaContext } = require('../services/mediaContextResolver');
+        const candidateVideoId = videoId || config.videoId || config.lastStream?.videoId;
+        if (candidateVideoId) {
+          mediaContext = await resolveMediaContext(candidateVideoId);
+        }
+      } catch (err) {
+        log.debug(() => `[Translation] Media context resolution failed: ${err.message}`);
+      }
+    }
+
     translationEngine = new TranslationEngine(
       provider,
       effectiveModel,
@@ -5102,7 +5116,12 @@ async function performTranslation(sourceFileId, targetLanguage, config, { cacheK
         singleBatchMode: config.singleBatchMode === true,
         providerName,
         fallbackProviderName,
-        keyRotationConfig
+        keyRotationConfig,
+        mediaContext,
+        customGlossary: config.customGlossary,
+        cleanSdhSubtitles: config.cleanSdhSubtitles === true,
+        smartLineWrap: config.smartLineWrap !== false,
+        maxCharactersPerLine: config.maxCharactersPerLine || 40
       }
     );
 

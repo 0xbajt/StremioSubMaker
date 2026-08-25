@@ -1710,6 +1710,39 @@
                             </label>
                         </div>
 
+                        <!-- Subtitle & Translation Intelligence Settings -->
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="smartGlossaryEnabled" checked>
+                                <span>Smart Media Lore & Context Glossary</span>
+                                <span class="label-description">Automatically fetches movie/series title, character names, cast, and synopsis to inject into the AI prompt so proper nouns and lore are translated accurately.</span>
+                            </label>
+                        </div>
+
+                        <div class="form-group" id="customGlossaryGroup">
+                            <label for="customGlossaryInput">
+                                <span>Custom Glossary & Locked Terms (Optional)</span>
+                                <span class="label-description">One rule per line. Enter terms to lock (e.g. <code>Kwisatz Haderach</code>) or mappings (e.g. <code>Spice -> Especia</code>).</span>
+                            </label>
+                            <textarea id="customGlossaryInput" class="styled-textarea" rows="2" placeholder="Kwisatz Haderach&#10;Spice -> Especia" style="width: 100%; border-radius: 8px; padding: 0.5rem; font-family: monospace; font-size: 0.85rem;"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="cleanSdhSubtitles">
+                                <span>Clean SDH & Hearing-Impaired Cues</span>
+                                <span class="label-description">Strips sound effects ([dramatic music], (screams), ♪ notes), speaker tags (JOHN:), and normalizes all-caps shouting before translation.</span>
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="smartLineWrap" checked>
+                                <span>Smart Line-Wrapping & CPL Optimization</span>
+                                <span class="label-description">Enforces streaming readability standards (max 40 chars per line, max 2 lines per cue) and balances multi-line subtitle breaks.</span>
+                            </label>
+                        </div>
+
                         <div class="form-group">
                             <label for="databaseMode" class="form-label">
                                 <span class="label-title" data-i18n="config.translationSettings.database.label">SubMaker

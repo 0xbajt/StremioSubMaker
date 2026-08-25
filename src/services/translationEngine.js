@@ -25,6 +25,9 @@ const { handleCaughtError } = require('../utils/errorClassifier');
 const { normalizeTargetLanguageForPrompt } = require('./utils/normalizeTargetLanguageForPrompt');
 const { recordKeyError: recordKeyErrorRedis, isKeyCoolingDown: isKeyCoolingDownRedis, getNextRotationIndex, resetKeyHealth } = require('../utils/sharedCache');
 const { executeParallelTranslation } = require('../utils/parallelTranslation');
+const { buildGlossaryPromptContext } = require('./mediaContextResolver');
+const { cleanSdhEntries } = require('../utils/sdhCleaner');
+const { formatSubtitleEntries } = require('../utils/subtitleFormatter');
 
 // Extract normalized tokens from a language label/code (split on common separators)
 function tokenizeLanguageValue(value) {
@@ -297,6 +300,20 @@ class TranslationEngine {
       parallelBatchesUsed: false,
       streaming: this.enableStreaming,
     };
+
+    // Subtitle & Translation Intelligence options
+    this.mediaContext = options.mediaContext || null;
+    this.customGlossary = options.customGlossary || null;
+    this.cleanSdhSubtitles = options.cleanSdhSubtitles === true;
+    this.smartLineWrap = options.smartLineWrap !== false;
+    this.maxCharactersPerLine = Number(options.maxCharactersPerLine) || 40;
+  }
+
+  /**
+   * Format media context and custom glossary for prompt injection
+   */
+  getGlossaryPromptContext() {
+    return buildGlossaryPromptContext(this.mediaContext, this.customGlossary);
   }
 
   /**
@@ -663,9 +680,12 @@ class TranslationEngine {
     this.isRtlTarget = isRtlLanguage(targetLanguage);
 
     // Step 1: Parse SRT into structured entries
-    const entries = parseSRT(srtContent);
+    let entries = parseSRT(srtContent);
     if (!entries || entries.length === 0) {
       throw new Error('Invalid SRT content: no valid entries found');
+    }
+    if (this.cleanSdhSubtitles) {
+      entries = cleanSdhEntries(entries);
     }
     // Stats: entry count
     this.translationStats.entryCount = entries.length;
@@ -854,6 +874,14 @@ class TranslationEngine {
       }
     }
 
+    // Post-processing: SDH cleaning & Smart Line Wrapping (CPL)
+    if (this.cleanSdhSubtitles) {
+      translatedEntries = cleanSdhEntries(translatedEntries);
+    }
+    if (this.smartLineWrap) {
+      translatedEntries = formatSubtitleEntries(translatedEntries, { maxCharactersPerLine: this.maxCharactersPerLine });
+    }
+
     // Step 5: Convert back to SRT format
     return toSRT(translatedEntries);
   }
@@ -861,7 +889,11 @@ class TranslationEngine {
   /**
    * Single-batch translation workflow with optional streaming partials
    */
-  async translateSubtitleSingleBatch(entries, targetLanguage, customPrompt = null, onProgress = null) {
+  async translateSubtitleSingleBatch(rawEntries, targetLanguage, customPrompt = null, onProgress = null) {
+    let entries = rawEntries;
+    if (this.cleanSdhSubtitles) {
+      entries = cleanSdhEntries(entries);
+    }
     log.info(() => `[TranslationEngine] Single-batch translation: ${entries.length} entries`);
 
     const fullBatchText = this.prepareBatchContent(entries, null);
@@ -1002,6 +1034,14 @@ class TranslationEngine {
     }
 
     log.info(() => `[TranslationEngine] Single-batch translation completed: ${translatedEntries.length} entries (tokens: est ${estimatedTokens}${actualTokenCount ? `, actual ${actualTokenCount}` : ''})`);
+
+    // Post-processing: SDH cleaning & Smart Line Wrapping (CPL)
+    if (this.cleanSdhSubtitles) {
+      translatedEntries = cleanSdhEntries(translatedEntries);
+    }
+    if (this.smartLineWrap) {
+      translatedEntries = formatSubtitleEntries(translatedEntries, { maxCharactersPerLine: this.maxCharactersPerLine });
+    }
 
     return toSRT(translatedEntries);
   }
@@ -1750,6 +1790,7 @@ class TranslationEngine {
    */
   createXmlBatchPrompt(batchText, targetLanguage, customPrompt, expectedCount, context = null, batchIndex = 0, totalBatches = 1) {
     const targetLabel = normalizeTargetLanguageForPrompt(targetLanguage);
+    const glossarySection = this.getGlossaryPromptContext();
 
     let contextInstructions = '';
     if (context?.surroundingOriginal?.length > 0) {
@@ -1763,7 +1804,7 @@ CONTEXT PROVIDED:
     }
 
     const promptBody = `You are a professional subtitle translator. Translate to ${targetLabel}.
-${contextInstructions}
+${glossarySection ? glossarySection + '\n' : ''}${contextInstructions}
 CRITICAL RULES:
 1. Translate ONLY the text inside each <s id="N"> tag
 2. PRESERVE the XML tags exactly: <s id="N">translated text</s>
@@ -1772,6 +1813,7 @@ CRITICAL RULES:
 5. Maintain natural dialogue flow for ${targetLabel}
 6. Use appropriate colloquialisms for ${targetLabel}
 7. Preserve any existing formatting tags${context ? '\n8. Use the provided context to ensure consistency' : ''}
+${glossarySection ? '\nFollow all media context, characters, and glossary rules strictly.' : ''}
 
 Do NOT add acknowledgements, explanations, notes, or commentary.
 Do not skip, merge, or split entries. NEVER output markdown.
@@ -1817,6 +1859,7 @@ OUTPUT (EXACTLY ${expectedCount} XML-tagged entries):`;
    */
   _buildJsonPrompt(batchText, targetLanguage, customPrompt, expectedCount, context = null, batchIndex = 0, totalBatches = 1) {
     const targetLabel = normalizeTargetLanguageForPrompt(targetLanguage);
+    const glossarySection = this.getGlossaryPromptContext();
 
     let contextInstructions = '';
     if (context?.surroundingOriginal?.length > 0) {
@@ -1830,7 +1873,7 @@ CONTEXT PROVIDED:
     }
 
     const promptBody = `You are a professional subtitle translator operating in an automated localization environment. Translate to ${targetLabel}.
-${contextInstructions}
+${glossarySection ? glossarySection + '\n' : ''}${contextInstructions}
 CRITICAL RULES:
 1. Translate ONLY the "text" field of each entry into ${targetLabel}
 2. Preserve the "id" field exactly as given with no modification
@@ -1838,6 +1881,7 @@ CRITICAL RULES:
 4. Maintain natural dialogue flow with consistency in character gender, pronouns, and honorifics throughout the batch
 5. Every entry must be fully translated; never return original source text unless it is a proper noun (e.g., names, places, brands). If the source text appears corrupted or contains only symbols/numbers, return it unchanged
 6. If a text field is empty, contains only whitespace, or only formatting tags, return it unchanged${context ? '\n7. Use the provided context to ensure consistency' : ''}
+${glossarySection ? '\nFollow all media context, characters, and glossary rules strictly.' : ''}
 
 TRANSLATION STYLE:
 1. Maintain perfect, machine-parseable JSON format matching the input schema exactly. Ensure JSON is valid: escape double quotes with backslash (\\") and use \\n for line breaks within the text field, no trailing commas
@@ -2193,7 +2237,8 @@ OUTPUT (EXACTLY ${expectedCount} entries as JSON array):`;
    */
   createTimestampPrompt(targetLanguage, batchIndex = 0, totalBatches = 1) {
     const targetLabel = normalizeTargetLanguageForPrompt(targetLanguage);
-    const base = DEFAULT_TRANSLATION_PROMPT.replace('{target_language}', targetLabel);
+    const glossarySection = this.getGlossaryPromptContext();
+    const base = (glossarySection ? `${glossarySection}\n\n` : '') + DEFAULT_TRANSLATION_PROMPT.replace('{target_language}', targetLabel);
     return this.addBatchHeader(base, batchIndex, totalBatches);
   }
 
@@ -2202,6 +2247,7 @@ OUTPUT (EXACTLY ${expectedCount} entries as JSON array):`;
    */
   createBatchPrompt(batchText, targetLanguage, customPrompt, expectedCount, context = null, batchIndex = 0, totalBatches = 1) {
     const targetLabel = normalizeTargetLanguageForPrompt(targetLanguage);
+    const glossarySection = this.getGlossaryPromptContext();
 
     let contextInstructions = '';
     if (context?.surroundingOriginal?.length > 0) {
@@ -2217,7 +2263,7 @@ CONTEXT PROVIDED:
     }
 
     const promptBody = `You are a professional subtitle translator. Translate to ${targetLabel}.
-${contextInstructions}
+${glossarySection ? glossarySection + '\n' : ''}${contextInstructions}
 CRITICAL RULES:
 1. Translate ONLY the numbered text entries (1. 2. 3. etc.)
 2. PRESERVE the numbering exactly (1. 2. 3. etc.)
@@ -2226,6 +2272,7 @@ CRITICAL RULES:
 5. Maintain natural dialogue flow for ${targetLabel}
 6. Use appropriate colloquialisms for ${targetLabel}
 7. Preserve any existing formatting tags${context ? '\n8. Use the provided context to ensure consistency' : ''}
+${glossarySection ? '\nFollow all media context, characters, and glossary rules strictly.' : ''}
 
 Do NOT add acknowledgements, explanations, notes, or commentary.
 Do not skip, merge, or split entries. NEVER output markdown.
