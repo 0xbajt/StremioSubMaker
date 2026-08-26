@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## SubMaker v1.4.91
+
+**New Features & Improvements:**
+
+- **Predictive Binge-Watching Mode (Auto Pre-Translate Next Episode):**
+  - Added background predictive pre-translation for TV shows and anime. When translating an episode (e.g. `S01E03`), SubMaker automatically schedules a background job to fetch, translate, and cache the next episode (`S01E04`) in your target language.
+  - When you hit "Next Episode" in Stremio, the translated subtitles are already 100% ready in cache for instant playback with 0-second wait time.
+  - Includes a single-episode lookahead guard (`!isBingePrefetch`) to protect API token quotas by only translating one episode ahead.
+
+- **Cross-Episode Series Lore & Glossary Memory:**
+  - Added dynamic cross-episode memory in `mediaContextResolver` that caches established character names, nicknames, and proper noun choices across episodes in a series (`seriesGlossaryCache`).
+  - Next episodes automatically inherit terminology established in prior episodes, ensuring spelling and naming consistency across the entire season.
+
 ## SubMaker v1.4.90
 
 **New Features & Improvements:**

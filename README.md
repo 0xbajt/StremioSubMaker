@@ -11,7 +11,7 @@
 
 <p align="center">
   <a href="https://www.gnu.org/licenses/agpl-3.0"><img src="https://img.shields.io/badge/License-AGPL_v3-blue.svg?style=flat-square" alt="License: AGPL v3"/></a>
-  <img src="https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen?style=flat-square" alt="Node 18+"/>
+  <img src="https://img.shields.io/badge/node-%3E%3D20.0.0-brightgreen?style=flat-square" alt="Node 20+ (LTS)"/>
   <img src="https://img.shields.io/badge/Stremio-Addon-purple?style=flat-square" alt="Stremio Addon"/>
   <img src="https://img.shields.io/badge/languages-433-orange?style=flat-square" alt="433 Languages"/>
   <img src="https://img.shields.io/badge/AI-10%2B%20providers-ff69b4?style=flat-square" alt="10+ AI Providers"/>
@@ -50,6 +50,7 @@ Configure, install, and start translating subtitles in Stremio or Nuvio!
 | **Subtitle Sources** | OpenSubtitles, SubDL, SubSource, Wyzie, Stremio Community, Subs.ro |
 | **AI Translation** | 10+ providers: Gemini, OpenAI, Claude, DeepL, DeepSeek, Grok, Mistral, OpenRouter, Cloudflare, Custom/Local |
 | **Translation Intelligence** | Smart Media Lore Glossary, Custom Terms Lock, Clean SDH/HI audio cues, CPL line balancing, Proper Nouns localization |
+| **Binge-Watching Mode** | Predictive background pre-translation of next episodes (0s wait time) with cross-episode season lore continuity |
 | **Smart Caching** | Shared translation database — translate once, benefit everyone |
 | **Timestamp Workflows** | XML Tags, JSON, Numbered Timestamps, Send Timestamps to AI |
 | **No-Translation Mode** | Just fetch subtitles without translation |
@@ -90,7 +91,7 @@ Configure, install, and start translating subtitles in Stremio or Nuvio!
 
 ### Prerequisites
 
-- **Node.js** 18+ — [nodejs.org](https://nodejs.org)
+- **Node.js** 20+ (LTS recommended, supports Node 22/24) — [nodejs.org](https://nodejs.org)
 - **Gemini API Key** — [Get free](https://aistudio.google.com/app/apikey)
 - At least one subtitle provider key (optional but recommended)
 
