@@ -202,3 +202,91 @@ test('config includes Subtitle Intelligence defaults and normalizes options', ()
   assert.equal(normalized.smartLineWrap, true);
   assert.equal(normalized.maxCharactersPerLine, 45);
 });
+
+// 6. handleTranslation scoping regression test
+test('handleTranslation initiates translation without ReferenceError for fallbackVideoId', async () => {
+  const { handleTranslation } = require('../handlers/subtitles');
+  const config = normalizeConfig({
+    __configHash: 'test-config-hash-12345',
+    userHash: 'test-user-hash-12345',
+    geminiApiKey: 'mock-gemini-key',
+    smartGlossaryEnabled: true
+  });
+
+  // Calling handleTranslation for invalid/mock source should gracefully return an error/loading message, NOT throw ReferenceError
+  const result = await handleTranslation('mock_sub_id_123', 'spa', config, { videoId: 'tt1234567' });
+  assert.ok(typeof result === 'string');
+});
+
+// 7. TranslationEngine SDH and line wrapping execution test
+test('TranslationEngine pre-cleans SDH cues and formats output lines', async () => {
+  const mockProvider = {
+    apiKey: 'mock-key',
+    model: 'gemini-2.5-flash',
+    countTokensForTranslation: async () => 10,
+    translateSubtitle: async (prompt) => {
+      // Echo input back with simulated translation
+      return '<s id="1">Hola, ¿cómo estás?</s>';
+    }
+  };
+
+  const rawSrt = `1
+00:00:01,000 --> 00:00:04,000
+[dramatic music]
+SARAH: Hello, how are you?
+`;
+
+  const engine = new TranslationEngine(
+    mockProvider,
+    'gemini-2.5-flash',
+    { translationWorkflow: 'xml' },
+    {
+      cleanSdhSubtitles: true,
+      smartLineWrap: true,
+      maxCharactersPerLine: 40
+    }
+  );
+
+  const translated = await engine.translateSubtitle(rawSrt, 'Spanish');
+  assert.ok(!translated.includes('[dramatic music]'));
+  assert.ok(!translated.includes('SARAH:'));
+  assert.ok(translated.includes('Hola, ¿cómo estás?'));
+});
+
+// 8. localizeProperNouns prompt injection test
+test('TranslationEngine injects proper noun localization rule when enabled', () => {
+  const mockGemini = {
+    apiKey: 'mock-key',
+    model: 'gemini-2.5-flash',
+    countTokensForTranslation: async () => 100,
+    buildUserPrompt: (text, lang, prompt) => ({ userPrompt: prompt })
+  };
+
+  const mediaContext = {
+    title: 'Yellowstone',
+    year: '2018',
+    cast: ['Kayce Dutton', 'John Dutton'],
+    overview: 'A ranching family in Montana faces off against others encroaching on their land.'
+  };
+
+  const engine = new TranslationEngine(
+    mockGemini,
+    'gemini-2.5-flash',
+    { translationWorkflow: 'xml' },
+    {
+      mediaContext,
+      localizeProperNouns: true
+    }
+  );
+
+  const xmlPrompt = engine.createXmlBatchPrompt('<s id="1">Kayce went to Washington.</s>', 'Albanian', null, 1);
+  assert.ok(xmlPrompt.includes('PROPER NOUNS & NAMES'));
+  assert.ok(xmlPrompt.includes('Adapt, transliterate, and phonetically translate character names'));
+  assert.ok(xmlPrompt.includes('Proper Noun Localization'));
+
+  const jsonPrompt = engine._buildJsonPrompt('[{"id":1,"text":"Kayce went to Washington."}]', 'Albanian', null, 1);
+  assert.ok(jsonPrompt.includes('Adapt, transliterate, and phonetically translate character names'));
+});
+
+
+

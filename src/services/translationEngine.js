@@ -307,13 +307,14 @@ class TranslationEngine {
     this.cleanSdhSubtitles = options.cleanSdhSubtitles === true;
     this.smartLineWrap = options.smartLineWrap !== false;
     this.maxCharactersPerLine = Number(options.maxCharactersPerLine) || 40;
+    this.localizeProperNouns = options.localizeProperNouns === true;
   }
 
   /**
    * Format media context and custom glossary for prompt injection
    */
   getGlossaryPromptContext() {
-    return buildGlossaryPromptContext(this.mediaContext, this.customGlossary);
+    return buildGlossaryPromptContext(this.mediaContext, this.customGlossary, { localizeProperNouns: this.localizeProperNouns });
   }
 
   /**
@@ -1803,6 +1804,10 @@ CONTEXT PROVIDED:
 `;
     }
 
+    const properNounRule = this.localizeProperNouns
+      ? `\n8. PROPER NOUNS & NAMES: Adapt, transliterate, and phonetically translate character names, proper nouns, and geographic places to match the standard orthography and phonetic conventions of ${targetLabel} (e.g. Kayce -> Kejsi, Washington -> Uashington).`
+      : '';
+
     const promptBody = `You are a professional subtitle translator. Translate to ${targetLabel}.
 ${glossarySection ? glossarySection + '\n' : ''}${contextInstructions}
 CRITICAL RULES:
@@ -1812,7 +1817,7 @@ CRITICAL RULES:
 4. Keep line breaks within each entry
 5. Maintain natural dialogue flow for ${targetLabel}
 6. Use appropriate colloquialisms for ${targetLabel}
-7. Preserve any existing formatting tags${context ? '\n8. Use the provided context to ensure consistency' : ''}
+7. Preserve any existing formatting tags${context ? '\n8. Use the provided context to ensure consistency' : ''}${properNounRule}
 ${glossarySection ? '\nFollow all media context, characters, and glossary rules strictly.' : ''}
 
 Do NOT add acknowledgements, explanations, notes, or commentary.
@@ -1872,6 +1877,10 @@ CONTEXT PROVIDED:
 `;
     }
 
+    const ruleFive = this.localizeProperNouns
+      ? `5. Adapt, transliterate, and phonetically translate character names, proper nouns, and geographic places to match the standard orthography and phonetic conventions of ${targetLabel} (e.g. Kayce -> Kejsi, Washington -> Uashington). Every entry must be fully translated.`
+      : `5. Every entry must be fully translated; never return original source text unless it is a proper noun (e.g., names, places, brands). If the source text appears corrupted or contains only symbols/numbers, return it unchanged`;
+
     const promptBody = `You are a professional subtitle translator operating in an automated localization environment. Translate to ${targetLabel}.
 ${glossarySection ? glossarySection + '\n' : ''}${contextInstructions}
 CRITICAL RULES:
@@ -1879,7 +1888,7 @@ CRITICAL RULES:
 2. Preserve the "id" field exactly as given with no modification
 3. Return EXACTLY ${expectedCount} entries
 4. Maintain natural dialogue flow with consistency in character gender, pronouns, and honorifics throughout the batch
-5. Every entry must be fully translated; never return original source text unless it is a proper noun (e.g., names, places, brands). If the source text appears corrupted or contains only symbols/numbers, return it unchanged
+${ruleFive}
 6. If a text field is empty, contains only whitespace, or only formatting tags, return it unchanged${context ? '\n7. Use the provided context to ensure consistency' : ''}
 ${glossarySection ? '\nFollow all media context, characters, and glossary rules strictly.' : ''}
 
@@ -2238,7 +2247,10 @@ OUTPUT (EXACTLY ${expectedCount} entries as JSON array):`;
   createTimestampPrompt(targetLanguage, batchIndex = 0, totalBatches = 1) {
     const targetLabel = normalizeTargetLanguageForPrompt(targetLanguage);
     const glossarySection = this.getGlossaryPromptContext();
-    const base = (glossarySection ? `${glossarySection}\n\n` : '') + DEFAULT_TRANSLATION_PROMPT.replace('{target_language}', targetLabel);
+    const properNounNote = this.localizeProperNouns
+      ? `\n\nPROPER NOUNS & NAMES: Adapt, transliterate, and phonetically translate character names, proper nouns, and geographic places to match the standard orthography and phonetic conventions of ${targetLabel} (e.g. Kayce -> Kejsi, Washington -> Uashington).`
+      : '';
+    const base = (glossarySection ? `${glossarySection}\n\n` : '') + DEFAULT_TRANSLATION_PROMPT.replace('{target_language}', targetLabel) + properNounNote;
     return this.addBatchHeader(base, batchIndex, totalBatches);
   }
 
@@ -2248,6 +2260,9 @@ OUTPUT (EXACTLY ${expectedCount} entries as JSON array):`;
   createBatchPrompt(batchText, targetLanguage, customPrompt, expectedCount, context = null, batchIndex = 0, totalBatches = 1) {
     const targetLabel = normalizeTargetLanguageForPrompt(targetLanguage);
     const glossarySection = this.getGlossaryPromptContext();
+    const properNounRule = this.localizeProperNouns
+      ? `\n8. PROPER NOUNS & NAMES: Adapt, transliterate, and phonetically translate character names, proper nouns, and geographic places to match the standard orthography and phonetic conventions of ${targetLabel} (e.g. Kayce -> Kejsi, Washington -> Uashington).`
+      : '';
 
     let contextInstructions = '';
     if (context?.surroundingOriginal?.length > 0) {
@@ -2271,7 +2286,7 @@ CRITICAL RULES:
 4. Keep line breaks within each entry
 5. Maintain natural dialogue flow for ${targetLabel}
 6. Use appropriate colloquialisms for ${targetLabel}
-7. Preserve any existing formatting tags${context ? '\n8. Use the provided context to ensure consistency' : ''}
+7. Preserve any existing formatting tags${context ? '\n8. Use the provided context to ensure consistency' : ''}${properNounRule}
 ${glossarySection ? '\nFollow all media context, characters, and glossary rules strictly.' : ''}
 
 Do NOT add acknowledgements, explanations, notes, or commentary.

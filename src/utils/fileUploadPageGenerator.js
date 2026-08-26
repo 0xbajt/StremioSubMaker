@@ -93,7 +93,10 @@ function buildFileTranslationClientConfig(config) {
         fileTranslationEnabled: config?.fileTranslationEnabled !== false,
         singleBatchMode: config?.singleBatchMode === true,
         translationWorkflow: config?.advancedSettings?.translationWorkflow || 'xml',
-        enableBatchContext: config?.advancedSettings?.enableBatchContext === true
+        enableBatchContext: config?.advancedSettings?.enableBatchContext === true,
+        cleanSdhSubtitles: config?.cleanSdhSubtitles === true,
+        smartLineWrap: config?.smartLineWrap !== false,
+        localizeProperNouns: config?.localizeProperNouns === true
     };
 }
 
@@ -156,7 +159,10 @@ function generateFileTranslationPage(videoId, configStr, config, filename = '') 
     const translationWorkflowDefaults = {
         singleBatchMode: config?.singleBatchMode === true,
         translationWorkflow: config?.advancedSettings?.translationWorkflow || 'xml',
-        enableBatchContext: config?.advancedSettings?.enableBatchContext === true
+        enableBatchContext: config?.advancedSettings?.enableBatchContext === true,
+        cleanSdhSubtitles: config?.cleanSdhSubtitles === true,
+        smartLineWrap: config?.smartLineWrap !== false,
+        localizeProperNouns: config?.localizeProperNouns === true
     };
     const MAX_OUTPUT_TOKEN_LIMIT = 200000;
     const DEFAULT_MAX_OUTPUT_TOKENS = 65536;
@@ -243,6 +249,12 @@ function generateFileTranslationPage(videoId, configStr, config, filename = '') 
     const singleBatchHelper = t('fileUpload.options.singleBatch.helper', {}, 'Translate the whole subtitle in one go. Improves contextual coherence but can hit provider limits more easily.');
     const batchContextLabel = t('fileUpload.options.batchContext.label', {}, 'Enable Batch Context');
     const batchContextHelper = t('fileUpload.options.batchContext.helper', {}, 'Include surrounding context and previous translations when processing batches. Improves coherence but increases token usage.');
+    const cleanSdhLabel = t('fileUpload.options.cleanSdh.label', {}, 'Clean SDH & Hearing-Impaired Cues');
+    const cleanSdhHelper = t('fileUpload.options.cleanSdh.helper', {}, 'Strips sound effects ([music], (screams), ♪ notes), speaker tags (JOHN:), and normalizes all-caps shouting.');
+    const smartLineWrapLabel = t('fileUpload.options.smartLineWrap.label', {}, 'Smart Line-Wrapping & CPL Optimization');
+    const smartLineWrapHelper = t('fileUpload.options.smartLineWrap.helper', {}, 'Balances subtitle lines and enforces streaming standard (max 40 chars per line).');
+    const localizeProperNounsLabel = t('fileUpload.options.localizeProperNouns.label', {}, 'Localize Proper Nouns & Names');
+    const localizeProperNounsHelper = t('fileUpload.options.localizeProperNouns.helper', {}, 'Adapts character names and proper nouns into target language spelling (e.g. Kayce → Kejsi, Washington → Uashington).');
     const advancedSettingsTitle = t('fileUpload.advanced.title', {}, 'Advanced Settings');
     const advancedHighlightTitle = t('fileUpload.advanced.highlightTitle', {}, 'Fine-tune AI behavior for this translation only:');
     const advancedHighlightBody = t('fileUpload.advanced.highlightBody', {}, 'Override model and parameters.');
@@ -2244,6 +2256,36 @@ function generateFileTranslationPage(videoId, configStr, config, filename = '') 
                                     </div>
                                 </label>
                             </div>
+
+                            <div class="form-group">
+                                <label style="display: flex; align-items: flex-start; gap: 0.5rem; cursor: pointer;">
+                                    <input type="checkbox" id="cleanSdhSubtitles" style="margin-top: 0.3rem;">
+                                    <div>
+                                        ${escapeHtml(cleanSdhLabel)}
+                                        <span class="label-description">${escapeHtml(cleanSdhHelper)}</span>
+                                    </div>
+                                </label>
+                            </div>
+
+                            <div class="form-group">
+                                <label style="display: flex; align-items: flex-start; gap: 0.5rem; cursor: pointer;">
+                                    <input type="checkbox" id="smartLineWrap" style="margin-top: 0.3rem;">
+                                    <div>
+                                        ${escapeHtml(smartLineWrapLabel)}
+                                        <span class="label-description">${escapeHtml(smartLineWrapHelper)}</span>
+                                    </div>
+                                </label>
+                            </div>
+
+                            <div class="form-group">
+                                <label style="display: flex; align-items: flex-start; gap: 0.5rem; cursor: pointer;">
+                                    <input type="checkbox" id="localizeProperNouns" style="margin-top: 0.3rem;">
+                                    <div>
+                                        ${escapeHtml(localizeProperNounsLabel)}
+                                        <span class="label-description">${escapeHtml(localizeProperNounsHelper)}</span>
+                                    </div>
+                                </label>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -2671,6 +2713,9 @@ function generateFileTranslationPage(videoId, configStr, config, filename = '') 
         const workflowMode = document.getElementById('workflowMode');
         const singleBatchCheckbox = document.getElementById('singleBatchMode');
         const enableBatchContextCheckbox = document.getElementById('enableBatchContext');
+        const cleanSdhCheckbox = document.getElementById('cleanSdhSubtitles');
+        const smartLineWrapCheckbox = document.getElementById('smartLineWrap');
+        const localizeProperNounsCheckbox = document.getElementById('localizeProperNouns');
         const queuePanel = document.getElementById('queuePanel');
         const queueList = document.getElementById('queueList');
         const queueSummary = document.getElementById('queueSummary');
@@ -2698,9 +2743,15 @@ function generateFileTranslationPage(videoId, configStr, config, filename = '') 
         const defaultWorkflowValue = translationDefaults.translationWorkflow || 'xml';
         const defaultSingleBatchValue = translationDefaults.singleBatchMode === true;
         const defaultBatchContextValue = translationDefaults.enableBatchContext === true;
+        const defaultCleanSdhValue = translationDefaults.cleanSdhSubtitles === true;
+        const defaultSmartLineWrapValue = translationDefaults.smartLineWrap !== false;
+        const defaultLocalizeProperNounsValue = translationDefaults.localizeProperNouns === true;
         if (workflowMode) workflowMode.value = defaultWorkflowValue;
         if (singleBatchCheckbox) singleBatchCheckbox.checked = defaultSingleBatchValue;
         if (enableBatchContextCheckbox) enableBatchContextCheckbox.checked = defaultBatchContextValue;
+        if (cleanSdhCheckbox) cleanSdhCheckbox.checked = defaultCleanSdhValue;
+        if (smartLineWrapCheckbox) smartLineWrapCheckbox.checked = defaultSmartLineWrapValue;
+        if (localizeProperNounsCheckbox) localizeProperNounsCheckbox.checked = defaultLocalizeProperNounsValue;
 
         // Translation options elements
         const translationOptions = document.getElementById('translationOptions');
@@ -3730,6 +3781,9 @@ function generateFileTranslationPage(videoId, configStr, config, filename = '') 
             const workflowValue = workflowMode ? workflowMode.value : 'xml';
             const singleBatchValue = singleBatchCheckbox ? singleBatchCheckbox.checked : false;
             const batchContextValue = enableBatchContextCheckbox ? enableBatchContextCheckbox.checked : false;
+            const cleanSdhValue = cleanSdhCheckbox ? cleanSdhCheckbox.checked : false;
+            const smartLineWrapValue = smartLineWrapCheckbox ? smartLineWrapCheckbox.checked : true;
+            const localizeProperNounsValue = localizeProperNounsCheckbox ? localizeProperNounsCheckbox.checked : false;
 
             return {
                 providerKey,
@@ -3739,7 +3793,10 @@ function generateFileTranslationPage(videoId, configStr, config, filename = '') 
                 advancedOverrides,
                 translationWorkflow: workflowValue,
                 singleBatchMode: singleBatchValue,
-                enableBatchContext: batchContextValue
+                enableBatchContext: batchContextValue,
+                cleanSdhSubtitles: cleanSdhValue,
+                smartLineWrap: smartLineWrapValue,
+                localizeProperNouns: localizeProperNounsValue
             };
         }
 
@@ -3754,7 +3811,10 @@ function generateFileTranslationPage(videoId, configStr, config, filename = '') 
                 options: {
                     translationWorkflow: settings.translationWorkflow || 'xml',
                     singleBatchMode: settings.singleBatchMode === true,
-                    enableBatchContext: settings.enableBatchContext === true
+                    enableBatchContext: settings.enableBatchContext === true,
+                    cleanSdhSubtitles: settings.cleanSdhSubtitles === true,
+                    smartLineWrap: settings.smartLineWrap !== false,
+                    localizeProperNouns: settings.localizeProperNouns === true
                 }
             };
             if (settings.sourceLanguage) {

@@ -4341,44 +4341,45 @@ async function handleTranslation(sourceFileId, targetLanguage, config, options =
       return '';
     };
 
+    const metaKey = `${config.__configHash || config.userHash || 'default'}:${sourceFileId}`;
+    const cachedMeta = translationSourceMeta.get(metaKey) || {};
+    const latestStream = (() => {
+      try {
+        return config?.__configHash ? streamActivity.getLatestStreamActivity(config.__configHash) : null;
+      } catch (_) {
+        return null;
+      }
+    })();
+    const fallbackFilename = pickBest(
+      historySeed?.filename,
+      historySeed?.title,
+      options.filename,
+      cachedMeta.filename,
+      cachedMeta.title,
+      latestStream?.filename,
+      config?.lastStream?.filename,
+      config?.streamFilename,
+      options.sourceFileId,
+      sourceFileId
+    ) || 'unknown';
+    const fallbackVideoId = pickBest(
+      historySeed?.videoId,
+      options.videoId,
+      cachedMeta.videoId,
+      latestStream?.videoId,
+      config?.lastStream?.videoId,
+      config?.videoId
+    ) || 'unknown';
+    const fallbackSourceLang =
+      historySeed?.sourceLanguage
+      || options.sourceLanguage
+      || (Array.isArray(config.sourceLanguages) && config.sourceLanguages[0])
+      || 'auto';
+    const videoHash = historySeed?.videoHash || deriveVideoHash(fallbackFilename, fallbackVideoId || sourceFileId || '');
+
     const ensureHistoryEntry = () => {
       if (!historyEnabled) return false;
       if (historyEntry) return true;
-      const metaKey = `${config.__configHash || config.userHash || 'default'}:${sourceFileId}`;
-      const cachedMeta = translationSourceMeta.get(metaKey) || {};
-      const latestStream = (() => {
-        try {
-          return config?.__configHash ? streamActivity.getLatestStreamActivity(config.__configHash) : null;
-        } catch (_) {
-          return null;
-        }
-      })();
-      const fallbackFilename = pickBest(
-        historySeed?.filename,
-        historySeed?.title,
-        options.filename,
-        cachedMeta.filename,
-        cachedMeta.title,
-        latestStream?.filename,
-        config?.lastStream?.filename,
-        config?.streamFilename,
-        options.sourceFileId,
-        sourceFileId
-      ) || 'unknown';
-      const fallbackVideoId = pickBest(
-        historySeed?.videoId,
-        options.videoId,
-        cachedMeta.videoId,
-        latestStream?.videoId,
-        config?.lastStream?.videoId,
-        config?.videoId
-      ) || 'unknown';
-      const fallbackSourceLang =
-        historySeed?.sourceLanguage
-        || options.sourceLanguage
-        || (Array.isArray(config.sourceLanguages) && config.sourceLanguages[0])
-        || 'auto';
-      const videoHash = historySeed?.videoHash || deriveVideoHash(fallbackFilename, fallbackVideoId || sourceFileId || '');
       historyEntry = {
         id: requestId,
         status: 'processing',
@@ -5121,7 +5122,8 @@ async function performTranslation(sourceFileId, targetLanguage, config, { cacheK
         customGlossary: config.customGlossary,
         cleanSdhSubtitles: config.cleanSdhSubtitles === true,
         smartLineWrap: config.smartLineWrap !== false,
-        maxCharactersPerLine: config.maxCharactersPerLine || 40
+        maxCharactersPerLine: config.maxCharactersPerLine || 40,
+        localizeProperNouns: config.localizeProperNouns === true
       }
     );
 

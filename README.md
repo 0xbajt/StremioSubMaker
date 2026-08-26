@@ -49,9 +49,11 @@ Configure, install, and start translating subtitles in Stremio or Nuvio!
 | **Languages** | 197 supported languages (433 for translation) |
 | **Subtitle Sources** | OpenSubtitles, SubDL, SubSource, Wyzie, Stremio Community, Subs.ro |
 | **AI Translation** | 10+ providers: Gemini, OpenAI, Claude, DeepL, DeepSeek, Grok, Mistral, OpenRouter, Cloudflare, Custom/Local |
+| **Translation Intelligence** | Smart Media Lore Glossary, Custom Terms Lock, Clean SDH/HI audio cues, CPL line balancing, Proper Nouns localization |
 | **Smart Caching** | Shared translation database — translate once, benefit everyone |
 | **Timestamp Workflows** | XML Tags, JSON, Numbered Timestamps, Send Timestamps to AI |
 | **No-Translation Mode** | Just fetch subtitles without translation |
+| **Sub Toolbox** | Standalone subtitle file translation & auto-sync web portal |
 
 ---
 

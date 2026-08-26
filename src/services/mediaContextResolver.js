@@ -137,9 +137,10 @@ async function resolveMediaContext(videoInput, options = {}) {
  * Format media context and custom glossary into prompt-ready instructions.
  * @param {Object|null} mediaContext - Resolved media context
  * @param {Array|Object|null} customGlossary - User-defined glossary/locked terms
+ * @param {Object} [options={}] - Additional glossary options (e.g. localizeProperNouns)
  * @returns {string} - Formatted prompt string or empty string
  */
-function buildGlossaryPromptContext(mediaContext, customGlossary) {
+function buildGlossaryPromptContext(mediaContext, customGlossary, options = {}) {
   const parts = [];
 
   if (mediaContext && mediaContext.title) {
@@ -162,6 +163,10 @@ function buildGlossaryPromptContext(mediaContext, customGlossary) {
 
     if (mediaContext.overview) {
       metaLines.push(`- Story Synopsis: ${mediaContext.overview}`);
+    }
+
+    if (options.localizeProperNouns === true) {
+      metaLines.push(`- Proper Noun Localization: Character names, places, and terms should be phonetically transliterated or translated into standard target language spelling (e.g. Kayce -> Kejsi, Washington -> Uashington).`);
     }
 
     parts.push(`MEDIA CONTEXT (Use for accurate naming, pronouns, and lore tone):\n${metaLines.join('\n')}`);

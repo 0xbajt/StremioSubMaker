@@ -4385,13 +4385,46 @@ app.post('/api/translate-file', fileTranslationLimiter, validateRequest(fileTran
                 } catch (_) { /* response already closed */ }
             }, KEEPALIVE_INTERVAL_MS);
 
+            // Resolve media context if videoId is available
+            let mediaContext = null;
+            if (config.smartGlossaryEnabled !== false) {
+                try {
+                    const { resolveMediaContext } = require('./src/services/mediaContextResolver');
+                    const candidateVideoId = req.body.videoId || options.videoId || config.videoId || config.lastStream?.videoId;
+                    if (candidateVideoId) {
+                        mediaContext = await resolveMediaContext(candidateVideoId);
+                    }
+                } catch (err) {
+                    log.debug(() => `[File Translation API] Media context resolution failed: ${err.message}`);
+                }
+            }
+
+            const cleanSdhSubtitles = (typeof options.cleanSdhSubtitles === 'boolean')
+                ? options.cleanSdhSubtitles
+                : (config.cleanSdhSubtitles === true);
+            const smartLineWrap = (typeof options.smartLineWrap === 'boolean')
+                ? options.smartLineWrap
+                : (config.smartLineWrap !== false);
+            const maxCharactersPerLine = Number(options.maxCharactersPerLine || config.maxCharactersPerLine) || 40;
+
             // Always use TranslationEngine — it handles batching, parallel translation,
             // and all workflows (xml/json/original/ai) internally.
             const engine = new TranslationEngine(
                 translationProvider,
                 effectiveModel,
                 config.advancedSettings || {},
-                { singleBatchMode, providerName, fallbackProviderName, enableStreaming: false }
+                {
+                    singleBatchMode,
+                    providerName,
+                    fallbackProviderName,
+                    enableStreaming: false,
+                    mediaContext,
+                    customGlossary: options.customGlossary || config.customGlossary,
+                    cleanSdhSubtitles,
+                    smartLineWrap,
+                    maxCharactersPerLine,
+                    localizeProperNouns: (typeof options.localizeProperNouns === 'boolean') ? options.localizeProperNouns : (config.localizeProperNouns === true)
+                }
             );
             log.debug(() => `[File Translation API] Using TranslationEngine (workflow=${effectiveWorkflow}, singleBatch=${singleBatchMode}, batchContext=${!!config.advancedSettings?.enableBatchContext})`);
             translatedContent = await engine.translateSubtitle(
@@ -5937,6 +5970,16 @@ app.post('/api/smdb/translate', userDataWriteLimiter, async (req, res) => {
             advancedSettings: resolvedConfig.advancedSettings || {}
         } : null;
 
+        let mediaContext = null;
+        if (resolvedConfig.smartGlossaryEnabled !== false && videoId) {
+            try {
+                const { resolveMediaContext } = require('./src/services/mediaContextResolver');
+                mediaContext = await resolveMediaContext(videoId);
+            } catch (err) {
+                log.debug(() => `[SMDB Translate] Media context resolution failed: ${err.message}`);
+            }
+        }
+
         const translationEngine = new TranslationEngine(
             provider,
             effectiveModel,
@@ -5945,7 +5988,13 @@ app.post('/api/smdb/translate', userDataWriteLimiter, async (req, res) => {
                 singleBatchMode: resolvedConfig.singleBatchMode === true,
                 providerName,
                 fallbackProviderName,
-                keyRotationConfig
+                keyRotationConfig,
+                mediaContext,
+                customGlossary: resolvedConfig.customGlossary,
+                cleanSdhSubtitles: resolvedConfig.cleanSdhSubtitles === true,
+                smartLineWrap: resolvedConfig.smartLineWrap !== false,
+                maxCharactersPerLine: resolvedConfig.maxCharactersPerLine || 40,
+                localizeProperNouns: resolvedConfig.localizeProperNouns === true
             }
         );
 
@@ -6684,6 +6733,16 @@ app.post('/api/auto-subtitles/run', autoSubLimiter, async (req, res) => {
                     : providerBundle.providerName;
                 logStep(`Using translation provider ${providerLabelFull} (${providerBundle.providerModel || 'default model'})`, 'info');
                 logStep(`Translation workflow=${translationWorkflow}, singleBatch=${singleBatchMode === true}, batchContext=${enableBatchContext === true}`, 'info');
+                let mediaContext = null;
+                if (config.smartGlossaryEnabled !== false && videoId) {
+                    try {
+                        const { resolveMediaContext } = require('./src/services/mediaContextResolver');
+                        mediaContext = await resolveMediaContext(videoId);
+                    } catch (err) {
+                        log.debug(() => `[Auto Subs API] Media context resolution failed: ${err.message}`);
+                    }
+                }
+
                 const translationEngine = new TranslationEngine(
                     providerBundle.provider,
                     providerBundle.providerModel,
@@ -6692,7 +6751,13 @@ app.post('/api/auto-subtitles/run', autoSubLimiter, async (req, res) => {
                         singleBatchMode: singleBatchMode === true,
                         providerName: providerBundle.providerName,
                         fallbackProviderName: providerBundle.fallbackProviderName,
-                        enableStreaming: false
+                        enableStreaming: false,
+                        mediaContext,
+                        customGlossary: config.customGlossary,
+                        cleanSdhSubtitles: config.cleanSdhSubtitles === true,
+                        smartLineWrap: config.smartLineWrap !== false,
+                        maxCharactersPerLine: config.maxCharactersPerLine || 40,
+                        localizeProperNouns: config.localizeProperNouns === true
                     }
                 );
 
@@ -7787,11 +7852,32 @@ app.post('/api/translate-embedded', embeddedTranslationLimiter, async (req, res)
             historyEntry.model = model || requestedModel || historyEntry.model || getEffectiveGeminiModel(workingConfig) || 'default';
             persistHistory('processing');
         }
+        let mediaContext = null;
+        if (workingConfig.smartGlossaryEnabled !== false && (req.params.videoId || safeVideoId)) {
+            try {
+                const { resolveMediaContext } = require('./src/services/mediaContextResolver');
+                mediaContext = await resolveMediaContext(req.params.videoId || safeVideoId);
+            } catch (err) {
+                log.debug(() => `[Embedded Translate] Media context resolution failed: ${err.message}`);
+            }
+        }
+
         const engine = new TranslationEngine(
             provider,
             model || getEffectiveGeminiModel(workingConfig),
             workingConfig.advancedSettings || {},
-            { singleBatchMode, providerName, fallbackProviderName, enableStreaming: false }
+            {
+                singleBatchMode,
+                providerName,
+                fallbackProviderName,
+                enableStreaming: false,
+                mediaContext,
+                customGlossary: workingConfig.customGlossary,
+                cleanSdhSubtitles: workingConfig.cleanSdhSubtitles === true,
+                smartLineWrap: workingConfig.smartLineWrap !== false,
+                maxCharactersPerLine: workingConfig.maxCharactersPerLine || 40,
+                localizeProperNouns: workingConfig.localizeProperNouns === true
+            }
         );
 
         log.debug(() => `[Embedded Translate] Translating track ${safeTrackId} to ${targetLangName} (workflow=${translationWorkflow}, singleBatch=${singleBatchMode}, batchContext=${enableBatchContext}, timestamps=${sendTimestampsToAI})`);

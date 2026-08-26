@@ -616,6 +616,7 @@ function normalizeConfig(config) {
     : (typeof config.customGlossary === 'object' && config.customGlossary ? config.customGlossary : []);
   mergedConfig.cleanSdhSubtitles = mergedConfig.cleanSdhSubtitles === true;
   mergedConfig.smartLineWrap = mergedConfig.smartLineWrap !== false;
+  mergedConfig.localizeProperNouns = mergedConfig.localizeProperNouns === true;
   const rawCpl = parseInt(mergedConfig.maxCharactersPerLine, 10);
   mergedConfig.maxCharactersPerLine = Number.isFinite(rawCpl)
     ? Math.max(25, Math.min(70, rawCpl))
@@ -1351,6 +1352,7 @@ function getDefaultConfig(modelName = null) {
     cleanSdhSubtitles: false, // Clean non-speech SDH audio cues and normalize shouting
     smartLineWrap: true, // Optimize line breaks and enforce Characters Per Line (CPL) limits
     maxCharactersPerLine: 40, // Target max characters per line for subtitle cues
+    localizeProperNouns: false, // If true, phonetically transliterate/translate character names and proper nouns into target language spelling
     // If true, filter out SDH/HI (hearing impaired) subtitles from provider results
     excludeHearingImpairedSubtitles: false,
     // If true, include season pack subtitles in results (default: enabled for backwards compatibility)

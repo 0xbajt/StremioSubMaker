@@ -57,15 +57,14 @@
         <svg class="token-vault-launcher-icon" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
             <defs>
                 <linearGradient id="tvShield" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" stop-color="rgba(255,255,255,0.95)"/>
-                    <stop offset="100%" stop-color="rgba(255,255,255,0.55)"/>
+                    <stop offset="0%" stop-color="rgba(255,255,255,0.95)" />
+                    <stop offset="100%" stop-color="rgba(255,255,255,0.55)" />
                 </linearGradient>
             </defs>
-            <path d="M16 3L5 8v7c0 7.73 4.66 14.28 11 16 6.34-1.72 11-8.27 11-16V8L16 3z"
-                  fill="url(#tvShield)" stroke="rgba(255,255,255,0.4)" stroke-width="1.2"
-                  stroke-linejoin="round"/>
-            <circle cx="16" cy="14" r="3" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="1.8"/>
-            <path d="M16 17v4" stroke="rgba(255,255,255,0.9)" stroke-width="1.8" stroke-linecap="round"/>
+            <path d="M16 3L5 8v7c0 7.73 4.66 14.28 11 16 6.34-1.72 11-8.27 11-16V8L16 3z" fill="url(#tvShield)"
+                stroke="rgba(255,255,255,0.4)" stroke-width="1.2" stroke-linejoin="round" />
+            <circle cx="16" cy="14" r="3" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="1.8" />
+            <path d="M16 17v4" stroke="rgba(255,255,255,0.9)" stroke-width="1.8" stroke-linecap="round" />
         </svg>
         <span class="token-vault-launcher-ribbon">
             <span class="token-vault-launcher-label">VAULT</span>
@@ -513,8 +512,10 @@
                                             <div>
                                                 <strong id="wyzieTitle" data-i18n="config.providers.wyzie.title"
                                                     style="display: block;">Wyzie Subs</strong>
-                                                <span class="label-description" id="wyzieDescription" style="margin: 0;">
-                                                    <span data-i18n="config.providers.wyzie.description">Get your free API key
+                                                <span class="label-description" id="wyzieDescription"
+                                                    style="margin: 0;">
+                                                    <span data-i18n="config.providers.wyzie.description">Get your free
+                                                        API key
                                                         from</span>
                                                     <a id="wyzieLink" data-i18n="config.providers.wyzie.linkLabel"
                                                         href="https://sub.wyzie.io/redeem" target="_blank"
@@ -537,8 +538,8 @@
                                                 data-i18n-attr="placeholder" placeholder="Enter Wyzie API key"
                                                 style="flex: 1;">
                                             <button type="button" class="validate-api-btn" id="validateWyzie"
-                                                data-i18n="config.providers.wyzie.validateTitle"
-                                                data-i18n-attr="title" title="Validate API key">
+                                                data-i18n="config.providers.wyzie.validateTitle" data-i18n-attr="title"
+                                                title="Validate API key">
                                                 <span class="validate-icon">✓</span>
                                                 <span class="validate-text"
                                                     data-i18n="config.providers.wyzie.validateCta">Test</span>
@@ -611,7 +612,8 @@
                                         </div>
                                         <div id="wyzieNote"
                                             style="font-size: 0.75rem; color: var(--text-secondary); padding: 0.4rem; background: var(--surface-light); border-radius: 6px; margin-top: 0.5rem;">
-                                            <span data-i18n="config.providers.wyzie.note">More sources = more subtitles but
+                                            <span data-i18n="config.providers.wyzie.note">More sources = more subtitles
+                                                but
                                                 slower. Uncheck sources you don't need.</span>
                                         </div>
                                     </div>
@@ -1715,23 +1717,31 @@
                             <label>
                                 <input type="checkbox" id="smartGlossaryEnabled" checked>
                                 <span>Smart Media Lore & Context Glossary</span>
-                                <span class="label-description">Automatically fetches movie/series title, character names, cast, and synopsis to inject into the AI prompt so proper nouns and lore are translated accurately.</span>
+                                <span class="label-description">Automatically fetches movie/series title, character
+                                    names, cast, and synopsis to inject into the AI prompt so proper nouns and lore are
+                                    translated accurately.</span>
                             </label>
                         </div>
 
                         <div class="form-group" id="customGlossaryGroup">
                             <label for="customGlossaryInput">
                                 <span>Custom Glossary & Locked Terms (Optional)</span>
-                                <span class="label-description">One rule per line. Enter terms to lock (e.g. <code>Kwisatz Haderach</code>) or mappings (e.g. <code>Spice -> Especia</code>).</span>
+                                <span class="label-description">One rule per line. Enter terms to lock (e.g.
+                                    <code>Kwisatz Haderach</code>) or mappings (e.g.
+                                    <code>Spice -> Especia</code>).</span>
                             </label>
-                            <textarea id="customGlossaryInput" class="styled-textarea" rows="2" placeholder="Kwisatz Haderach&#10;Spice -> Especia" style="width: 100%; border-radius: 8px; padding: 0.5rem; font-family: monospace; font-size: 0.85rem;"></textarea>
+                            <textarea id="customGlossaryInput" class="styled-textarea" rows="2"
+                                placeholder="Kwisatz Haderach&#10;Spice -> Especia"
+                                style="width: 100%; border-radius: 8px; padding: 0.5rem; font-family: monospace; font-size: 0.85rem;"></textarea>
                         </div>
 
                         <div class="form-group">
                             <label>
                                 <input type="checkbox" id="cleanSdhSubtitles">
                                 <span>Clean SDH & Hearing-Impaired Cues</span>
-                                <span class="label-description">Strips sound effects ([dramatic music], (screams), ♪ notes), speaker tags (JOHN:), and normalizes all-caps shouting before translation.</span>
+                                <span class="label-description">Strips sound effects ([dramatic music], (screams), ♪
+                                    notes), speaker tags (JOHN:), and normalizes all-caps shouting before
+                                    translation.</span>
                             </label>
                         </div>
 
@@ -1739,7 +1749,17 @@
                             <label>
                                 <input type="checkbox" id="smartLineWrap" checked>
                                 <span>Smart Line-Wrapping & CPL Optimization</span>
-                                <span class="label-description">Enforces streaming readability standards (max 40 chars per line, max 2 lines per cue) and balances multi-line subtitle breaks.</span>
+                                <span class="label-description">Enforces streaming readability standards (max 40 chars
+                                    per line, max 2 lines per cue) and balances multi-line subtitle breaks.</span>
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="localizeProperNouns">
+                                <span>Localize Proper Nouns & Names</span>
+                                <span class="label-description">Adapts character names, places, and proper nouns into
+                                    the target language's phonetic or standard local spelling.</span>
                             </label>
                         </div>
 
@@ -2325,8 +2345,8 @@
                                         data-i18n="config.providerAdvanced.reasoningDefaults.minimal">Minimal</option>
                                     <option value="low" data-i18n="config.providerAdvanced.reasoningDefaults.low">Low
                                         (faster)</option>
-                                    <option value="medium"
-                                        data-i18n="config.providerAdvanced.reasoningDefaults.medium">Medium (balanced)
+                                    <option value="medium" data-i18n="config.providerAdvanced.reasoningDefaults.medium">
+                                        Medium (balanced)
                                     </option>
                                     <option value="high" data-i18n="config.providerAdvanced.reasoningDefaults.high">High
                                         (deeper reasoning)</option>

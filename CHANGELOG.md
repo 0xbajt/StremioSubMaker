@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## SubMaker v1.4.90
+
+**New Features & Improvements:**
+
+- **Subtitle & Translation Intelligence Suite:** Added an integrated suite of subtitle optimization and context features across both the Stremio add-on and Sub Toolbox:
+  - **Smart Media Lore & Context Glossary:** Automatically fetches movie/series metadata (title, year, season, episode, cast, and story synopsis) from Cinemeta & metadata catalogs and injects it into translation prompts, ensuring character names, lore terms, and pronouns are translated accurately and consistently.
+  - **Custom Glossary & Locked Terms:** Allows users to define custom translation mappings (e.g. `Spice -> Especia`) or locked terms (e.g. `Kwisatz Haderach`) in configuration and Sub Toolbox to enforce consistent domain terminology.
+  - **Clean SDH & Hearing-Impaired Cues:** Automatically strips non-speech audio cues (`[music]`, `(screams)`, `♪ notes`), speaker labels (`JOHN:`), and normalizes all-caps shouting before translation, producing clean, distraction-free dialogue.
+  - **Smart Line-Wrapping & CPL Optimization:** Enforces professional streaming readability standards (max 40 characters per line, max 2 lines per cue) and balances multi-line subtitle breaks at natural grammatical boundaries and punctuation.
+  - **Localize Proper Nouns & Names:** Added a toggle to phonetically transliterate and adapt proper nouns, character names, and geographic locations to target language orthographic conventions (e.g. *Kayce* ➔ *Kejsi*, *Washington* ➔ *Uashington*).
+
+- **Sub Toolbox & File Translation Intelligence:** Full integration of SDH cleaning, smart line wrapping, custom glossaries, and proper noun localization across `/file-upload`, `/subtitle-sync`, `/api/translate-file`, SMDB translate, AutoSub API, and embedded subtitle translation routes.
+
+**Bug Fixes:**
+
+- **Fixed Scope Issue for Subtitle History Tracking:** Fixed a `ReferenceError: fallbackVideoId is not defined` bug during subtitle translation initialization.
+
 ## SubMaker v1.4.89
 
 **New Features & Improvements:**
