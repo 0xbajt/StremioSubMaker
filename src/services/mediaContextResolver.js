@@ -133,11 +133,46 @@ async function resolveMediaContext(videoInput, options = {}) {
   }
 }
 
+// Cross-episode glossary cache for TV series (seriesId:targetLang -> Map/Array of terms)
+const seriesGlossaryCache = new LRUCache({
+  max: 500,
+  ttl: 24 * 60 * 60 * 1000 // 24 hours
+});
+
+/**
+ * Record a localized proper noun or character term learned during an episode translation for a series.
+ */
+function recordSeriesGlossaryTerms(seriesId, targetLang, terms = []) {
+  if (!seriesId || !targetLang || !Array.isArray(terms) || terms.length === 0) return;
+  const key = `${seriesId}:${targetLang.toLowerCase()}`;
+  const existing = seriesGlossaryCache.get(key) || [];
+  const map = new Map();
+  for (const item of existing) {
+    if (item.from) map.set(item.from, item.to);
+  }
+  for (const item of terms) {
+    if (item && item.from && item.to) {
+      map.set(item.from, item.to);
+    }
+  }
+  const merged = Array.from(map.entries()).map(([from, to]) => ({ from, to }));
+  seriesGlossaryCache.set(key, merged);
+}
+
+/**
+ * Get established cross-episode glossary terms for a series and target language.
+ */
+function getSeriesGlossary(seriesId, targetLang) {
+  if (!seriesId || !targetLang) return [];
+  const key = `${seriesId}:${targetLang.toLowerCase()}`;
+  return seriesGlossaryCache.get(key) || [];
+}
+
 /**
  * Format media context and custom glossary into prompt-ready instructions.
  * @param {Object|null} mediaContext - Resolved media context
  * @param {Array|Object|null} customGlossary - User-defined glossary/locked terms
- * @param {Object} [options={}] - Additional glossary options (e.g. localizeProperNouns)
+ * @param {Object} [options={}] - Additional glossary options (e.g. localizeProperNouns, seriesId, targetLanguage)
  * @returns {string} - Formatted prompt string or empty string
  */
 function buildGlossaryPromptContext(mediaContext, customGlossary, options = {}) {
@@ -172,25 +207,39 @@ function buildGlossaryPromptContext(mediaContext, customGlossary, options = {}) 
     parts.push(`MEDIA CONTEXT (Use for accurate naming, pronouns, and lore tone):\n${metaLines.join('\n')}`);
   }
 
-  // Handle custom glossary rules
+  // Combine custom glossary rules with cross-episode series glossary
   const glossaryRules = [];
+  const combinedGlossary = [];
+
   if (Array.isArray(customGlossary)) {
-    for (const item of customGlossary) {
-      if (!item) continue;
-      if (typeof item === 'string' && item.trim()) {
-        glossaryRules.push(`- ${item.trim()}`);
-      } else if (typeof item === 'object') {
-        if (item.from && item.to) {
-          glossaryRules.push(`- "${item.from}" -> "${item.to}"`);
-        } else if (item.term || item.locked) {
-          glossaryRules.push(`- "${item.term || item.locked}" (PRESERVE - DO NOT TRANSLATE)`);
-        }
-      }
-    }
+    combinedGlossary.push(...customGlossary);
   } else if (customGlossary && typeof customGlossary === 'object') {
     for (const [from, to] of Object.entries(customGlossary)) {
-      if (from && to) {
-        glossaryRules.push(`- "${from}" -> "${to}"`);
+      if (from && to) combinedGlossary.push({ from, to });
+    }
+  }
+
+  // Inject learned series continuity glossary if available
+  const seriesId = options.seriesId || mediaContext?.seriesId;
+  const targetLanguage = options.targetLanguage;
+  if (seriesId && targetLanguage) {
+    const seriesTerms = getSeriesGlossary(seriesId, targetLanguage);
+    for (const st of seriesTerms) {
+      if (!combinedGlossary.some(cg => cg && cg.from === st.from)) {
+        combinedGlossary.push(st);
+      }
+    }
+  }
+
+  for (const item of combinedGlossary) {
+    if (!item) continue;
+    if (typeof item === 'string' && item.trim()) {
+      glossaryRules.push(`- ${item.trim()}`);
+    } else if (typeof item === 'object') {
+      if (item.from && item.to) {
+        glossaryRules.push(`- "${item.from}" -> "${item.to}"`);
+      } else if (item.term || item.locked) {
+        glossaryRules.push(`- "${item.term || item.locked}" (PRESERVE - DO NOT TRANSLATE)`);
       }
     }
   }
@@ -206,5 +255,8 @@ function buildGlossaryPromptContext(mediaContext, customGlossary, options = {}) 
 module.exports = {
   resolveMediaContext,
   buildGlossaryPromptContext,
-  mediaContextCache
+  mediaContextCache,
+  recordSeriesGlossaryTerms,
+  getSeriesGlossary,
+  seriesGlossaryCache
 };

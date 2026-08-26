@@ -617,6 +617,7 @@ function normalizeConfig(config) {
   mergedConfig.cleanSdhSubtitles = mergedConfig.cleanSdhSubtitles === true;
   mergedConfig.smartLineWrap = mergedConfig.smartLineWrap !== false;
   mergedConfig.localizeProperNouns = mergedConfig.localizeProperNouns === true;
+  mergedConfig.bingeModeEnabled = mergedConfig.bingeModeEnabled === true;
   const rawCpl = parseInt(mergedConfig.maxCharactersPerLine, 10);
   mergedConfig.maxCharactersPerLine = Number.isFinite(rawCpl)
     ? Math.max(25, Math.min(70, rawCpl))
@@ -1353,6 +1354,7 @@ function getDefaultConfig(modelName = null) {
     smartLineWrap: true, // Optimize line breaks and enforce Characters Per Line (CPL) limits
     maxCharactersPerLine: 40, // Target max characters per line for subtitle cues
     localizeProperNouns: false, // If true, phonetically transliterate/translate character names and proper nouns into target language spelling
+    bingeModeEnabled: false, // If true, predictively pre-translates the next series episode in background for instant playback
     // If true, filter out SDH/HI (hearing impaired) subtitles from provider results
     excludeHearingImpairedSubtitles: false,
     // If true, include season pack subtitles in results (default: enabled for backwards compatibility)

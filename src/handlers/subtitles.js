@@ -5091,12 +5091,13 @@ async function performTranslation(sourceFileId, targetLanguage, config, { cacheK
       advancedSettings: config.advancedSettings || {}
     } : null;
 
+    const candidateVideoId = videoId || config.videoId || config.lastStream?.videoId;
+
     // Subtitle & Translation Intelligence: Resolve media context (characters, synopsis, lore)
     let mediaContext = null;
     if (config.smartGlossaryEnabled !== false) {
       try {
         const { resolveMediaContext } = require('../services/mediaContextResolver');
-        const candidateVideoId = videoId || config.videoId || config.lastStream?.videoId;
         if (candidateVideoId) {
           mediaContext = await resolveMediaContext(candidateVideoId);
         }
@@ -5476,6 +5477,20 @@ async function performTranslation(sourceFileId, targetLanguage, config, { cacheK
     }
 
     log.debug(() => '[Translation] Translation cached and ready to serve');
+
+    // Binge-Watching Mode: predictively pre-translate next episode in background
+    if (config.bingeModeEnabled === true && candidateVideoId && !options.isBingePrefetch) {
+      try {
+        const { scheduleNextEpisodePreTranslation } = require('../services/bingePredictiveWorker');
+        scheduleNextEpisodePreTranslation({
+          currentVideoId: candidateVideoId,
+          targetLanguage: targetLanguage,
+          config: config
+        });
+      } catch (bingeErr) {
+        log.debug(() => `[Translation] BingeMode prefetch trigger error: ${bingeErr.message}`);
+      }
+    }
 
     // Return translation diagnostics so the .then() handler can pass them to updateHistory
     // Include actual provider and model so updateHistory corrects the initial placeholder values

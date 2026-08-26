@@ -10609,6 +10609,8 @@ Translate to {target_language}.`;
         if (smartLineWrapEl) smartLineWrapEl.checked = currentConfig.smartLineWrap !== false;
         const localizeProperNounsEl = document.getElementById('localizeProperNouns');
         if (localizeProperNounsEl) localizeProperNounsEl.checked = currentConfig.localizeProperNouns === true;
+        const bingeModeEl = document.getElementById('bingeModeEnabled');
+        if (bingeModeEl) bingeModeEl.checked = currentConfig.bingeModeEnabled === true;
 
         const forceSRTEl = document.getElementById('forceSRTOutput');
         const forceSRTElNoTranslation = document.getElementById('forceSRTOutputNoTranslation');
@@ -11090,6 +11092,10 @@ Translate to {target_language}.`;
             localizeProperNouns: (function () {
                 const el = document.getElementById('localizeProperNouns');
                 return el ? el.checked === true : (currentConfig?.localizeProperNouns === true);
+            })(),
+            bingeModeEnabled: (function () {
+                const el = document.getElementById('bingeModeEnabled');
+                return el ? el.checked === true : (currentConfig?.bingeModeEnabled === true);
             })(),
             maxCharactersPerLine: (function () {
                 return currentConfig?.maxCharactersPerLine || 40;
