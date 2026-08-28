@@ -48,7 +48,7 @@ Configure, install, and start translating subtitles in Stremio or Nuvio!
 |----------|------------|
 | **Languages** | 197 supported languages (433 for translation) |
 | **Subtitle Sources** | OpenSubtitles, SubDL, SubSource, Wyzie, Stremio Community, Subs.ro |
-| **AI Translation** | 10+ providers: Gemini, OpenAI, Claude, DeepL, DeepSeek, Grok, Mistral, OpenRouter, Cloudflare, Custom/Local |
+| **AI Translation** | 10+ providers: Gemini 3.x, OpenAI, Claude, DeepL, DeepSeek, Grok, Mistral, OpenRouter, Cloudflare, Custom/Local |
 | **Translation Intelligence** | Smart Media Lore Glossary, Custom Terms Lock, Clean SDH/HI audio cues, CPL line balancing, Proper Nouns localization |
 | **Binge-Watching Mode** | Predictive background pre-translation of next episodes (0s wait time) with cross-episode season lore continuity |
 | **Smart Caching** | Shared translation database — translate once, benefit everyone |
@@ -57,6 +57,22 @@ Configure, install, and start translating subtitles in Stremio or Nuvio!
 | **Sub Toolbox** | Standalone subtitle file translation & auto-sync web portal |
 
 ---
+
+### 🧠 Subtitle & Translation Intelligence
+
+SubMaker features built-in subtitle optimization and context awareness:
+
+- **🎬 Smart Media Lore & Context Glossary**: Automatically queries metadata catalogs (Cinemeta, IMDb, Kitsu) for movie/series synopsis, character names, and relationships, injecting context into AI prompts for lore-accurate translations.
+- **🔒 Custom Glossary & Locked Terms**: Define custom term mappings (e.g. `Spice -> Especia`) or protect specific fictional names from translation.
+- **🔇 Clean SDH & Hearing-Impaired Cues**: Strips non-dialogue audio descriptions (`[music playing]`, `(screaming)`, `♪ notes`), speaker labels (`JOHN:`), and normalizes shouting ALL-CAPS into natural sentence case.
+- **📏 Smart Line-Wrapping (40 CPL)**: Rebalances cues to adhere to streaming readability standards (maximum 40 characters per line, max 2 lines per subtitle) at natural punctuation boundaries.
+- **🌐 Localize Proper Nouns**: Optional phonetic adaptation of names and locations to target language orthography (e.g. *Kayce* ➔ *Kejsi*).
+
+### 🍿 Predictive Binge-Watching Mode
+
+- **⚡ Zero-Second Wait Time**: When translating a TV show or anime episode (e.g. `S01E03`), SubMaker automatically schedules a background job to fetch, translate, and cache the next episode (`S01E04`). When you click "Next Episode", the subtitles are instantly ready in cache.
+- **📖 Cross-Episode Lore Memory**: Stores established character names, nicknames, and localized terms across episodes in a season to guarantee translation consistency.
+- **🛡️ Token Protection**: Strict single-episode lookahead guard ensures no runaway API token usage.
 
 ### 🌍 Subtitle Sources
 
@@ -99,7 +115,7 @@ Configure, install, and start translating subtitles in Stremio or Nuvio!
 
 ```bash
 # Clone and install
-git clone https://github.com/xtremexq/StremioSubMaker.git
+git clone https://github.com/0xbajt/StremioSubMaker.git
 cd StremioSubMaker
 npm install
 
@@ -144,6 +160,8 @@ Visit: **http://localhost:7001**
 
 | Tip | Description |
 |-----|-------------|
+| **Enable Binge Mode** | Pre-translates next episode in background for instant playback |
+| **Clean SDH Cues** | Removes `[laughter]` and sound effects for clean dialogue |
 | **Single source language** | Keeps subtitle order consistent |
 | **Test sync first** | Try original subtitle before translating |
 | **Triple-click** | Forces re-translation if result looks wrong |
@@ -167,6 +185,9 @@ Visit: **http://localhost:7001**
 |---------|----------------|
 | Translation Workflow | "XML Tags" for best sync |
 | Database Mode | "Use SubMaker Database" for shared caching |
+| Binge-Watching Mode | Enable to auto pre-translate next episode ($N+1$) in background |
+| Clean SDH Cues | Enable to remove non-speech audio cues (`[music]`, `(cheering)`) |
+| Smart Line Wrapping | Enable to optimize readability (max 40 chars/line) |
 | Provider Timeout | 12s default, increase to 30s for SCS/Wyzie |
 | Mobile Mode | Enable for Android/iOS |
 
