@@ -10,10 +10,24 @@ All notable changes to this project will be documented in this file.
   - Added background predictive pre-translation for TV shows and anime. When translating an episode (e.g. `S01E03`), SubMaker automatically schedules a background job to fetch, translate, and cache the next episode (`S01E04`) in your target language.
   - When you hit "Next Episode" in Stremio, the translated subtitles are already 100% ready in cache for instant playback with 0-second wait time.
   - Includes a single-episode lookahead guard (`!isBingePrefetch`) to protect API token quotas by only translating one episode ahead.
+  - Added **"🍿 Binge-Watching Mode (Auto Pre-Translate Next Episode)"** toggle in Dashboard Translation Settings.
 
 - **Cross-Episode Series Lore & Glossary Memory:**
   - Added dynamic cross-episode memory in `mediaContextResolver` that caches established character names, nicknames, and proper noun choices across episodes in a series (`seriesGlossaryCache`).
   - Next episodes automatically inherit terminology established in prior episodes, ensuring spelling and naming consistency across the entire season.
+
+- **Multi-Platform Series & Anime ID Compatibility:**
+  - Full support for incrementing episode IDs across standard IMDb series (`tt1234567:1:3`), Anime catalogs (Kitsu `kitsu:1234:5` / AniDB), TMDB series (`tmdb:12345:2:8`), and custom Stremio provider schemes.
+
+- **Node.js & Dependency Upgrades:**
+  - Updated Node engine requirement in `package.json` to `node >= 20.0.0` (fully compatible with Node 20 LTS, Node 22 LTS, and Node 24).
+  - Updated Docker base image to `node:22-alpine` (Active LTS).
+  - Updated dependencies (`axios@1.20.0`, `ioredis@5.11.1`, `@sentry/node@10.71.0`, `helmet@8.3.0`, `joi@18.2.5`, `express-rate-limit@8.6.2`, `undici@7.29.0`).
+
+**Performance & Stability:**
+
+- **In-Flight Job Protection & LRU TTL Eviction:**
+  - Implemented an LRU cache with 15-minute TTL eviction on `inFlightBingeJobs` to ensure jobs never hang or permanently lock next-episode translations under any network edge case.
 
 ## SubMaker v1.4.90
 
