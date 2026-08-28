@@ -13,13 +13,23 @@ const {
 const { normalizeConfig, getDefaultConfig } = require('../utils/config');
 
 // 1. Series Video ID Parsing Tests
-test('parseSeriesVideoId correctly parses standard and custom series IDs', () => {
+test('parseSeriesVideoId correctly parses standard, anime, TMDB, and custom series IDs', () => {
   const imdbSeries = parseSeriesVideoId('tt1234567:1:3');
   assert.ok(imdbSeries);
   assert.equal(imdbSeries.seriesId, 'tt1234567');
   assert.equal(imdbSeries.season, 1);
   assert.equal(imdbSeries.episode, 3);
   assert.equal(imdbSeries.type, 'series');
+
+  const kitsuAnime = parseSeriesVideoId('kitsu:1234:5');
+  assert.ok(kitsuAnime);
+  assert.equal(kitsuAnime.seriesId, 'kitsu:1234');
+  assert.equal(kitsuAnime.episode, 5);
+
+  const tmdbSeries = parseSeriesVideoId('tmdb:12345:2:8');
+  assert.ok(tmdbSeries);
+  assert.equal(tmdbSeries.season, 2);
+  assert.equal(tmdbSeries.episode, 8);
 
   const customSeries = parseSeriesVideoId('custom_show:2:15');
   assert.ok(customSeries);
@@ -35,9 +45,11 @@ test('parseSeriesVideoId correctly parses standard and custom series IDs', () =>
 });
 
 // 2. Next Episode Calculation Tests
-test('computeNextEpisodeVideoId accurately increments episode count', () => {
+test('computeNextEpisodeVideoId accurately increments episode count across formats', () => {
   assert.equal(computeNextEpisodeVideoId('tt1234567:1:1'), 'tt1234567:1:2');
   assert.equal(computeNextEpisodeVideoId('tt1234567:3:24'), 'tt1234567:3:25');
+  assert.equal(computeNextEpisodeVideoId('kitsu:1234:5'), 'kitsu:1234:6');
+  assert.equal(computeNextEpisodeVideoId('tmdb:12345:2:8'), 'tmdb:12345:2:9');
   assert.equal(computeNextEpisodeVideoId('tt9999999'), null);
 });
 

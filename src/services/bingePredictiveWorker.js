@@ -1,14 +1,18 @@
+const { LRUCache } = require('lru-cache');
 const log = require('../utils/logger');
 const { parseStremioId } = require('../utils/subtitle');
 const { resolveMediaContext } = require('./mediaContextResolver');
 
-// In-flight next-episode jobs tracking (prevents duplicate simultaneous background jobs)
-const inFlightBingeJobs = new Set();
+// In-flight next-episode jobs tracking with TTL eviction (prevents duplicate simultaneous jobs and memory leaks)
+const inFlightBingeJobs = new LRUCache({
+  max: 500,
+  ttl: 15 * 60 * 1000 // 15 minutes TTL safety
+});
 
 /**
  * Parse a videoId string or object to extract series metadata.
  * @param {string|Object} videoInput
- * @returns {{ seriesId: string, season: number, episode: number, type: string, rawId: string }|null}
+ * @returns {{ seriesId: string, season: number, episode: number, type: string, rawId: string, partsCount: number }|null}
  */
 function parseSeriesVideoId(videoInput) {
   if (!videoInput) return null;
@@ -16,25 +20,28 @@ function parseSeriesVideoId(videoInput) {
   let videoId = typeof videoInput === 'string' ? videoInput : videoInput.videoId || videoInput.id;
   if (!videoId || typeof videoId !== 'string') return null;
 
-  // Stremio series format: tt1234567:1:3 or kitsu:1234:3
+  const parts = videoId.split(':');
+  const partsCount = parts.length;
+
+  // Stremio series/episode format via parseStremioId
   const parsed = parseStremioId(videoId);
-  if (parsed && parsed.type === 'series' && parsed.season !== undefined && parsed.episode !== undefined) {
-    const season = Number(parsed.season);
+  if (parsed && (parsed.type === 'series' || parsed.type === 'episode' || parsed.type === 'anime-episode')) {
+    const season = parsed.season !== undefined ? Number(parsed.season) : 1;
     const episode = Number(parsed.episode);
     if (Number.isFinite(season) && Number.isFinite(episode) && episode > 0) {
       return {
-        seriesId: parsed.imdbId || parsed.animeId || parsed.id || videoId.split(':')[0],
+        seriesId: parsed.imdbId || parsed.animeId || (parsed.tmdbId ? `tmdb:${parsed.tmdbId}` : null) || parsed.id || parts[0],
         season,
         episode,
         type: 'series',
-        rawId: videoId
+        rawId: videoId,
+        partsCount
       };
     }
   }
 
-  // Regex fallback: id:season:episode
-  const parts = videoId.split(':');
-  if (parts.length === 3) {
+  // Regex fallback: id:season:episode or platform:id:episode
+  if (partsCount === 3) {
     const s = parseInt(parts[1], 10);
     const e = parseInt(parts[2], 10);
     if (!isNaN(s) && !isNaN(e) && e > 0) {
@@ -43,7 +50,21 @@ function parseSeriesVideoId(videoInput) {
         season: s,
         episode: e,
         type: 'series',
-        rawId: videoId
+        rawId: videoId,
+        partsCount: 3
+      };
+    }
+  } else if (partsCount === 4) {
+    const s = parseInt(parts[2], 10);
+    const e = parseInt(parts[3], 10);
+    if (!isNaN(s) && !isNaN(e) && e > 0) {
+      return {
+        seriesId: `${parts[0]}:${parts[1]}`,
+        season: s,
+        episode: e,
+        type: 'series',
+        rawId: videoId,
+        partsCount: 4
       };
     }
   }
@@ -52,8 +73,10 @@ function parseSeriesVideoId(videoInput) {
 }
 
 /**
- * Compute the next episode video ID from the current video ID.
+ * Compute the next episode video ID from the current video ID preserving platform ID structure.
  * e.g. tt1234567:1:3 -> tt1234567:1:4
+ *      kitsu:1234:5 -> kitsu:1234:6
+ *      tmdb:1234:2:5 -> tmdb:1234:2:6
  * @param {string|Object} videoInput
  * @returns {string|null}
  */
@@ -62,6 +85,17 @@ function computeNextEpisodeVideoId(videoInput) {
   if (!series) return null;
 
   const nextEpisode = series.episode + 1;
+  const rawId = series.rawId;
+  const parts = rawId.split(':');
+
+  if (parts.length === 3) {
+    // e.g. tt1234567:1:3 -> tt1234567:1:4 OR kitsu:1234:5 -> kitsu:1234:6
+    return `${parts[0]}:${parts[1]}:${nextEpisode}`;
+  } else if (parts.length === 4) {
+    // e.g. tmdb:1234:1:3 -> tmdb:1234:1:4 OR kitsu:1234:1:5 -> kitsu:1234:1:6
+    return `${parts[0]}:${parts[1]}:${parts[2]}:${nextEpisode}`;
+  }
+
   return `${series.seriesId}:${series.season}:${nextEpisode}`;
 }
 
@@ -103,7 +137,7 @@ async function scheduleNextEpisodePreTranslation(options = {}) {
   }
 
   // Execute asynchronously in background
-  inFlightBingeJobs.add(jobKey);
+  inFlightBingeJobs.set(jobKey, Date.now());
 
   (async () => {
     try {
