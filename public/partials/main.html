@@ -2261,7 +2261,7 @@
                         <span data-i18n="config.advancedGemini.model.label">Translation Model Override</span>
                         <span class="label-description" data-i18n="config.advancedGemini.model.description">Override the
                             default model. Leave empty to use system default
-                            (Gemini 3.0 Flash).</span>
+                            (Gemini 3.5 Flash / Gemini 3.1 Flash-Lite).</span>
                     </label>
                     <select id="advancedModel">
                         <option value="" data-i18n="config.advancedGemini.model.default">Use Default Model</option>
@@ -2271,11 +2271,9 @@
 
                 <div class="form-group">
                     <label for="advancedThinkingBudget">
-                        <span data-i18n="config.advancedGemini.thinking.label">Thinking Budget (Extended
+                        <span data-i18n="config.advancedGemini.thinking.label">Thinking Effort & Budget (Extended
                             Reasoning)</span>
-                        <span class="label-description" data-i18n="config.advancedGemini.thinking.description">0 =
-                            disabled, -1 = dynamic (auto-adjust), or fixed token count
-                            (1-32768). Higher values = deeper reasoning but slower.</span>
+                        <span class="label-description" data-i18n="config.advancedGemini.thinking.description">-1 = Dynamic / Medium (3.5 Flash default), 0 = Minimal / Disabled (Lite default), or custom budget (maps to Low / Medium / High).</span>
                     </label>
                     <input type="number" id="advancedThinkingBudget" min="-1" max="32768" step="1" value="0"
                         placeholder="0">
@@ -2285,9 +2283,7 @@
                     <label for="advancedTemperature">
                         <span data-i18n="config.advancedGemini.temperature.label">Temperature (Creativity)</span>
                         <span class="label-description"
-                            data-i18n="config.advancedGemini.temperature.description">Controls randomness (0.0-2.0).
-                            Lower = more deterministic,
-                            Higher = more creative. Default: 0.8</span>
+                            data-i18n="config.advancedGemini.temperature.description">Controls randomness (0.0-2.0). For Gemini 3.x models, sampling is automatically optimized by Google and applied only if customized. Default: 0.8</span>
                     </label>
                     <input type="number" id="advancedTemperature" min="0" max="2" step="0.1" value="0.8"
                         placeholder="0.8">
@@ -2297,8 +2293,7 @@
                     <label for="advancedTopP">
                         <span data-i18n="config.advancedGemini.topP.label">Top-P (Nucleus Sampling)</span>
                         <span class="label-description" data-i18n="config.advancedGemini.topP.description">Probability
-                            threshold (0.0-1.0). Lower = more focused, Higher =
-                            more diverse. Default: 0.95</span>
+                            threshold (0.0-1.0). For Gemini 3.x models, sampling is automatically optimized by Google unless customized. Default: 0.95</span>
                     </label>
                     <input type="number" id="advancedTopP" min="0" max="1" step="0.05" value="0.95" placeholder="0.95">
                 </div>
