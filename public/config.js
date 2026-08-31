@@ -11888,7 +11888,7 @@ Translate to {target_language}.`;
                     // "View on GitHub" link (sibling of content, not child — avoids max-height clipping)
                     const ghLink = document.createElement('a');
                     ghLink.className = 'portal-gh-link';
-                    ghLink.href = 'https://github.com/xtremexq/StremioSubMaker/releases/tag/v' + entry.version;
+                    ghLink.href = 'https://github.com/0xbajt/StremioSubMaker/releases/tag/v' + entry.version;
                     ghLink.target = '_blank';
                     ghLink.rel = 'noopener noreferrer';
                     ghLink.textContent = 'View full release on GitHub →';
