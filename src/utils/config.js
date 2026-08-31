@@ -1163,7 +1163,7 @@ const MODEL_SPECIFIC_DEFAULTS = {
     temperature: 0.8        // Higher temperature for creativity
   },
   'gemini-3.1-pro-preview': {
-    thinkingBudget: 1000,   // Fixed thinking budget for pro model
+    thinkingBudget: -1,     // Dynamic thinking (high effort level)
     temperature: 0.5        // Lower temperature for consistency
   },
   'gemini-2.5-flash': {

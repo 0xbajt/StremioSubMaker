@@ -192,7 +192,7 @@ test('Gemini models normalization and defaults support all new Gemini 3.x and ac
   assert.equal(flashLite31Defaults.temperature, 0.8);
 
   const pro31Defaults = getModelSpecificDefaults('gemini-3.1-pro-preview');
-  assert.equal(pro31Defaults.thinkingBudget, 1000);
+  assert.equal(pro31Defaults.thinkingBudget, -1);
   assert.equal(pro31Defaults.temperature, 0.5);
 
   // Check deprecated models list includes 1.5, 2.0, and retired preview slugs
@@ -227,3 +227,49 @@ test('parseRedisUrl correctly parses rediss:// and redis:// connection strings',
   assert.equal(parseRedisUrl(''), null);
   assert.equal(parseRedisUrl(null), null);
 });
+
+test('GeminiService formats generationConfig adhering to official Gemini 3.x parameter recommendations', () => {
+  // 1. Gemini 3.5 Flash default: thinkingLevel "medium", sampling parameters omitted
+  const gemini35 = new GeminiService('test-key', 'gemini-3.5-flash');
+  const config35 = gemini35.buildGenerationConfig(16384);
+  assert.equal(config35.maxOutputTokens, 16384);
+  assert.deepEqual(config35.thinkingConfig, { thinkingLevel: 'medium' });
+  assert.equal(config35.temperature, undefined);
+  assert.equal(config35.topK, undefined);
+  assert.equal(config35.topP, undefined);
+
+  // 2. Gemini 3.1 Flash-Lite default: thinkingLevel "minimal", sampling parameters omitted
+  const gemini31Lite = new GeminiService('test-key', 'gemini-3.1-flash-lite');
+  const config31Lite = gemini31Lite.buildGenerationConfig(8192);
+  assert.deepEqual(config31Lite.thinkingConfig, { thinkingLevel: 'minimal' });
+  assert.equal(config31Lite.temperature, undefined);
+
+  // 3. Gemini 3.1 Pro: thinkingLevel "high"
+  const gemini31Pro = new GeminiService('test-key', 'gemini-3.1-pro-preview');
+  const config31Pro = gemini31Pro.buildGenerationConfig(32768);
+  assert.deepEqual(config31Pro.thinkingConfig, { thinkingLevel: 'high' });
+
+  // 4. Gemini 3.5 Flash with explicit custom sampling settings
+  const custom35 = new GeminiService('test-key', 'gemini-3.5-flash', {
+    temperature: 0.3,
+    topP: 0.85,
+    topK: 20,
+    thinkingLevel: 'low'
+  });
+  const customConfig35 = custom35.buildGenerationConfig(16384);
+  assert.deepEqual(customConfig35.thinkingConfig, { thinkingLevel: 'low' });
+  assert.equal(customConfig35.temperature, 0.3);
+  assert.equal(customConfig35.topP, 0.85);
+  assert.equal(customConfig35.topK, 20);
+
+  // 5. Legacy Gemini 2.5 Flash: uses thinkingBudget & includes default sampling parameters
+  const legacy25 = new GeminiService('test-key', 'gemini-2.5-flash', {
+    thinkingBudget: -1
+  });
+  const legacyConfig25 = legacy25.buildGenerationConfig(16384);
+  assert.deepEqual(legacyConfig25.thinkingConfig, { thinkingBudget: null });
+  assert.equal(legacyConfig25.temperature, 0.5);
+  assert.equal(legacyConfig25.topK, 40);
+  assert.equal(legacyConfig25.topP, 0.95);
+});
+

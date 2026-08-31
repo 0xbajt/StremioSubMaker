@@ -15,6 +15,24 @@ const {
 // Use v1beta endpoint - v1 endpoint doesn't support /models/{model} operations
 const GEMINI_API_URL = process.env.GEMINI_API_BASE || 'https://generativelanguage.googleapis.com/v1beta';
 
+// Model-specific default resolver to avoid circular dependency with config.js
+function resolveGeminiModelDefaults(modelName) {
+  const name = String(modelName || '').toLowerCase();
+  if (name.includes('gemma')) {
+    return { thinkingBudget: 0, temperature: 0.7 };
+  }
+  if (name.includes('3.1-pro') || name.includes('3-pro') || name.includes('2.5-pro')) {
+    return { thinkingBudget: -1, temperature: 0.5 };
+  }
+  if (name.includes('lite')) {
+    return { thinkingBudget: 0, temperature: 0.8 };
+  }
+  if (name.includes('3.5-flash') || name.includes('3.6-flash') || name.includes('3.7-flash') || name.includes('2.5-flash') || name.includes('flash-latest')) {
+    return { thinkingBudget: -1, temperature: 0.5 };
+  }
+  return { thinkingBudget: 0, temperature: 0.8 };
+}
+
 // Normalize human-readable target language names for Gemini prompts
 function normalizeTargetName(name) {
   const raw = String(name || '').trim();
@@ -125,19 +143,22 @@ class GeminiService {
       ? advancedSettings.maxRetries
       : (process.env.GEMINI_MAX_RETRIES !== undefined ? parseInt(process.env.GEMINI_MAX_RETRIES) : 3);
 
-    // Thinking budget (default: 0)
+    // Model-specific defaults
+    const modelDefaults = resolveGeminiModelDefaults(this.model) || {};
+
+    // Thinking budget (default: model-specific, e.g. -1 for 3.5 Flash, 0 for Lite)
     // Special handling: -1 means dynamic thinking (null to API)
     const envThinking = process.env.GEMINI_THINKING_BUDGET !== undefined
       ? parseInt(process.env.GEMINI_THINKING_BUDGET)
-      : 0;
+      : undefined;
     this.thinkingBudget = advancedSettings.thinkingBudget !== undefined
       ? advancedSettings.thinkingBudget
-      : envThinking;
+      : (envThinking !== undefined ? envThinking : (modelDefaults.thinkingBudget !== undefined ? modelDefaults.thinkingBudget : 0));
 
-    // Temperature (default: 0.8)
+    // Temperature (default: model-specific or 0.8)
     this.temperature = advancedSettings.temperature !== undefined
       ? advancedSettings.temperature
-      : (process.env.GEMINI_TEMPERATURE !== undefined ? parseFloat(process.env.GEMINI_TEMPERATURE) : 0.8);
+      : (process.env.GEMINI_TEMPERATURE !== undefined ? parseFloat(process.env.GEMINI_TEMPERATURE) : (modelDefaults.temperature !== undefined ? modelDefaults.temperature : 0.8));
 
     // Top-K (default: 40)
     this.topK = advancedSettings.topK !== undefined
@@ -162,6 +183,104 @@ class GeminiService {
 
     // JSON structured output mode (set by TranslationEngine when enabled)
     this.enableJsonOutput = advancedSettings.enableJsonOutput === true;
+
+    // Gemini 3.x thinkingLevel support (minimal, low, medium, high)
+    this.thinkingLevel = advancedSettings.thinkingLevel || null;
+    this.isCustomSamplingExplicitlySet = Boolean(
+      advancedSettings.temperature !== undefined ||
+      advancedSettings.topP !== undefined ||
+      advancedSettings.topK !== undefined ||
+      advancedSettings.enabled === true
+    );
+  }
+
+  /**
+   * Check if the current model belongs to the Gemini 3.x family
+   */
+  isGemini3Family() {
+    const name = String(this.model || '').toLowerCase();
+    return name.startsWith('gemini-3') || name.includes('gemini-3.');
+  }
+
+  /**
+   * Resolve the effective thinking effort level for Gemini 3.x models
+   */
+  getEffectiveThinkingLevel() {
+    if (this.isGemmaModel) return null;
+
+    if (typeof this.thinkingLevel === 'string' && ['minimal', 'low', 'medium', 'high'].includes(this.thinkingLevel.toLowerCase())) {
+      return this.thinkingLevel.toLowerCase();
+    }
+
+    const budget = this.getEffectiveThinkingBudget();
+    const modelName = String(this.model || '').toLowerCase();
+
+    // Map numeric budget or model defaults to 3.x thinking levels
+    if (budget === 0) {
+      return 'minimal';
+    }
+    if (budget === -1) {
+      if (modelName.includes('pro')) return 'high';
+      if (modelName.includes('lite')) return 'minimal';
+      return 'medium'; // Default for 3.5-flash and 3.x flash
+    }
+    if (budget > 0 && budget <= 1024) {
+      return 'low';
+    }
+    if (budget > 1024 && budget <= 4096) {
+      return 'medium';
+    }
+    if (budget > 4096) {
+      return 'high';
+    }
+
+    if (modelName.includes('pro')) return 'high';
+    if (modelName.includes('lite')) return 'minimal';
+    return 'medium';
+  }
+
+  /**
+   * Construct optimized generationConfig for Gemini API adhering to official 3.x best practices
+   */
+  buildGenerationConfig(estimatedOutputTokens, thinkingReserve = 0) {
+    const isGemini3 = this.isGemini3Family();
+    const thinkingBudget = this.getEffectiveThinkingBudget();
+
+    const config = {
+      maxOutputTokens: estimatedOutputTokens + thinkingReserve
+    };
+
+    // Sampling parameters:
+    // For Gemini 3.x, Google strongly recommends omitting temperature, topP, topK unless explicitly customized.
+    if (!isGemini3 || this.isCustomSamplingExplicitlySet) {
+      if (this.temperature !== undefined) config.temperature = this.temperature;
+      if (this.topK !== undefined) config.topK = this.topK;
+      if (this.topP !== undefined) config.topP = this.topP;
+    }
+
+    // JSON structured output mode (incompatible with thinking)
+    if (this.enableJsonOutput && (isGemini3 ? this.getEffectiveThinkingLevel() === 'minimal' : thinkingBudget === 0)) {
+      config.responseMimeType = 'application/json';
+    }
+
+    // Thinking Configuration
+    if (isGemini3) {
+      const level = this.getEffectiveThinkingLevel();
+      if (level) {
+        config.thinkingConfig = {
+          thinkingLevel: level
+        };
+      }
+    } else {
+      // Legacy Gemini 2.x thinking budget
+      if (thinkingBudget === -1) {
+        config.thinkingConfig = { thinkingBudget: null };
+      } else if (thinkingBudget > 0) {
+        config.thinkingConfig = { thinkingBudget };
+      }
+    }
+
+    return config;
   }
 
   getEffectiveThinkingBudget() {
@@ -445,34 +564,7 @@ class GeminiService {
         }
 
         // Prepare generation config
-        const generationConfig = {
-          temperature: this.temperature,
-          topK: this.topK,
-          topP: this.topP,
-          maxOutputTokens: estimatedOutputTokens + thinkingReserve
-        };
-
-        // JSON structured output mode
-        // Note: responseMimeType is incompatible with thinkingConfig — when thinking
-        // is enabled the model needs free-form internal reasoning, so skip JSON mode.
-        if (this.enableJsonOutput && thinkingBudget === 0) {
-          generationConfig.responseMimeType = 'application/json';
-        }
-
-        // Add thinking config based on thinking budget setting
-        // -1 = dynamic thinking (null), 0 = disabled (omit), >0 = fixed budget
-        if (thinkingBudget === -1) {
-          // Dynamic thinking: let the model decide
-          generationConfig.thinkingConfig = {
-            thinkingBudget: null  // null means dynamic
-          };
-        } else if (thinkingBudget > 0) {
-          // Fixed thinking budget
-          generationConfig.thinkingConfig = {
-            thinkingBudget: thinkingBudget
-          };
-        }
-        // If thinkingBudget is 0, don't add thinkingConfig at all (disabled)
+        const generationConfig = this.buildGenerationConfig(estimatedOutputTokens, thinkingReserve);
 
         // Safety settings: disable all content filters for subtitle translation
         // Subtitles contain fictional dialogue that frequently triggers false positives
@@ -627,23 +719,7 @@ class GeminiService {
           ));
         }
 
-        const generationConfig = {
-          temperature: this.temperature,
-          topK: this.topK,
-          topP: this.topP,
-          maxOutputTokens: estimatedOutputTokens + thinkingReserve
-        };
-
-        // JSON structured output mode (incompatible with thinking — see translateSubtitle)
-        if (this.enableJsonOutput && thinkingBudget === 0) {
-          generationConfig.responseMimeType = 'application/json';
-        }
-
-        if (thinkingBudget === -1) {
-          generationConfig.thinkingConfig = { thinkingBudget: null };
-        } else if (thinkingBudget > 0) {
-          generationConfig.thinkingConfig = { thinkingBudget: thinkingBudget };
-        }
+        const generationConfig = this.buildGenerationConfig(estimatedOutputTokens, thinkingReserve);
 
         // Safety settings: disable all content filters for subtitle translation
         // Use 'OFF' threshold — stronger than 'BLOCK_NONE' and respected by newer models

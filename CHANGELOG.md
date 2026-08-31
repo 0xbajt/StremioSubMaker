@@ -22,6 +22,12 @@ All notable changes to this project will be documented in this file.
   - Video players cleanly display the localized language name with the distinct `[AI Translate]` tag (e.g. `French - [AI Translate]`, `Albanian - [AI Translate]`).
   - Added configurable **"🏷️ Subtitle Track Label Style"** in Dashboard Translation Settings (`ISO + AI Tag`, `ISO + Make Tag`, `Classic Stremio`, `Pure ISO`).
 
+- **Gemini 3.5 & 3.x Official Parameter & Thinking Optimizations:**
+  - Implemented official Google Gemini 3.x parameter recommendations in `GeminiService`:
+    - Updated thinking effort to use string levels (`thinkingLevel: "medium"` for `gemini-3.5-flash`, `"minimal"` for `gemini-3.1-flash-lite`, `"high"` for `gemini-3.1-pro-preview`) avoiding legacy numeric token budgets.
+    - Omitted legacy sampling parameters (`temperature`, `top_p`, `top_k`) when default to unleash Google's optimized internal reasoning engine for translation accuracy.
+    - Added dedicated test coverage in `gemini-auth-regression.test.js` validating Gemini 3.x payload generation.
+
 - **Multi-Platform Series & Anime ID Compatibility:**
   - Full support for incrementing episode IDs across standard IMDb series (`tt1234567:1:3`), Anime catalogs (Kitsu `kitsu:1234:5` / AniDB), TMDB series (`tmdb:12345:2:8`), and custom Stremio provider schemes.
 
