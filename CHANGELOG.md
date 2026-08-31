@@ -24,7 +24,7 @@ All notable changes to this project will be documented in this file.
   - Updated helper tooltips and label descriptions in dashboard Advanced Settings to explain Gemini 3.x dynamic effort levels and automatic sampling parameter optimization.
 
 - **Automated Test Suite Expansion:**
-  - Added dedicated test suites [`subtitle-track-labels.test.js`](file:///d:/Documents/Git/StremioSubMaker/src/services/subtitle-track-labels.test.js) and expanded [`gemini-auth-regression.test.js`](file:///d:/Documents/Git/StremioSubMaker/src/services/gemini-auth-regression.test.js) (63/63 tracked tests passing).
+  - Added dedicated test suites `subtitle-track-labels.test.js` and expanded `gemini-auth-regression.test.js` (63/63 tracked tests passing).
 
 ## SubMaker v1.4.91
 
