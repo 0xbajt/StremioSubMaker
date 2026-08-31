@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file.
 
+## SubMaker v1.4.92
+
+**New Features & Improvements:**
+
+- **ISO-Compliant Subtitle Track Labeling & Universal Player Compatibility (Nuvio & Stremio):**
+  - Added smart ISO 639-compliant track labeling across all 433 supported languages (e.g. `fre - [AI Translate]`, `sqi - [AI Translate]`, `spa - [AI Translate]`, `deu - [AI Translate]`).
+  - Resolves an issue where strict language filters in video players like **Nuvio** hid custom `"Make [Language]"` categories when the user whitelist was enabled.
+  - Video players cleanly display the localized language name with the distinct `[AI Translate]` tag (e.g. `French - [AI Translate]`, `Albanian - [AI Translate]`).
+  - Added configurable **"🏷️ Subtitle Track Label Style"** in Dashboard Translation Settings (`ISO + AI Tag` [Default], `ISO + Make Tag`, `Classic Stremio`, `Pure ISO`).
+  - Applied consistently across translation options, Learn Mode, xSync, AutoSub, xEmbed, and SMDB community tracks.
+
+- **Official Google Gemini 3.5 & 3.x Parameter & Thinking Optimizations:**
+  - Implemented official Google Gemini 3.x parameter recommendations in `GeminiService`:
+    - Updated thinking effort to use string levels (`thinkingLevel: "medium"` for `gemini-3.5-flash`, `"minimal"` for `gemini-3.1-flash-lite`, `"high"` for `gemini-3.1-pro-preview`) avoiding legacy numeric token budgets and preventing HTTP 400 Bad Request errors.
+    - Omitted legacy sampling parameters (`temperature`, `top_p`, `top_k`) when default to unleash Google's optimized internal reasoning engine for translation accuracy.
+    - Preserved manual user overrides when explicitly configured under Advanced Settings.
+    - Added unified `buildGenerationConfig()` across both synchronous and streaming translation handlers.
+
+- **Advanced Settings & UI Guidance Updates:**
+  - Updated helper tooltips and label descriptions in dashboard Advanced Settings to explain Gemini 3.x dynamic effort levels and automatic sampling parameter optimization.
+
+- **Automated Test Suite Expansion:**
+  - Added dedicated test suites [`subtitle-track-labels.test.js`](file:///d:/Documents/Git/StremioSubMaker/src/services/subtitle-track-labels.test.js) and expanded [`gemini-auth-regression.test.js`](file:///d:/Documents/Git/StremioSubMaker/src/services/gemini-auth-regression.test.js) (63/63 tracked tests passing).
+
 ## SubMaker v1.4.91
 
 **New Features & Improvements:**
@@ -15,18 +39,6 @@ All notable changes to this project will be documented in this file.
 - **Cross-Episode Series Lore & Glossary Memory:**
   - Added dynamic cross-episode memory in `mediaContextResolver` that caches established character names, nicknames, and proper noun choices across episodes in a series (`seriesGlossaryCache`).
   - Next episodes automatically inherit terminology established in prior episodes, ensuring spelling and naming consistency across the entire season.
-
-- **ISO-Compliant Subtitle Track Labeling & Nuvio Compatibility (ISO + AI Tag):**
-  - Added smart ISO 639-compliant track labeling across all 433 supported languages (e.g. `fre - [AI Translate]`, `sqi - [AI Translate]`, `spa - [AI Translate]`, `deu - [AI Translate]`).
-  - Resolves an issue where strict language filters in clients like **Nuvio** hid custom `"Make [Language]"` categories when the user whitelist was enabled.
-  - Video players cleanly display the localized language name with the distinct `[AI Translate]` tag (e.g. `French - [AI Translate]`, `Albanian - [AI Translate]`).
-  - Added configurable **"🏷️ Subtitle Track Label Style"** in Dashboard Translation Settings (`ISO + AI Tag`, `ISO + Make Tag`, `Classic Stremio`, `Pure ISO`).
-
-- **Gemini 3.5 & 3.x Official Parameter & Thinking Optimizations:**
-  - Implemented official Google Gemini 3.x parameter recommendations in `GeminiService`:
-    - Updated thinking effort to use string levels (`thinkingLevel: "medium"` for `gemini-3.5-flash`, `"minimal"` for `gemini-3.1-flash-lite`, `"high"` for `gemini-3.1-pro-preview`) avoiding legacy numeric token budgets.
-    - Omitted legacy sampling parameters (`temperature`, `top_p`, `top_k`) when default to unleash Google's optimized internal reasoning engine for translation accuracy.
-    - Added dedicated test coverage in `gemini-auth-regression.test.js` validating Gemini 3.x payload generation.
 
 - **Multi-Platform Series & Anime ID Compatibility:**
   - Full support for incrementing episode IDs across standard IMDb series (`tt1234567:1:3`), Anime catalogs (Kitsu `kitsu:1234:5` / AniDB), TMDB series (`tmdb:12345:2:8`), and custom Stremio provider schemes.

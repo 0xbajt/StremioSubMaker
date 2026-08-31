@@ -1,6 +1,6 @@
 {
   "name": "submaker-subtitle-translator",
-  "version": "1.4.91",
+  "version": "1.4.92",
   "xsyncMinVersion": "1.0.9",
   "engines": {
     "node": ">=20.0.0"
