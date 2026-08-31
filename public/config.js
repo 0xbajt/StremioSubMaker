@@ -11886,9 +11886,14 @@ Translate to {target_language}.`;
                     contentEl.innerHTML = renderChangelogContent(entry.content);
 
                     // "View on GitHub" link (sibling of content, not child — avoids max-height clipping)
+                    // Versions <= 1.4.89 point to original creator (xtremexq); newer versions point to 0xbajt
+                    const vParts = String(entry.version || '').replace(/^v/i, '').split('.').map(Number);
+                    const isNewerFork = (vParts[0] > 1) || (vParts[0] === 1 && vParts[1] > 4) || (vParts[0] === 1 && vParts[1] === 4 && (vParts[2] || 0) > 89);
+                    const repoOwner = isNewerFork ? '0xbajt' : 'xtremexq';
+
                     const ghLink = document.createElement('a');
                     ghLink.className = 'portal-gh-link';
-                    ghLink.href = 'https://github.com/0xbajt/StremioSubMaker/releases/tag/v' + entry.version;
+                    ghLink.href = 'https://github.com/' + repoOwner + '/StremioSubMaker/releases/tag/v' + entry.version;
                     ghLink.target = '_blank';
                     ghLink.rel = 'noopener noreferrer';
                     ghLink.textContent = 'View full release on GitHub →';
