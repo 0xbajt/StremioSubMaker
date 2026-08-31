@@ -1393,20 +1393,20 @@
         "cacheNoteSuffix": "to ensure your experimental translations don't pollute the shared database.",
         "model": {
           "label": "Translation Model Override",
-          "description": "Override the default model. Leave empty to use system default (gemini-flash-lite-latest).",
+          "description": "Override the default model. Leave empty to use system default (Gemini 3.5 Flash / Gemini 3.1 Flash-Lite).",
           "default": "Use Default Model"
         },
         "thinking": {
-          "label": "Thinking Budget (Extended Reasoning)",
-          "description": "0 = disabled, -1 = dynamic (auto-adjust), or fixed token count (1-32768). Higher values = deeper reasoning but slower."
+          "label": "Thinking Effort (Reasoning Level)",
+          "description": "-1 = Dynamic / Medium (3.5 Flash default), 0 = Minimal / Disabled (Lite default), or custom effort (Low / Medium / High)."
         },
         "temperature": {
           "label": "Temperature (Creativity)",
-          "description": "Controls randomness (0.0-2.0). Lower = more deterministic, Higher = more creative. Default: 0.8"
+          "description": "Controls randomness (0.0-2.0). For Gemini 3.x models, sampling is automatically optimized by Google and applied only if customized. Default: 0.8"
         },
         "topP": {
           "label": "Top-P (Nucleus Sampling)",
-          "description": "Probability threshold (0.0-1.0). Lower = more focused, Higher = more diverse. Default: 0.95"
+          "description": "Probability threshold (0.0-1.0). For Gemini 3.x models, sampling is automatically optimized by Google unless customized. Default: 0.95"
         },
         "batchContext": {
           "label": "Enable Batch Context",
@@ -1569,8 +1569,8 @@
           "useConfiguredWith": "Use Configured Model ({model})"
         },
         "thinking": {
-          "label": "Thinking Budget (Extended Reasoning)",
-          "helper": "0 = disabled, -1 = dynamic (auto-adjust), or fixed token count (1-32768)."
+          "label": "Thinking Effort (Reasoning Level)",
+          "helper": "-1 = Dynamic / Medium (3.5 Flash default), 0 = Minimal / Disabled (Lite default), or custom effort (Low / Medium / High)."
         },
         "temperature": {
           "label": "Temperature (Creativity)",

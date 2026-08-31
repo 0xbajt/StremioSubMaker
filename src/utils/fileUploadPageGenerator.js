@@ -261,8 +261,8 @@ function generateFileTranslationPage(videoId, configStr, config, filename = '') 
     const advancedHighlightNote = t('fileUpload.advanced.highlightNote', {}, "These settings are temporary and won't be saved to your config.");
     const advancedModelLabel = t('fileUpload.advanced.model.label', {}, 'Translation Model Override');
     const advancedModelHelper = t('fileUpload.advanced.model.helper', {}, 'Override the default model for this translation only.');
-    const thinkingBudgetLabel = t('fileUpload.advanced.thinking.label', {}, 'Thinking Budget (Extended Reasoning)');
-    const thinkingBudgetHelper = t('fileUpload.advanced.thinking.helper', {}, '0 = disabled, -1 = dynamic (auto-adjust), or fixed token count (1-32768).');
+    const thinkingBudgetLabel = t('fileUpload.advanced.thinking.label', {}, 'Thinking Effort (Reasoning Level)');
+    const thinkingBudgetHelper = t('fileUpload.advanced.thinking.helper', {}, '-1 = Dynamic / Medium (3.5 Flash default), 0 = Minimal / Disabled (Lite default), or custom effort (Low / Medium / High).');
     const temperatureLabel = t('fileUpload.advanced.temperature.label', {}, 'Temperature (Creativity)');
     const temperatureHelper = t('fileUpload.advanced.temperature.helper', {}, 'Controls randomness (0.0-2.0). Lower = deterministic, Higher = creative. Default: 0.8');
     const reasoningEffortLabel = t('fileUpload.advanced.reasoning.label', {}, 'Reasoning Effort');
