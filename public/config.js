@@ -10611,6 +10611,8 @@ Translate to {target_language}.`;
         if (localizeProperNounsEl) localizeProperNounsEl.checked = currentConfig.localizeProperNouns === true;
         const bingeModeEl = document.getElementById('bingeModeEnabled');
         if (bingeModeEl) bingeModeEl.checked = currentConfig.bingeModeEnabled === true;
+        const subtitleLabelStyleEl = document.getElementById('subtitleLabelStyle');
+        if (subtitleLabelStyleEl) subtitleLabelStyleEl.value = currentConfig.subtitleLabelStyle || 'iso_ai_tag';
 
         const forceSRTEl = document.getElementById('forceSRTOutput');
         const forceSRTElNoTranslation = document.getElementById('forceSRTOutputNoTranslation');
@@ -11096,6 +11098,10 @@ Translate to {target_language}.`;
             bingeModeEnabled: (function () {
                 const el = document.getElementById('bingeModeEnabled');
                 return el ? el.checked === true : (currentConfig?.bingeModeEnabled === true);
+            })(),
+            subtitleLabelStyle: (function () {
+                const el = document.getElementById('subtitleLabelStyle');
+                return el ? el.value : (currentConfig?.subtitleLabelStyle || 'iso_ai_tag');
             })(),
             maxCharactersPerLine: (function () {
                 return currentConfig?.maxCharactersPerLine || 40;

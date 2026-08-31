@@ -95,6 +95,59 @@ function resolveConfiguredSubtitleProviderTimeoutMs(config) {
   return normalizedSeconds * 1000;
 }
 
+/**
+ * Format subtitle track display language based on user's subtitleLabelStyle setting.
+ * Supports:
+ * - 'iso_ai_tag' (Default): 'fre - [AI Translate]' -> renders in player as 'French - [AI Translate]' (ISO compliant, Nuvio & Stremio friendly)
+ * - 'iso_make_tag': 'fre - [Make French]' -> renders in player as 'French - [Make French]'
+ * - 'classic': 'Make French' -> classic custom string
+ * - 'iso_only': 'fre' -> pure ISO-639-2 code
+ */
+function formatSubtitleTrackLabel(langCode, labelType, config = {}) {
+  const style = config.subtitleLabelStyle || 'iso_ai_tag';
+  const isoCode = normalizeLanguageCode(langCode) || langCode;
+  const langName = getLanguageName(langCode) || langCode;
+
+  if (style === 'iso_only') {
+    return isoCode;
+  }
+
+  if (style === 'classic') {
+    switch (labelType) {
+      case 'make': return `Make ${langName}`;
+      case 'learn': return `Learn ${langName}`;
+      case 'xsync': return `xSync ${langName}`;
+      case 'auto': return `Auto ${langName}`;
+      case 'xembed': return `xEmbed (${langName})`;
+      case 'smdb': return `SMDB (${langName})`;
+      default: return langName;
+    }
+  }
+
+  if (style === 'iso_make_tag') {
+    switch (labelType) {
+      case 'make': return `${isoCode} - [Make ${langName}]`;
+      case 'learn': return `${isoCode} - [Learn ${langName}]`;
+      case 'xsync': return `${isoCode} - [xSync ${langName}]`;
+      case 'auto': return `${isoCode} - [Auto ${langName}]`;
+      case 'xembed': return `${isoCode} - [xEmbed ${langName}]`;
+      case 'smdb': return `${isoCode} - [SMDB ${langName}]`;
+      default: return `${isoCode} - [${langName}]`;
+    }
+  }
+
+  // Default: 'iso_ai_tag'
+  switch (labelType) {
+    case 'make': return `${isoCode} - [AI Translate]`;
+    case 'learn': return `${isoCode} - [Learn]`;
+    case 'xsync': return `${isoCode} - [xSync]`;
+    case 'auto': return `${isoCode} - [Auto]`;
+    case 'xembed': return `${isoCode} - [xEmbed]`;
+    case 'smdb': return `${isoCode} - [SMDB]`;
+    default: return `${isoCode} - [AI]`;
+  }
+}
+
 function createTimeoutError(label, timeoutMs) {
   const error = new Error(`${label} timed out after ${timeoutMs}ms`);
   error.code = 'ETIMEDOUT';
@@ -3321,7 +3374,7 @@ function createSubtitleHandler(config) {
         // Translation entries are created from the already-limited source subtitles (16 per source language)
         for (const targetLang of targetLangsForTranslation) {
           const baseName = getLanguageName(targetLang) || targetLang;
-          const displayName = `Make ${baseName}`;
+          const displayName = formatSubtitleTrackLabel(targetLang, 'make', config);
           log.debug(() => `[Subtitles] Creating translation entries for ${displayName} (${targetLang})`);
 
           for (const sourceSub of sourceSubtitles) {
@@ -3337,7 +3390,7 @@ function createSubtitleHandler(config) {
 
             const translationEntry = {
               id: `translate_${sourceSub.fileId}_to_${targetLang}`,
-              lang: displayName, // Display as "Make Language" in Stremio UI
+              lang: displayName, // Formatted according to subtitleLabelStyle (default: ISO + [AI Translate])
               url: `{{ADDON_URL}}/translate/${sourceSub.fileId}/${targetLang}${translationUrlExtension}${translateQuery}`
             };
             translationEntries.push(translationEntry);
@@ -3358,7 +3411,7 @@ function createSubtitleHandler(config) {
 
           for (const learnLang of normalizedLearnLangs) {
             const baseName = getLanguageName(learnLang);
-            const displayName = `Learn ${baseName}`;
+            const displayName = formatSubtitleTrackLabel(learnLang, 'learn', config);
             for (const sourceSub of sourceSubtitles) {
               learnEntries.push({
                 id: `learn_${sourceSub.fileId}_to_${learnLang}`,
@@ -3458,9 +3511,10 @@ function createSubtitleHandler(config) {
           if (seenSync.has(seenKey)) continue;
           seenSync.add(seenKey);
           const langName = getLanguageName(langCode) || langCode;
+          const displayLang = formatSubtitleTrackLabel(langCode, 'xsync', config);
           xSyncEntries.push({
             id: `xsync_${seenKey}`,
-            lang: `xSync ${langName}`,
+            lang: displayLang,
             url: `{{ADDON_URL}}/xsync/${toPathSegment(entry.hash)}/${toPathSegment(langCode)}/${toPathSegment(syncedSub.sourceSubId)}`
           });
         }
@@ -3537,9 +3591,10 @@ function createSubtitleHandler(config) {
           if (seenAuto.has(seenKey)) continue;
           seenAuto.add(seenKey);
           const langName = getLanguageName(langCode) || langCode;
+          const displayLang = formatSubtitleTrackLabel(langCode, 'auto', config);
           autoEntries.push({
             id: `auto_${seenKey}`,
-            lang: `Auto ${langName}`,
+            lang: displayLang,
             url: `{{ADDON_URL}}/auto/${toPathSegment(entry.hash)}/${toPathSegment(langCode)}/${toPathSegment(sub.sourceSubId)}`
           });
         }
@@ -3571,9 +3626,10 @@ function createSubtitleHandler(config) {
               seenKeys.add(dedupeKey);
 
               const langName = getLanguageName(normalizedTarget) || getLanguageName(targetCode) || targetCode;
+              const displayLang = formatSubtitleTrackLabel(normalizedTarget || targetCode, 'xembed', config);
               xEmbedEntries.push({
                 id: `xembed_${entry.cacheKey}`,
-                lang: `xEmbed (${langName})`,
+                lang: displayLang,
                 url: `{{ADDON_URL}}/xembedded/${toPathSegment(hash)}/${toPathSegment(targetCode)}/${toPathSegment(entry.trackId)}`
               });
             }
@@ -3632,9 +3688,10 @@ function createSubtitleHandler(config) {
           const smdbSubs = await smdbCache.listSubtitlesMultiHash(smdbHashes);
           for (const sub of smdbSubs) {
             const langName = getLanguageName(sub.languageCode) || sub.languageCode;
+            const displayLang = formatSubtitleTrackLabel(sub.languageCode, 'smdb', config);
             smdbEntries.push({
               id: `smdb_${sub.videoHash}_${sub.languageCode}`,
-              lang: `SMDB (${langName})`,
+              lang: displayLang,
               url: `{{ADDON_URL}}/smdb/${toPathSegment(sub.videoHash)}/${toPathSegment(sub.languageCode)}.srt`
             });
           }

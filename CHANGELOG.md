@@ -16,6 +16,12 @@ All notable changes to this project will be documented in this file.
   - Added dynamic cross-episode memory in `mediaContextResolver` that caches established character names, nicknames, and proper noun choices across episodes in a series (`seriesGlossaryCache`).
   - Next episodes automatically inherit terminology established in prior episodes, ensuring spelling and naming consistency across the entire season.
 
+- **ISO-Compliant Subtitle Track Labeling & Nuvio Compatibility (ISO + AI Tag):**
+  - Added smart ISO 639-compliant track labeling across all 433 supported languages (e.g. `fre - [AI Translate]`, `sqi - [AI Translate]`, `spa - [AI Translate]`, `deu - [AI Translate]`).
+  - Resolves an issue where strict language filters in clients like **Nuvio** hid custom `"Make [Language]"` categories when the user whitelist was enabled.
+  - Video players cleanly display the localized language name with the distinct `[AI Translate]` tag (e.g. `French - [AI Translate]`, `Albanian - [AI Translate]`).
+  - Added configurable **"🏷️ Subtitle Track Label Style"** in Dashboard Translation Settings (`ISO + AI Tag`, `ISO + Make Tag`, `Classic Stremio`, `Pure ISO`).
+
 - **Multi-Platform Series & Anime ID Compatibility:**
   - Full support for incrementing episode IDs across standard IMDb series (`tt1234567:1:3`), Anime catalogs (Kitsu `kitsu:1234:5` / AniDB), TMDB series (`tmdb:12345:2:8`), and custom Stremio provider schemes.
 
