@@ -1808,16 +1808,17 @@ CONTEXT PROVIDED:
       ? `\n8. PROPER NOUNS & NAMES: Adapt, transliterate, and phonetically translate character names, proper nouns, and geographic places to match the standard orthography and phonetic conventions of ${targetLabel} (e.g. Kayce -> Kejsi, Washington -> Uashington).`
       : '';
 
-    const promptBody = `You are a professional subtitle translator. Translate to ${targetLabel}.
+    const promptBody = `You are a professional audiovisual subtitle translator. Translate to ${targetLabel} adhering to cinematic translation standards.
 ${glossarySection ? glossarySection + '\n' : ''}${contextInstructions}
 CRITICAL RULES:
 1. Translate ONLY the text inside each <s id="N"> tag
 2. PRESERVE the XML tags exactly: <s id="N">translated text</s>
 3. Return EXACTLY ${expectedCount} tagged entries
 4. Keep line breaks within each entry
-5. Maintain natural dialogue flow for ${targetLabel}
-6. Use appropriate colloquialisms for ${targetLabel}
-7. Preserve any existing formatting tags${context ? '\n8. Use the provided context to ensure consistency' : ''}${properNounRule}
+5. IDIOMATIC & NATURAL DIALOGUE: Translate idioms, metaphors, humor, sarcasm, and colloquialisms into natural, authentic dialogue in ${targetLabel}. Avoid literal word-for-word machine translation.
+6. TONE & PROFANITY FIDELITY: Preserve the exact emotional intensity, character voice, and expletives/profanity without sanitization or softening.
+7. SUBTITLE BREVITY & CONCISENESS: Keep phrasing concise and punchy for on-screen subtitle reading speed while preserving meaning.
+8. Preserve any existing formatting tags (<font>, <i>, <b>)${context ? '\n9. Use the provided context to ensure dialogue flow and character continuity' : ''}${properNounRule}
 ${glossarySection ? '\nFollow all media context, characters, and glossary rules strictly.' : ''}
 
 Do NOT add acknowledgements, explanations, notes, or commentary.
@@ -2277,16 +2278,17 @@ CONTEXT PROVIDED:
 `;
     }
 
-    const promptBody = `You are a professional subtitle translator. Translate to ${targetLabel}.
+    const promptBody = `You are a professional audiovisual subtitle translator. Translate to ${targetLabel} adhering to cinematic translation standards.
 ${glossarySection ? glossarySection + '\n' : ''}${contextInstructions}
 CRITICAL RULES:
 1. Translate ONLY the numbered text entries (1. 2. 3. etc.)
 2. PRESERVE the numbering exactly (1. 2. 3. etc.)
 3. Return EXACTLY ${expectedCount} numbered entries
 4. Keep line breaks within each entry
-5. Maintain natural dialogue flow for ${targetLabel}
-6. Use appropriate colloquialisms for ${targetLabel}
-7. Preserve any existing formatting tags${context ? '\n8. Use the provided context to ensure consistency' : ''}${properNounRule}
+5. IDIOMATIC & NATURAL DIALOGUE: Translate idioms, metaphors, humor, sarcasm, and colloquialisms into natural, authentic dialogue in ${targetLabel}. Avoid literal word-for-word machine translation.
+6. TONE & PROFANITY FIDELITY: Preserve the exact emotional intensity, character voice, and expletives/profanity without sanitization or softening.
+7. SUBTITLE BREVITY & CONCISENESS: Keep phrasing concise and punchy for on-screen subtitle reading speed while preserving meaning.
+8. Preserve any existing formatting tags (<font>, <i>, <b>)${context ? '\n9. Use the provided context to ensure dialogue flow and character continuity' : ''}${properNounRule}
 ${glossarySection ? '\nFollow all media context, characters, and glossary rules strictly.' : ''}
 
 Do NOT add acknowledgements, explanations, notes, or commentary.

@@ -288,5 +288,37 @@ test('TranslationEngine injects proper noun localization rule when enabled', () 
   assert.ok(jsonPrompt.includes('Adapt, transliterate, and phonetically translate character names'));
 });
 
+// 9. Audiovisual Translation (AVT) Cinematic Standards Tests
+test('Translation prompts include Audiovisual Translation (AVT) standards', () => {
+  const { DEFAULT_TRANSLATION_PROMPT } = require('./gemini');
+  assert.ok(DEFAULT_TRANSLATION_PROMPT.includes('IDIOMATIC & NATURAL DIALOGUE'));
+  assert.ok(DEFAULT_TRANSLATION_PROMPT.includes('TONE & PROFANITY FIDELITY'));
+  assert.ok(DEFAULT_TRANSLATION_PROMPT.includes('SUBTITLE BREVITY & TIMING'));
+
+  const mockGemini = {
+    apiKey: 'mock-key',
+    model: 'gemini-2.5-flash',
+    countTokensForTranslation: async () => 100,
+    buildUserPrompt: (text, lang, prompt) => ({ userPrompt: prompt })
+  };
+
+  const engine = new TranslationEngine(
+    mockGemini,
+    'gemini-2.5-flash',
+    { translationWorkflow: 'numbered' },
+    {}
+  );
+
+  const batchPrompt = engine.createBatchPrompt('1. Look at that guy.', 'Albanian', null, 1);
+  assert.ok(batchPrompt.includes('IDIOMATIC & NATURAL DIALOGUE'));
+  assert.ok(batchPrompt.includes('TONE & PROFANITY FIDELITY'));
+  assert.ok(batchPrompt.includes('SUBTITLE BREVITY & CONCISENESS'));
+
+  const xmlPrompt = engine.createXmlBatchPrompt('<s id="1">Look at that guy.</s>', 'Albanian', null, 1);
+  assert.ok(xmlPrompt.includes('IDIOMATIC & NATURAL DIALOGUE'));
+  assert.ok(xmlPrompt.includes('TONE & PROFANITY FIDELITY'));
+  assert.ok(xmlPrompt.includes('SUBTITLE BREVITY & CONCISENESS'));
+});
+
 
 

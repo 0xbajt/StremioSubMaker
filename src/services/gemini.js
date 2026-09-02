@@ -100,18 +100,18 @@ function isGeminiAuthFailure(error) {
   return isAuthReason || isAuthStatus || isAuthMessage;
 }
 
-// Default translation prompt (base - thinking rules added conditionally)
-const DEFAULT_TRANSLATION_PROMPT = `Translate the following subtitles while:
+// Default translation prompt adhering to Audiovisual Translation (AVT) standards
+const DEFAULT_TRANSLATION_PROMPT = `You are a professional audiovisual subtitle translator. Translate the following subtitles to {target_language} adhering to cinematic translation standards:
 
-1. Preserving the timing and structure exactly as given
-2. Maintaining natural dialogue flow and colloquialisms appropriate to the target language
-3. Keeping the same number of lines and line breaks
-4. Preserving any formatting tags or special characters
-5. Ensuring translations are contextually accurate for film/TV dialogue
+1. IDIOMATIC & NATURAL DIALOGUE: Translate idioms, metaphors, humor, sarcasm, and colloquialisms into natural, culturally authentic equivalents in {target_language}. Avoid literal word-for-word machine translation.
+2. TONE & PROFANITY FIDELITY: Preserve the exact emotional intensity, character voice, and expletives/profanity of the original dialogue without sanitization or softening.
+3. SUBTITLE BREVITY & TIMING: Keep phrasing concise, punchy, and readable within on-screen viewing durations while preserving meaning.
+4. STRUCTURE & FORMATTING: Keep the exact timing, numbering, line count, line breaks, and any HTML/formatting tags (<font>, <i>, <b>) intact.
+5. CONVERSATIONAL REGISTER: Maintain consistent character relationships and formal/informal address registers throughout.
 
 Translate to {target_language}.
 
-Do NOT include acknowledgements, explanations, notes or alternative translations.
+Do NOT include acknowledgements, explanations, notes, or alternative translations.
 
 Output ONLY the translated content, nothing else.`;
 
