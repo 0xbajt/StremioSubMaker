@@ -10612,7 +10612,7 @@ Translate to {target_language}.`;
         const bingeModeEl = document.getElementById('bingeModeEnabled');
         if (bingeModeEl) bingeModeEl.checked = currentConfig.bingeModeEnabled === true;
         const subtitleLabelStyleEl = document.getElementById('subtitleLabelStyle');
-        if (subtitleLabelStyleEl) subtitleLabelStyleEl.value = currentConfig.subtitleLabelStyle || 'iso_ai_tag';
+        if (subtitleLabelStyleEl) subtitleLabelStyleEl.value = currentConfig.subtitleLabelStyle || 'name_ai_tag';
 
         const forceSRTEl = document.getElementById('forceSRTOutput');
         const forceSRTElNoTranslation = document.getElementById('forceSRTOutputNoTranslation');
@@ -11101,7 +11101,7 @@ Translate to {target_language}.`;
             })(),
             subtitleLabelStyle: (function () {
                 const el = document.getElementById('subtitleLabelStyle');
-                return el ? el.value : (currentConfig?.subtitleLabelStyle || 'iso_ai_tag');
+                return el ? el.value : (currentConfig?.subtitleLabelStyle || 'name_ai_tag');
             })(),
             maxCharactersPerLine: (function () {
                 return currentConfig?.maxCharactersPerLine || 40;

@@ -618,10 +618,10 @@ function normalizeConfig(config) {
   mergedConfig.smartLineWrap = mergedConfig.smartLineWrap !== false;
   mergedConfig.localizeProperNouns = mergedConfig.localizeProperNouns === true;
   mergedConfig.bingeModeEnabled = mergedConfig.bingeModeEnabled === true;
-  const validLabelStyles = ['iso_ai_tag', 'iso_make_tag', 'classic', 'iso_only'];
+  const validLabelStyles = ['name_ai_tag', 'iso_ai_tag', 'iso_name_ai_tag', 'iso_make_tag', 'classic', 'iso_only'];
   mergedConfig.subtitleLabelStyle = validLabelStyles.includes(mergedConfig.subtitleLabelStyle)
     ? mergedConfig.subtitleLabelStyle
-    : 'iso_ai_tag';
+    : 'name_ai_tag';
   const rawCpl = parseInt(mergedConfig.maxCharactersPerLine, 10);
   mergedConfig.maxCharactersPerLine = Number.isFinite(rawCpl)
     ? Math.max(25, Math.min(70, rawCpl))
@@ -1359,7 +1359,7 @@ function getDefaultConfig(modelName = null) {
     maxCharactersPerLine: 40, // Target max characters per line for subtitle cues
     localizeProperNouns: false, // If true, phonetically transliterate/translate character names and proper nouns into target language spelling
     bingeModeEnabled: false, // If true, predictively pre-translates the next series episode in background for instant playback
-    subtitleLabelStyle: 'iso_ai_tag', // Track naming style: 'iso_ai_tag' (ISO + [AI Translate]), 'iso_make_tag' (ISO + [Make Lang]), 'classic' (Make Lang), 'iso_only' (ISO)
+    subtitleLabelStyle: 'name_ai_tag', // Track naming style: 'name_ai_tag' (Language Name - AI Translated), 'iso_ai_tag' (ISO + [AI Translate]), 'iso_name_ai_tag' (ISO + Name + [AI Translate]), 'iso_make_tag' (ISO + [Make Lang]), 'classic' (Make Lang), 'iso_only' (ISO)
     // If true, filter out SDH/HI (hearing impaired) subtitles from provider results
     excludeHearingImpairedSubtitles: false,
     // If true, include season pack subtitles in results (default: enabled for backwards compatibility)

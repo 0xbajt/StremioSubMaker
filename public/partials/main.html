@@ -1774,13 +1774,15 @@
                         <div class="form-group">
                             <label for="subtitleLabelStyle" class="form-label">
                                 <span class="label-title">🏷️ Subtitle Track Label Style</span>
-                                <span class="label-description">Choose how SubMaker names subtitle tracks in your video player. "ISO + AI Tag" prevents clients like Nuvio from hiding tracks when language filters are active.</span>
+                                <span class="label-description">Choose how SubMaker names subtitle categories and tracks in your video player.</span>
                             </label>
                             <select id="subtitleLabelStyle" class="styled-select">
-                                <option value="iso_ai_tag" selected>ISO + AI Tag (e.g. French - [AI Translate]) — Recommended for Nuvio & Stremio</option>
-                                <option value="iso_make_tag">ISO + Make Tag (e.g. French - [Make French])</option>
-                                <option value="classic">Classic Stremio (e.g. Make French)</option>
-                                <option value="iso_only">Pure ISO Code (e.g. fre)</option>
+                                <option value="name_ai_tag" selected>Language Name + AI Tag (e.g. Albanian - AI Translated / French - AI Translated)</option>
+                                <option value="iso_ai_tag">ISO + AI Tag (e.g. sqi - [AI Translate] / fre - [AI Translate])</option>
+                                <option value="iso_name_ai_tag">ISO + Full Name (e.g. sqi - Albanian [AI Translate])</option>
+                                <option value="iso_make_tag">ISO + Make Tag (e.g. sqi - [Make Albanian])</option>
+                                <option value="classic">Classic Stremio (e.g. Make Albanian)</option>
+                                <option value="iso_only">Pure ISO Code (e.g. sqi / fre)</option>
                             </select>
                         </div>
 

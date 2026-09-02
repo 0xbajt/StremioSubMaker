@@ -98,13 +98,15 @@ function resolveConfiguredSubtitleProviderTimeoutMs(config) {
 /**
  * Format subtitle track display language based on user's subtitleLabelStyle setting.
  * Supports:
- * - 'iso_ai_tag' (Default): 'fre - [AI Translate]' -> renders in player as 'French - [AI Translate]' (ISO compliant, Nuvio & Stremio friendly)
- * - 'iso_make_tag': 'fre - [Make French]' -> renders in player as 'French - [Make French]'
+ * - 'name_ai_tag' (Default): 'French - AI Translated' / 'Albanian - AI Translated' -> clean, human-readable category & track
+ * - 'iso_ai_tag': 'fre - [AI Translate]' -> ISO-first code + tag
+ * - 'iso_name_ai_tag': 'fre - French [AI Translate]' -> ISO + Full name + tag
+ * - 'iso_make_tag': 'fre - [Make French]' -> ISO + [Make Lang]
  * - 'classic': 'Make French' -> classic custom string
  * - 'iso_only': 'fre' -> pure ISO-639-2 code
  */
 function formatSubtitleTrackLabel(langCode, labelType, config = {}) {
-  const style = config.subtitleLabelStyle || 'iso_ai_tag';
+  const style = config.subtitleLabelStyle || 'name_ai_tag';
   const isoCode = normalizeLanguageCode(langCode) || langCode;
   const langName = getLanguageName(langCode) || langCode;
 
@@ -136,15 +138,39 @@ function formatSubtitleTrackLabel(langCode, labelType, config = {}) {
     }
   }
 
-  // Default: 'iso_ai_tag'
+  if (style === 'iso_name_ai_tag') {
+    switch (labelType) {
+      case 'make': return `${isoCode} - ${langName} [AI Translate]`;
+      case 'learn': return `${isoCode} - ${langName} [Learn]`;
+      case 'xsync': return `${isoCode} - ${langName} [xSync]`;
+      case 'auto': return `${isoCode} - ${langName} [Auto]`;
+      case 'xembed': return `${isoCode} - ${langName} [xEmbed]`;
+      case 'smdb': return `${isoCode} - ${langName} [SMDB]`;
+      default: return `${isoCode} - ${langName} [AI]`;
+    }
+  }
+
+  if (style === 'iso_ai_tag') {
+    switch (labelType) {
+      case 'make': return `${isoCode} - [AI Translate]`;
+      case 'learn': return `${isoCode} - [Learn]`;
+      case 'xsync': return `${isoCode} - [xSync]`;
+      case 'auto': return `${isoCode} - [Auto]`;
+      case 'xembed': return `${isoCode} - [xEmbed]`;
+      case 'smdb': return `${isoCode} - [SMDB]`;
+      default: return `${isoCode} - [AI]`;
+    }
+  }
+
+  // Default / 'name_ai_tag'
   switch (labelType) {
-    case 'make': return `${isoCode} - [AI Translate]`;
-    case 'learn': return `${isoCode} - [Learn]`;
-    case 'xsync': return `${isoCode} - [xSync]`;
-    case 'auto': return `${isoCode} - [Auto]`;
-    case 'xembed': return `${isoCode} - [xEmbed]`;
-    case 'smdb': return `${isoCode} - [SMDB]`;
-    default: return `${isoCode} - [AI]`;
+    case 'make': return `${langName} - AI Translated`;
+    case 'learn': return `${langName} - [Learn]`;
+    case 'xsync': return `${langName} - [xSync]`;
+    case 'auto': return `${langName} - [Auto]`;
+    case 'xembed': return `${langName} - [xEmbed]`;
+    case 'smdb': return `${langName} - [SMDB]`;
+    default: return `${langName} - [AI]`;
   }
 }
 
