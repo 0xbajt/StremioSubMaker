@@ -152,7 +152,7 @@ docker-compose logs -f submaker
 If you clone the repo, `docker-compose.yaml` defaults to building locally. To use the Docker Hub image instead, comment out `build: .` and uncomment the `image:` line.
 
 ```bash
-git clone https://github.com/xtremexq/StremioSubMaker.git
+git clone https://github.com/0xbajt/StremioSubMaker.git
 cd StremioSubMaker
 cp .env.example .env
 # edit .env with your keys

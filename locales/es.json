@@ -1397,8 +1397,8 @@
           "default": "Usar modelo por defecto"
         },
         "thinking": {
-          "label": "Thinking Budget (razonamiento extendido)",
-          "description": "0 = desactivado, -1 = dinámico (autoajuste) o un total fijo (1-32768). Valores altos = más razonamiento pero más lentos."
+          "label": "Esfuerzo de pensamiento (nivel de razonamiento)",
+          "description": "-1 = dinámico / medio (por defecto en 3.5 Flash), 0 = mínimo / desactivado (Lite) o personalizado (bajo / medio / alto)."
         },
         "temperature": {
           "label": "Temperatura (creatividad)",

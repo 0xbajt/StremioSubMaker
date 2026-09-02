@@ -196,7 +196,7 @@ Visit: **http://localhost:7001**
 Enable "Advanced Mode" in Other Settings to unlock:
 - Batch Context (surrounding context for coherence)
 - Mismatch Retries (retry on wrong entry count)
-- Gemini Parameters (temperature, top-p, thinking budget)
+- Gemini Parameters (temperature, top-p, thinking effort)
 
 ---
 

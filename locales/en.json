@@ -1432,7 +1432,7 @@
           "timeout": "Request timeout (s)",
           "retries": "Max retries",
           "reasoning": "Reasoning effort",
-          "thinking": "Thinking budget (tokens)",
+          "thinking": "Thinking effort / budget",
           "formality": "Formality",
           "preserveFormatting": "Preserve formatting",
           "preserveFormattingHint": "Keep line breaks, casing, and tags intact"

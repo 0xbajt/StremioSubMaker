@@ -184,16 +184,16 @@ Check "Advanced Mode" in Other Settings to unlock:
 - Batch Context settings
 - Mismatch Retries configuration
 - JSON Structured Output
-- Gemini Advanced Parameters (temperature, top-p, thinking budget)
+- Gemini Advanced Parameters (temperature, top-p, thinking effort)
 
 ### 📊 Parameters to Tune
 
 | Parameter | Default | Effect |
 |-----------|---------|--------|
-| Temperature | 0.8 | Higher = more creative, Lower = more consistent |
-| Top-P | 0.95 | Lower = more focused responses |
+| Temperature | 0.8 | Higher = more creative, Lower = more consistent (auto-optimized for Gemini 3.x) |
+| Top-P | 0.95 | Lower = more focused responses (auto-optimized for Gemini 3.x) |
 | Mismatch Retries | 1 | Retries when AI returns wrong entry count |
-| Thinking Budget | 0 | Extended reasoning tokens (0 = disabled) |
+| Thinking Effort | Dynamic (-1) / Minimal (0) | Extended reasoning levels for Gemini 3.x (`minimal`, `low`, `medium`, `high`) or token count |
 
 ---
 
@@ -208,7 +208,7 @@ Check "Advanced Mode" in Other Settings to unlock:
 
 ### 📧 Open a GitHub Issue
 
-[Open an issue](https://github.com/xtremexq/StremioSubMaker/issues) with:
+[Open an issue](https://github.com/0xbajt/StremioSubMaker/issues) with:
 - Description of the problem
 - Steps to reproduce
 - Browser and OS
