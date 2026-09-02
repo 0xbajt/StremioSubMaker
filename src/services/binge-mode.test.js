@@ -123,3 +123,21 @@ test('config includes bingeModeEnabled default and normalizes correctly', () => 
   const normalizedFalse = normalizeConfig({ bingeModeEnabled: false });
   assert.equal(normalizedFalse.bingeModeEnabled, false);
 });
+
+// 6. Binge Mode translation execution & scoping regression test
+test('handleTranslation with bingeModeEnabled initiates translation without ReferenceError for candidateVideoId', async () => {
+  const { handleTranslation } = require('../handlers/subtitles');
+  const config = normalizeConfig({
+    __configHash: 'test-config-hash-binge-123',
+    userHash: 'test-user-hash-binge-123',
+    geminiApiKey: 'mock-gemini-key',
+    bingeModeEnabled: true,
+    smartGlossaryEnabled: true
+  });
+
+  const result = await handleTranslation('mock_sub_id_binge', 'spa', config, {
+    videoId: 'tt1234567:1:1',
+    filename: 'Show.S01E01.mkv'
+  });
+  assert.ok(typeof result === 'string');
+});

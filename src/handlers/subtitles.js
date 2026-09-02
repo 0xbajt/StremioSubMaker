@@ -4909,7 +4909,7 @@ async function handleTranslation(sourceFileId, targetLanguage, config, options =
       sourceFileId,
       targetLanguage,
       config,
-      { cacheKey, runtimeKey, baseKey, sharedInFlightKey, videoId: fallbackVideoId },
+      { cacheKey, runtimeKey, baseKey, sharedInFlightKey, videoId: fallbackVideoId, isBingePrefetch: options.isBingePrefetch === true },
       effectiveUserHash,
       allowPermanent,
       sourceContent,
@@ -4995,11 +4995,12 @@ async function handleTranslation(sourceFileId, targetLanguage, config, options =
  * @param {string} userHash - User hash for concurrency tracking
  * @param {string} preDownloadedContent - Optional pre-downloaded source content (from pre-flight validation)
  */
-async function performTranslation(sourceFileId, targetLanguage, config, { cacheKey, runtimeKey, baseKey, sharedInFlightKey = null, videoId = null }, userHash, allowPermanent, preDownloadedContent = null, embeddedSource = null) {
+async function performTranslation(sourceFileId, targetLanguage, config, { cacheKey, runtimeKey, baseKey, sharedInFlightKey = null, videoId = null, isBingePrefetch = false }, userHash, allowPermanent, preDownloadedContent = null, embeddedSource = null) {
   let translationEngine = null;
   // Hoisted so the catch block can include them in error translationStats for history correction
   let providerName = '';
   let effectiveModel = '';
+  const candidateVideoId = videoId || config.videoId || config.lastStream?.videoId || null;
   try {
     log.debug(() => `[Translation] Background translation started for ${sourceFileId} to ${targetLanguage}`);
     cacheMetrics.apiCalls++;
@@ -5173,8 +5174,6 @@ async function performTranslation(sourceFileId, targetLanguage, config, { cacheK
       keys: Array.isArray(config.geminiApiKeys) ? config.geminiApiKeys.filter(k => typeof k === 'string' && k.trim()) : [],
       advancedSettings: config.advancedSettings || {}
     } : null;
-
-    const candidateVideoId = videoId || config.videoId || config.lastStream?.videoId;
 
     // Subtitle & Translation Intelligence: Resolve media context (characters, synopsis, lore)
     let mediaContext = null;
@@ -5562,7 +5561,7 @@ async function performTranslation(sourceFileId, targetLanguage, config, { cacheK
     log.debug(() => '[Translation] Translation cached and ready to serve');
 
     // Binge-Watching Mode: predictively pre-translate next episode in background
-    if (config.bingeModeEnabled === true && candidateVideoId && !options.isBingePrefetch) {
+    if (config.bingeModeEnabled === true && candidateVideoId && !isBingePrefetch) {
       try {
         const { scheduleNextEpisodePreTranslation } = require('../services/bingePredictiveWorker');
         scheduleNextEpisodePreTranslation({
