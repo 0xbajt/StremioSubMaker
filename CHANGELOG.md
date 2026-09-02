@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## SubMaker v1.4.93
+
+**New Features & Improvements:**
+
+- **Language Name + AI Tag Subtitle Label Style (e.g. `Albanian - AI Translated`):**
+  - Added clean full language name category and track formatting (`Language Name - AI Translated`), displaying human-friendly language headers in Stremio and Nuvio while maintaining full player compatibility.
+  - Added selectable track label styles in Dashboard Translation Settings.
+
+**Bug Fixes:**
+
+- **Fixed Scope Issue in Binge-Watching Background Worker (`candidateVideoId` & `isBingePrefetch`):**
+  - Fixed a JavaScript scoping bug in `performTranslation` where `candidateVideoId` was block-scoped inside the provider initialization block and `isBingePrefetch` was missing from parameter destructuring.
+  - Added automated regression unit test in `binge-mode.test.js` validating background episode prefetching without `ReferenceError`.
+
 ## SubMaker v1.4.92
 
 **New Features & Improvements:**
