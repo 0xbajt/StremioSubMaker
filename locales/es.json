@@ -729,6 +729,10 @@
           "label": "Inglés",
           "flag": "US"
         },
+        "sq": {
+          "label": "Albanés",
+          "flag": "AL"
+        },
         "es": {
           "label": "Español",
           "flag": "ES"
@@ -1337,8 +1341,43 @@
           "single": "Un solo bloque"
         },
         "jsonOutput": {
-          "label": "Enable JSON Structured Output (Beta)",
-          "description": "Request JSON array format from AI for unambiguous response parsing. May improve accuracy but not all providers support it. Disabled by default."
+          "label": "Habilitar salida estructurada JSON (Beta)",
+          "description": "Solicita a la IA formato de array JSON para un análisis inequívoco de las respuestas. Puede mejorar la precisión aunque no todos los proveedores lo admiten. Desactivado por defecto."
+        },
+        "smartGlossary": {
+          "label": "Glosario inteligente de contexto y lore",
+          "description": "Obtiene automáticamente título, nombres de personajes, reparto y sinopsis de la película/serie para inyectarlos en el prompt de la IA y traducir nombres propios y terminología con precisión."
+        },
+        "customGlossary": {
+          "label": "Glosario personalizado y términos bloqueados (opcional)",
+          "description": "Una regla por línea. Introduce términos para bloquear (ej. <code>Kwisatz Haderach</code>) o equivalencias (ej. <code>Spice -> Especia</code>).",
+          "placeholder": "Kwisatz Haderach\nSpice -> Especia"
+        },
+        "cleanSdh": {
+          "label": "Limpiar efectos SDH y subtítulos para sordos",
+          "description": "Elimina efectos de sonido ([música dramática], (gritos), notas ♪), etiquetas de personajes (JUAN:) y normaliza gritos en mayúsculas antes de traducir."
+        },
+        "smartLineWrap": {
+          "label": "Ajuste de línea inteligente y optimización CPL",
+          "description": "Aplica estándares de legibilidad de streaming (máx. 40 caracteres por línea, máx. 2 líneas por subtítulo) y equilibra los saltos de línea."
+        },
+        "localizeProperNouns": {
+          "label": "Localizar nombres propios y personajes",
+          "description": "Adapta nombres de personajes, lugares y términos propios a la pronunciación fonética o estándar en el idioma destino."
+        },
+        "bingeMode": {
+          "label": "🍿 Modo Maratón (Binge Mode - Pretraducción automática)",
+          "description": "Al ver series o anime, pretraduce predictivamente el siguiente episodio en segundo plano para que los subtítulos estén listos al instante (0 s de espera) al hacer clic en Siguiente episodio."
+        },
+        "subtitleLabelStyle": {
+          "label": "🏷️ Estilo de etiqueta de pista de subtítulo",
+          "description": "Elige cómo nombra SubMaker las categorías y pistas de subtítulos en tu reproductor de video.",
+          "nameAiTag": "Nombre de idioma + Etiqueta IA (ej. Español - AI Translated / Francés - AI Translated)",
+          "isoAiTag": "Código ISO + Etiqueta IA (ej. spa - [AI Translate] / fre - [AI Translate])",
+          "isoNameAiTag": "ISO + Nombre completo (ej. spa - Español [AI Translate])",
+          "isoMakeTag": "ISO + Etiqueta Make (ej. spa - [Make Español])",
+          "classic": "Stremio clásico (ej. Make Español)",
+          "isoOnly": "Código ISO puro (ej. spa / fre)"
         }
       },
       "multiProvider": {

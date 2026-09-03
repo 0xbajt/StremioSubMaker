@@ -19,35 +19,35 @@
     "Extension",
     "Autosync"
   ],
-  "lang": "en",
+  "lang": "sq",
   "messages": {
     "common": {
-      "selectOption": "Select an option"
+      "selectOption": "Zgjidh një opsion"
     },
     "manifest": {
-      "name": "SubMaker - Subtitle Translator",
-      "description": "Take control of your subtitles! Fetch and translate subtitles from OpenSubtitles, SubScene and SubDL with a free Gemini AI key or other AI providers, without ever leaving Stremio.\n\nSource languages: {sources}\nTarget languages: {targets}"
+      "name": "SubMaker - Përkthyes Titrash",
+      "description": "Merrni kontrollin e titrave tuaj! Merrni dhe përktheni titra nga OpenSubtitles, SubScene dhe SubDL me një çelës falas Gemini AI ose ofrues të tjerë të AI, pa u larguar kurrë nga Stremio.\n\nGjuhët burimore: {sources}\nGjuhët e synuara: {targets}"
     },
     "api": {
       "fileUpload": {
-        "missingConfig": "Missing config or videoId",
-        "loadFailed": "Failed to load file translation page"
+        "missingConfig": "Mungon konfigurimi ose videoId",
+        "loadFailed": "Dështoi ngarkimi i faqes së përkthimit të skedarit"
       }
     },
     "server": {
       "errors": {
-        "storageUnavailable": "Session storage temporarily unavailable, please retry.",
-        "configPayloadTooLarge": "Configuration payload too large",
-        "originNotAllowed": "Origin not allowed",
-        "stremioOnly": "Access denied. This addon must be accessed through Stremio.",
-        "stremioHint": "If you are using Stremio and seeing this error, please report it as a bug.",
-        "browserCorsBlocked": "Browser-based cross-origin requests to this API route are not allowed. Please use the Stremio client.",
-        "invalidConfigId": "Invalid addon configuration identifier",
-        "languagesFailed": "Failed to get languages",
-        "localeFailed": "Failed to load locale",
-        "missingConfig": "Missing config",
-        "invalidConfig": "Invalid or expired config",
-        "streamActivityFailed": "Failed to read stream activity",
+        "storageUnavailable": "Ruajtja e sesionit përkohësisht e padisponueshme, ju lutemi riprovoni.",
+        "configPayloadTooLarge": "Ngarkesa e konfigurimit është shumë e madhe",
+        "originNotAllowed": "Origjina nuk lejohet",
+        "stremioOnly": "Qasja u refuzua. Ky shtojcë duhet të hapet përmes Stremio.",
+        "stremioHint": "Nëse po përdorni Stremio dhe shihni këtë gabim, ju lutemi raportojeni si problem.",
+        "browserCorsBlocked": "Kërkesat ndër-origjinale nga shfletuesi për këtë rrugë API nuk lejohen. Ju lutemi përdorni klientin Stremio.",
+        "invalidConfigId": "Identifikues i pavlefshëm i konfigurimit të shtojcës",
+        "languagesFailed": "Dështoi marrja e gjuhëve",
+        "localeFailed": "Dështoi ngarkimi i gjuhës",
+        "missingConfig": "Mungon konfigurimi",
+        "invalidConfig": "Konfigurim i pavlefshëm ose i skaduar",
+        "streamActivityFailed": "Dështoi leximi i aktivitetit të transmetimit",
         "apiKeyRequired": "API key is required",
         "invalidSessionToken": "Invalid or expired session token",
         "modelsFailed": "Failed to fetch models: {reason}",
@@ -114,7 +114,11 @@
         "retranslateConcurrencyLimit": "Cannot retranslate: you have too many translations in progress. Please wait for them to complete.",
         "retranslateInProgress": "Cannot retranslate: translation is already in progress for this subtitle. Please wait for it to complete.",
         "retranslateRateLimit": "Rate limit reached: you can only retranslate {limit} times per {window} minutes.",
-        "retranslateFailed": "Retranslation failed: {reason}"
+        "retranslateFailed": "Retranslation failed: {reason}",
+        "noValidStreams": "Nuk u gjetën transmetime të vlefshme",
+        "saveFailed": "Dështoi ruajtja e konfigurimit",
+        "loadFailed": "Dështoi ngarkimi i konfigurimit",
+        "noPayload": "Nuk u dha asnjë konfigurim"
       },
       "retranslate": {
         "success": "Fresh translation started."
@@ -139,7 +143,7 @@
     },
     "apiErrors": {
       "geminiRateLimit": "Gemini usage limit reached. Check your API key usage/quota or use another key.",
-      "rateLimit": "{service} rate limit exceeded. Please wait a few minutes and try again.",
+      "rateLimit": "U tejkalua kufiri i kërkesave: Provoni përsëri pas {wait}s",
       "serviceUnavailable": "{service} temporarily unavailable. Please try again in a few minutes.",
       "databaseUnavailable": "Subtitle server database temporarily unavailable. Trying next subtitle...",
       "authFailed": "Authentication failed. Please check your API credentials.",
@@ -147,9 +151,19 @@
       "serverError": "{service} returned a server error. Please try again later.",
       "opensubsQuota": "OpenSubtitles daily download limit reached. Try again after the next UTC midnight.",
       "invalidRequest": "Invalid request. Please check your configuration.",
-      "timeout": "Request timed out. Please try again.",
+      "timeout": "Përkthimi zgjati shumë dhe skadoi",
       "network": "Network connection failed. Please check your internet connection.",
-      "dns": "Cannot reach service. DNS lookup failed."
+      "dns": "Cannot reach service. DNS lookup failed.",
+      "invalidKey": "Çelës API i pavlefshëm. Kontrolloni konfigurimin.",
+      "invalidModel": "Modeli '{model}' nuk ekziston ose nuk mbështetet.",
+      "quotaExceeded": "Kuota e API-së u tejkalua për {provider}.",
+      "badRequest": "Kërkesë e gabuar ({status}): {message}",
+      "emptyResponse": "Përgjigje boshe nga ofruesi i AI",
+      "parseFailed": "Dështoi analizimi i përgjigjes së AI",
+      "allBatchesFailed": "Të gjitha grupet e përkthimit dështuan",
+      "partialBatchesFailed": "{failed} nga {total} grupe dështuan",
+      "unknown": "Gabim i papritur: {message}",
+      "overloaded": "Shërbimi AI është i mbingarkuar përkohësisht. Ju lutemi provoni përsëri së shpejti."
     },
     "toolbox": {
       "documentTitle": "Sub Toolbox - SubMaker",
@@ -555,7 +569,9 @@
           "translateFallbackTarget": "targets"
         }
       },
-      "footnote": "Toolbox is tied to your current session and stream. Keep this tab open while streaming for the smoothest handoff."
+      "footnote": "Toolbox is tied to your current session and stream. Keep this tab open while streaming for the smoothest handoff.",
+      "title": "Kutia e Mjeteve SubMaker",
+      "subtitle": "Mjete të avancuara të përkthimit dhe modifikimit të titrave"
     },
     "validation": {
       "configRequired": "Configuration is required",
@@ -575,7 +591,13 @@
       "targetMissing": "At least one target language must be selected",
       "targetLimit": "Maximum of {limit} total target languages allowed (including Learn Mode)",
       "learnTargetMissing": "Learn Mode requires at least one target language",
-      "sessionTokenError": "Configuration Error: Session token not found or expired. Please reconfigure the addon to continue using it."
+      "sessionTokenError": "Configuration Error: Session token not found or expired. Please reconfigure the addon to continue using it.",
+      "selectLanguage": "Ju lutemi zgjidhni të paktën një gjuhë",
+      "duplicateLanguages": "Gjuha burimore dhe e synuar nuk mund të jenë të njëjta",
+      "apiKeyRequired": "Kërkohet një çelës API për ofruesin e zgjedhur",
+      "invalidUrl": "Ju lutemi jepni një URL të vlefshme",
+      "fileTooLarge": "Skedari është shumë i madh (maksimumi {max})",
+      "unsupportedFormat": "Format skedari i pambështetur"
     },
     "subtitle": {
       "loadingTitle": "TRANSLATION IN PROGRESS",
@@ -589,13 +611,13 @@
       "sessionErrorQuickFix": "Quick fix: Open this link to reinstall with fresh config:",
       "sessionErrorToken": "A fresh config was created. Use this token to reinstall:",
       "sessionErrorFooter": "Something is wrong or an update broke your SubMaker config. Sorry! Please reconfig and reinstall the addon.",
-      "osAuthFailTitle": "OpenSubtitles login failed",
-      "osAuthFailBody": "Please fix your username/password in addon config",
-      "osQuotaTitle": "OpenSubtitles daily download limit reached",
+      "osAuthFailTitle": "Autentifikimi i OpenSubtitles dështoi",
+      "osAuthFailBody": "Ju lutemi rregulloni emrin e përdoruesit/fjalëkalimin në konfigurimin e shtojcës",
+      "osQuotaTitle": "U tejkalua kuota e OpenSubtitles",
       "osQuotaBody": "OpenSubtitles daily download limit reached.\nWait until UTC midnight (00:00) or change to V3 on config page.",
       "osQuotaV3Hint": "Wait until UTC midnight (00:00) or change to V3 on config page.",
-      "osAuthMissingTitle": "OpenSubtitles credentials required",
-      "osAuthMissingBody": "Add your OpenSubtitles username/password in the addon config or switch to V3 (no login needed).",
+      "osAuthMissingTitle": "Mungojnë kredencialet e OpenSubtitles",
+      "osAuthMissingBody": "Shtoni emrin/fjalëkalimin e OpenSubtitles në konfigurim ose kaloni në V3 (nuk kërkohet hyrje).",
       "osV3RateTitle": "OpenSubtitles V3 download error (429)",
       "osV3RateBody": "Too many requests to the V3 service. Please wait a few minutes and try again.",
       "osV3UnavailableTitle": "OpenSubtitles V3 download error (503)",
@@ -645,8 +667,16 @@
       "subsourceTimeoutTitle": "SubSource download failed (timeout)",
       "subsourceTimeoutBody": "SubSource API did not respond in time. Try again in a few minutes or pick a different subtitle.",
       "invalidSubtitleTooSmall": "The subtitle file is too small and seems corrupted.",
-      "credDecryptFailTitle": "Configuration Issue Detected",
-      "credDecryptFailBody": "Your {fields} could not be loaded properly.\\nThis can happen after server updates.\\nPlease re-enter your credentials in the addon config page."
+      "credDecryptFailTitle": "Gabim në ngarkimin e kredencialeve",
+      "credDecryptFailBody": "{fields} tuaja nuk mund të ngarkoheshin siç duhet.\\nKjo mund të ndodhë pas përditësimeve të serverit.\\nJu lutemi rifutni kredencialet tuaja në faqen e konfigurimit.",
+      "translating": "Po përkthehet në {language}...",
+      "loading": "Po ngarkohen titrat...",
+      "ready": "Përkthimi gati",
+      "failed": "Përkthimi dështoi",
+      "retrying": "Po riprovohet përkthimi...",
+      "syncing": "Po sinkronizohet...",
+      "rateLimitTitle": "U tejkalua kufiri i kërkesave",
+      "rateLimitBody": "Ju lutemi prisni pak para se të kërkoni përsëri titra."
     },
     "subtitleErrors": {
       "invalidGenericReason": "The subtitle file appears to be invalid or incomplete.",
@@ -657,222 +687,222 @@
       "eyebrow": "Stream subtitles",
       "title": "Sources & Targets",
       "waiting": "Waiting for first fetch",
-      "toggleTitle": "Stream subtitles",
-      "refreshTitle": "Refresh subtitle list",
-      "closeTitle": "Close subtitle list",
-      "makeLanguage": "Make {language}",
-      "learnLanguage": "Learn {language}",
+      "toggleTitle": "Titrat e transmetimit",
+      "refreshTitle": "Rifresko listën e titrave",
+      "closeTitle": "Mbyll listën e titrave",
+      "makeLanguage": "Bëj {language}",
+      "learnLanguage": "Mëso {language}",
       "group": {
-        "source": "Source & Target",
-        "target": "Target Languages",
-        "translation": "Translation",
-        "other": "Other Entries",
-        "sourceHint": "Original + target subtitles",
-        "translationHint": "Spin up translations",
-        "otherHint": "xEmbed, Learn, xSync & tools"
+        "source": "Burimi dhe Synimi",
+        "target": "Gjuhët e Synuara",
+        "translation": "Përkthimi",
+        "other": "Zëra të Tjerë",
+        "sourceHint": "Titrat origjinalë + të synuar",
+        "translationHint": "Fillo përkthimet",
+        "otherHint": "xEmbed, Learn, xSync & mjete"
       },
       "actions": {
-        "translate": "Translate",
-        "translateThis": "Translate this subtitle",
-        "download": "Download translated subtitle",
-        "downloadShort": "Download",
-        "translating": "Translating...",
-        "retry": "Retry"
+        "translate": "Përkthe",
+        "translateThis": "Përkthe këtë titër",
+        "download": "Shkarko titrin e përkthyer",
+        "downloadShort": "Shkarko",
+        "translating": "Po përkthehet...",
+        "retry": "Ripravo"
       },
       "status": {
-        "waitingStream": "Waiting for a linked stream before loading subtitles.",
-        "loading": "Loading subtitles...",
-        "none": "No subtitles available for this stream yet.",
-        "loaded": "Loaded {count} subtitle entries.",
-        "translationReady": "Translation ready for {label}.",
-        "translationInProgress": "Translation in progress for {label}.",
-        "translationFailed": "Translation failed: {reason}",
-        "translationFailedShort": "Translation failed. Retry?",
-        "downloadFailed": "Download failed: {reason}",
-        "stillProcessing": "Still processing. Please retry shortly."
+        "waitingStream": "Po pritet për një transmetim të lidhur para ngarkimit të titrave.",
+        "loading": "Po ngarkohen titrat...",
+        "none": "Ende nuk ka titra të disponueshëm për këtë transmetim.",
+        "loaded": "U ngarkuan {count} titra.",
+        "translationReady": "Përkthimi gati për {label}.",
+        "translationInProgress": "Përkthimi në proces për {label}.",
+        "translationFailed": "Përkthimi dështoi: {reason}",
+        "translationFailedShort": "Përkthimi dështoi. Riprovoni?",
+        "downloadFailed": "Shkarkimi dështoi: {reason}",
+        "stillProcessing": "Ende në procesim. Ju lutemi riprovoni së shpejti."
       },
       "meta": {
-        "refreshing": "Refreshing...",
-        "updated": "Updated {time}",
-        "justNow": "just now",
-        "secondsAgo": "{seconds}s ago"
+        "refreshing": "Po rifreskohet...",
+        "updated": "Përditësuar {time}",
+        "justNow": "sapo",
+        "secondsAgo": "{seconds}s më parë"
       }
     },
     "history": {
-      "eyebrow": "Sub toolbox",
-      "documentTitle": "Translation History - SubMaker",
-      "title": "Translation History",
-      "subtitle": "Review translations performed across your tools",
-      "cachedLabel": "Cached",
+      "eyebrow": "Kutia e Mjeteve",
+      "documentTitle": "Historiku i Përkthimeve - SubMaker",
+      "title": "Historiku i Përkthimeve",
+      "subtitle": "Shikoni përkthimet e kryera në të gjitha mjetet tuaja",
+      "cachedLabel": "Në Memorie",
       "status": {
-        "completed": "Completed",
-        "failed": "Failed",
-        "processing": "Processing"
+        "completed": "Përfunduar",
+        "failed": "Dështuar",
+        "processing": "Në proces"
       },
       "retranslate": {
-        "button": "Retranslate",
-        "tooltip": "Start a fresh translation for this subtitle",
-        "loading": "Starting...",
-        "done": "Started",
-        "failed": "Failed",
-        "failedReason": "Retranslation failed",
-        "successHint": "Fresh translation started. This page will refresh to show the new entry.",
-        "missingParams": "Missing required parameters.",
+        "button": "Ripërkthe",
+        "tooltip": "Fillo një përkthim të ri për këtë titër",
+        "loading": "Po fillon...",
+        "done": "Filloi",
+        "failed": "Dështoi",
+        "failedReason": "Ripërkthimi dështoi",
+        "successHint": "Përkthimi i ri filloi. Kjo faqe do të rifreskohet për të treguar zërin e ri.",
+        "missingParams": "Mungojnë parametrat e kërkuar.",
         "errorGeneric": "Retranslation failed. Please try again."
       }
     },
     "config": {
-      "uiLanguageLabel": "Interface",
-      "uiLanguageAria": "UI language",
+      "uiLanguageLabel": "Ndërfaqja",
+      "uiLanguageAria": "Gjuha e ndërfaqes",
       "uiLanguages": {
         "en": {
-          "label": "English",
+          "label": "Anglisht",
           "flag": "US"
         },
         "sq": {
-          "label": "Albanian",
+          "label": "Shqip",
           "flag": "AL"
         },
         "es": {
-          "label": "Español",
+          "label": "Spanjisht",
           "flag": "ES"
         },
         "pt-br": {
-          "label": "Português (Brasil)",
+          "label": "Portugalisht (Brazil)",
           "flag": "BR"
         },
         "pt-pt": {
-          "label": "Português (Portugal)",
+          "label": "Portugalisht (Portugali)",
           "flag": "PT"
         },
         "ar": {
-          "label": "Arabic",
+          "label": "Arabisht",
           "flag": "SA"
         }
       },
       "heroTitle": "SubMaker",
-      "heroSubtitle": "AI-Powered Subtitle Translation",
-      "documentTitle": "SubMaker - Configure",
-      "quickStatsStatus": "Status",
-      "quickStatsConfigure": "Configure",
-      "quickStatsToolbox": "Toolbox",
-      "quickStatsLastSave": "Last Save",
-      "quickActionHelp": "Help",
+      "heroSubtitle": "Përkthim Titrash me Inteligjencë Artificiale",
+      "documentTitle": "SubMaker - Konfigurimi",
+      "quickStatsStatus": "Statusi",
+      "quickStatsConfigure": "Konfiguro",
+      "quickStatsToolbox": "Kutia e Mjeteve",
+      "quickStatsLastSave": "Ruajtja e Fundit",
+      "quickActionHelp": "Ndihmë",
       "partials": {
         "loadError": "Failed to load {src} ({status})",
         "loadFallback": "Failed to load {src}"
       },
       "footer": {
-        "love": "Made with <span class=\"footer-heart\">❤️</span> for Stremio users everywhere",
-        "thanks": "Thank you for using SubMaker! Your support helps make content accessible to everyone."
+        "love": "Krijuar me <span class=\"footer-heart\">❤️</span> për përdoruesit e Stremio kudo",
+        "thanks": "Faleminderit që përdorni SubMaker! Mbështetja juaj ndihmon që përmbajtja të jetë e qasshme për të gjithë."
       },
       "quickSetup": {
-        "title": "Quick Setup",
-        "entryDesc": "New here? Get started in under a minute",
-        "close": "Close",
-        "back": "← Back",
-        "next": "Next →",
-        "reviewInstall": "Review & Install →",
-        "stepOf": "Step {current} of {total}",
+        "title": "Konfigurim i Shpejtë",
+        "entryDesc": "I ri këtu? Fillo brenda më pak se një minute",
+        "close": "Mbyll",
+        "back": "← Prapa",
+        "next": "Tjetra →",
+        "reviewInstall": "Rishiko & Instalo →",
+        "stepOf": "Hapi {current} nga {total}",
         "step1": {
-          "title": "What would you like to do?",
-          "subtitle": "Choose how SubMaker should handle your subtitles",
-          "modeTranslateTitle": "Translate Subtitles",
-          "modeTranslateDesc": "Fetch subtitles and translate them to your language using AI",
-          "modeTranslateBadge": "Recommended",
-          "modeFetchTitle": "Just Fetch Subtitles",
-          "modeFetchDesc": "Download subtitles as-is, no AI translation needed"
+          "title": "Çfarë dëshironi të bëni?",
+          "subtitle": "Zgjidhni se si SubMaker duhet të trajtojë titrat tuaj",
+          "modeTranslateTitle": "Përkthe Titra",
+          "modeTranslateDesc": "Merr titra dhe përktheji në gjuhën tënde me AI",
+          "modeTranslateBadge": "E rekomanduar",
+          "modeFetchTitle": "Vetëm Merr Titra",
+          "modeFetchDesc": "Shkarko titra siç janë, pa pasur nevojë për përkthim me AI"
         },
         "step2": {
-          "title": "Subtitle Sources",
-          "subtitle": "Where should SubMaker fetch subtitles from?",
-          "autoEnabled": "Auto-enabled",
-          "opensubsDesc": "The largest subtitle database — no API key needed",
-          "opensubsAuthToggle": "🔓 I have an OpenSubtitles account",
-          "optional": "optional",
-          "opensubsUsernamePlaceholder": "OpenSubtitles username",
-          "opensubsPasswordPlaceholder": "OpenSubtitles password",
-          "testBtn": "Test",
-          "opensubsRateNote": "20 subtitles a day.",
-          "opensubsCreateAccount": "Create a free account",
-          "opensubsCreateAccountSuffix": "if you don't have one.",
-          "opensubsAuthHint": "Logged-in users get higher rate limits and VIP features.",
-          "optionalLabel": "Optional",
-          "subdlDesc": "Additional subtitle source for wider coverage",
-          "subdlKeyPlaceholder": "Enter SubDL API key",
-          "subdlGetKey": "Get your free API key at SubDL.com",
-          "subsourceDesc": "Community-driven subtitle provider",
-          "subsourceKeyPlaceholder": "Enter SubSource API key",
-          "subsourceGetKey": "Get your free API key at SubSource.net",
-          "noKeyNeeded": "No key needed",
-          "keyRequired": "Key required",
+          "title": "Burimet e Titrave",
+          "subtitle": "Nga ku duhet t'i marrë titrat SubMaker?",
+          "autoEnabled": "Aktivizuar automatikisht",
+          "opensubsDesc": "Baza më e madhe e të dhënave të titrave — nuk nevojitet çelës API",
+          "opensubsAuthToggle": "🔓 Kam një llogari në OpenSubtitles",
+          "optional": "opsionale",
+          "opensubsUsernamePlaceholder": "Përdoruesi në OpenSubtitles",
+          "opensubsPasswordPlaceholder": "Fjalëkalimi në OpenSubtitles",
+          "testBtn": "Testo",
+          "opensubsRateNote": "20 titra në ditë.",
+          "opensubsCreateAccount": "Krijo llogari falas",
+          "opensubsCreateAccountSuffix": "nëse nuk keni një të tillë.",
+          "opensubsAuthHint": "Përdoruesit e identifikuar marrin kufij më të lartë dhe veçori VIP.",
+          "optionalLabel": "Opsionale",
+          "subdlDesc": "Burim shtesë titrash për mbulim më të gjerë",
+          "subdlKeyPlaceholder": "Fut çelësin API të SubDL",
+          "subdlGetKey": "Merr çelësin falas në SubDL.com",
+          "subsourceDesc": "Ofrues titrash i drejtuar nga komuniteti",
+          "subsourceKeyPlaceholder": "Fut çelësin API të SubSource",
+          "subsourceGetKey": "Merr çelësin falas në SubSource.net",
+          "noKeyNeeded": "Nuk nevojitet çelës",
+          "keyRequired": "Kërkohet çelës",
           "scsName": "Stremio Community Subs",
-          "scsDesc": "Community-curated subtitles from the Stremio community",
-          "scsCommunityBadge": "Community/Auth",
-          "scsCommunityMode": "Community token",
-          "scsAuthMode": "Auth key",
-          "scsKeyPlaceholder": "Enter SCS auth key",
-          "scsKeyNote": "Use your own SCS auth key for faster language-filtered requests.",
-          "scsModeNote": "Community mode uses SubMaker's shared token; Auth mode sends only your selected languages.",
+          "scsDesc": "Titra të zgjedhur nga komuniteti i Stremio",
+          "scsCommunityBadge": "Komunitet/Autentifikim",
+          "scsCommunityMode": "Token komuniteti",
+          "scsAuthMode": "Çelës autentifikimi",
+          "scsKeyPlaceholder": "Fut çelësin SCS",
+          "scsKeyNote": "Përdorni çelësin tuaj SCS për kërkesa më të shpejta të filtruara sipas gjuhës.",
+          "scsModeNote": "Mënyra e komunitetit përdor tokenin e përbashkët të SubMaker; Mënyra e autentifikimit dërgon vetëm gjuhët e zgjedhura.",
           "wyzieName": "Wyzie Subs",
-          "wyzieDesc": "Free subtitle aggregator with a free API key",
-          "wyzieKeyPlaceholder": "Enter Wyzie API key",
-          "wyzieGetKey": "Get your free API key at sub.wyzie.io/redeem",
-          "wyzieSources": "Sources:",
-          "wyzieMoreSources": "More sources = more subtitles but slower"
+          "wyzieDesc": "Grumbullues falas i titrave me çelës API falas",
+          "wyzieKeyPlaceholder": "Fut çelësin API të Wyzie",
+          "wyzieGetKey": "Merr çelësin falas në sub.wyzie.io/redeem",
+          "wyzieSources": "Burimet:",
+          "wyzieMoreSources": "Më shumë burime = më shumë titra, por më ngadalë"
         },
         "step3": {
-          "title": "AI Translation",
-          "subtitle": "Set up Gemini AI for translating your subtitles",
-          "poweredBy": "Powered by Google Gemini",
-          "poweredByDesc": "SubMaker uses {model} for fast, accurate subtitle translations. You'll need a free API key from Google AI Studio.",
-          "geminiKeyLabel": "Gemini API Key",
+          "title": "Përkthimi me AI",
+          "subtitle": "Konfiguroni Gemini AI për të përkthyer titrat tuaj",
+          "poweredBy": "Mundësuar nga Google Gemini",
+          "poweredByDesc": "SubMaker përdor {model} për përkthim të shpejtë dhe të saktë. Ju duhet një çelës API falas nga Google AI Studio.",
+          "geminiKeyLabel": "Çelësi API i Gemini",
           "required": "*",
-          "geminiKeyPlaceholder": "Enter your Gemini API key",
-          "getKeyLink": "🔑 Get a free API key from Google AI Studio →",
-          "defaultModel": "Model:",
+          "geminiKeyPlaceholder": "Futni çelësin tuaj Gemini API",
+          "getKeyLink": "🔑 Merrni një çelës falas nga Google AI Studio →",
+          "defaultModel": "Modeli:",
           "defaultModelValue": "{model}",
-          "defaultFallback": "Google Translate fallback:",
-          "defaultFallbackValue": "Enabled"
+          "defaultFallback": "Rezervë nga Google Translate:",
+          "defaultFallbackValue": "Aktivizuar"
         },
         "step4": {
-          "titleTranslate": "Choose Your Target Language",
-          "subtitleTranslate": "What language do you want your subtitles translated to?",
-          "titleFetch": "Choose Subtitle Languages",
-          "subtitleFetch": "What languages do you want to fetch subtitles in?",
-          "sourceLangLabel": "Source language:",
-          "sourceLangsLabel": "Source languages:",
-          "sourceLangChange": "change",
-          "sourceLangInfo": "Source language: <strong>English</strong> (fixed)",
-          "searchPlaceholder": "Search languages...",
-          "loading": "Loading languages...",
-          "noSelection": "No languages selected yet"
+          "titleTranslate": "Zgjidhni Gjuhën Tuaj të Synuar",
+          "subtitleTranslate": "Në cilën gjuhë dëshironi të përkthehen titrat tuaj?",
+          "titleFetch": "Zgjidhni Gjuhët e Titrave",
+          "subtitleFetch": "Në cilat gjuhë dëshironi të merrni titra?",
+          "sourceLangLabel": "Gjuha burimore:",
+          "sourceLangsLabel": "Gjuhët burimore:",
+          "sourceLangChange": "ndrysho",
+          "sourceLangInfo": "Gjuha burimore: <strong>Anglisht</strong> (e fiksuar)",
+          "searchPlaceholder": "Kërko gjuhë...",
+          "loading": "Po ngarkohen gjuhët...",
+          "noSelection": "Ende nuk është zgjedhur asnjë gjuhë"
         },
         "step5": {
-          "title": "Extras",
-          "subtitle": "Optional features to enhance your experience",
-          "toolboxTitle": "Sub Toolbox",
-          "toolboxDesc": "Translate files, extract embedded subtitles, sync subtitles, and more — right on your browser",
-          "seasonPacksTitle": "Season Pack Subtitles",
-          "seasonPacksDesc": "Fetch and extract subtitles from full season packs for bigger coverage",
-          "hideSdhTitle": "Hide SDH/HI Subtitles",
-          "hideSdhDesc": "Exclude subtitles with hearing-impaired annotations (SDH/HI)",
+          "title": "Opsione Shtesë",
+          "subtitle": "Veçori opsionale për të përmirësuar përvojën tuaj",
+          "toolboxTitle": "Kutia e Mjeteve (Sub Toolbox)",
+          "toolboxDesc": "Qasje në mjetet e përkthimit të skedarëve SRT, nxjerrjes së titrave dhe sinkronizimit",
+          "seasonPacksTitle": "Paketat e Sezonit (Season Packs)",
+          "seasonPacksDesc": "Kërko titra për të gjithë sezonin nga OpenSubtitles",
+          "hideSdhTitle": "Fshih Titrat SDH / HI",
+          "hideSdhDesc": "Fshih titrat për personat me dëgjim të kufizuar kur kërkohen titra origjinalë",
           "learnTitle": "Learn Languages",
           "learnDesc": "Add dual-language subtitle entries for language learning — shows both source and translated lines side by side"
         },
         "step6": {
-          "title": "Choose Learn Languages",
-          "subtitle": "Which languages do you want to learn? Dual-language subtitles will be created for each.",
-          "noSelection": "No learn languages selected yet"
+          "title": "Zgjidhni Gjuhët për të Mësuar",
+          "subtitle": "Cilat gjuhë dëshironi të mësoni? Për secilën do të krijohen titra të dyfishtë.",
+          "noSelection": "Nuk është zgjedhur ende asnjë gjuhë mësimi"
         },
         "step7": {
-          "title": "You're All Set! 🎉",
-          "subtitle": "Here's a summary of your configuration",
-          "installUrlLabel": "Install URL",
-          "saveInstall": "Save & Install on Stremio",
-          "copyInstallUrl": "Copy Install URL",
-          "openAdvanced": "⚙️ Open Advanced Settings",
-          "installOnStremio": "Install on Stremio"
+          "title": "Gjithçka është Gati! 🎉",
+          "subtitle": "Ja një përmbledhje e konfigurimit tuaj",
+          "installUrlLabel": "URL-ja e Instalimit",
+          "saveInstall": "Ruaj & Instalo në Stremio",
+          "copyInstallUrl": "Kopjo URL-në e Instalimit",
+          "openAdvanced": "⚙️ Hap Cilësimet e Avancuara",
+          "installOnStremio": "Instalo në Stremio"
         },
         "instructions": {
           "link": "SubMaker Instructions",
@@ -889,29 +919,29 @@
           "tip": "<strong>Tip:</strong> Check for sync drift around the middle and end of the source subtitles before translating."
         },
         "summary": {
-          "mode": "Mode",
-          "modeTranslate": "Translate Subtitles",
-          "modeFetch": "Just Fetch Subtitles",
-          "opensubsAuth": "Auth (logged in)",
-          "opensubsV3": "V3 (no login)",
-          "enabled": "Enabled",
-          "disabled": "Disabled",
-          "scsAuth": "Auth key",
-          "scsCommunity": "Community token",
-          "wyzieSources": "Enabled ({count} sources)",
-          "aiTranslation": "AI Translation",
+          "mode": "Mënyra",
+          "modeTranslate": "Përkthe Titra",
+          "modeFetch": "Vetëm Merr Titra",
+          "opensubsAuth": "Autentifikuar (i identifikuar)",
+          "opensubsV3": "V3 (pa hyrje)",
+          "enabled": "Aktivizuar",
+          "disabled": "Çaktivizuar",
+          "scsAuth": "Çelës autentifikimi",
+          "scsCommunity": "Token komuniteti",
+          "wyzieSources": "Aktivizuar ({count} burime)",
+          "aiTranslation": "Përkthim me AI",
           "aiConfigured": "{model}",
-          "aiNotConfigured": "Not configured",
-          "sourceLanguages": "Source Languages",
-          "targetLanguages": "Target Languages",
-          "subtitleLanguages": "Subtitle Languages",
-          "none": "None",
-          "seasonPacks": "Season Packs",
-          "hideSdh": "Hide SDH/HI",
-          "learnLanguages": "Learn Languages"
+          "aiNotConfigured": "E pakonfiguruar",
+          "sourceLanguages": "Gjuhët Burimore",
+          "targetLanguages": "Gjuhët e Synuara",
+          "subtitleLanguages": "Gjuhët e Titrave",
+          "none": "Asnjë",
+          "seasonPacks": "Paketat e Sezonit",
+          "hideSdh": "Fshih SDH/HI",
+          "learnLanguages": "Gjuhët e Mësimit"
         },
         "status": {
-          "saving": "Saving configuration...",
+          "saving": "Po ruhet konfigurimi...",
           "savedOk": "✓ Configuration saved successfully!",
           "copiedOk": "✓ Install URL copied to clipboard!",
           "openingStremio": "Opening Stremio...",
@@ -925,17 +955,23 @@
           "testingBtn": "Testing...",
           "validBtn": "Valid",
           "failedBtn": "Failed",
-          "validationFailed": "Validation failed"
+          "validationFailed": "Validation failed",
+          "saved": "Konfigurimi u ruajt me sukses!",
+          "failed": "Dështoi ruajtja e konfigurimit",
+          "copied": "URL-ja e instalimit u kopjua!",
+          "copyFailed": "Dështoi kopjimi i URL-së"
         }
       },
       "actions": {
-        "openToolbox": "Open Sub Toolbox",
+        "openToolbox": "Hap Kutinë e Mjeteve",
         "openToolboxInline": "Open Subtitles Toolbox",
         "openToolboxBtn": "Open Subtitles Toolbox",
-        "save": "Save Configuration",
-        "install": "Install in Stremio",
+        "save": "Ruaj Konfigurimin",
+        "install": "Instalo në Stremio",
         "copy": "Copy Install URL",
-        "installLabel": "Install URL"
+        "installLabel": "Install URL",
+        "copyUrl": "Kopjo URL",
+        "reset": "Rivendos të Paracaktuarat"
       },
       "overlays": {
         "keyboardHint": "Press <span class=\"kbd\">?</span> for keyboard shortcuts",
@@ -944,25 +980,25 @@
           "gotIt": "Got it!"
         },
         "instructions": {
-          "eyebrow": "SubMaker Guide",
-          "title": "How SubMaker Works in Stremio & Nuvio",
-          "closeAria": "Close instructions",
-          "intro": "Translate subtitles into your language instantly with AI, enjoy automated episode prefetching with <strong>Binge Mode</strong>, and customize your subtitle experience across any video player.",
-          "usageTitle": "⚡ Quick 3-Step Setup",
-          "step1": "Add your <strong>Gemini API key</strong> (free from Google AI Studio) or enable alternative AI providers (Claude, OpenAI, DeepSeek, Grok).",
-          "step2": "Pick your <strong>Source Languages</strong> (e.g. English) and <strong>Target Languages</strong> (the language you want to watch in).",
-          "step3": "Click <strong>\"Install in Stremio\"</strong> (or copy the manifest link for Nuvio/mobile) and open any movie or series stream.",
-          "stremioTitle": "🍿 Translating in Your Player",
-          "stremioBody": "1. Open the subtitles list in Stremio or Nuvio.<br>2. Select the translated track option (e.g. <strong>\"Albanian - AI Translated\"</strong> or <strong>\"[AI Translate]\"</strong>).<br>3. The AI translates in the background while progressive chunks stream in within 15 seconds. Reselect to load the complete translated subtitles!",
-          "whenTitle": "⚡ Predictive Binge-Watching",
-          "whenBody": "When watching TV shows or anime, <strong>Binge Mode</strong> automatically pre-translates and caches the next episode in the background. When you click \"Next Episode\", subtitles are already 100% ready with <strong>0-second wait time</strong>!",
-          "quickTipTitle": "🔄 Instant Retranslation",
-          "quickTipBody": "If a subtitle seems out of sync or you want a fresh translation, <strong>triple-click</strong> the subtitle track within 6 seconds to force an immediate re-translation and cache refresh.",
-          "deliveryTitle": "🧠 Subtitle Intelligence",
-          "ps": "SubMaker automatically strips non-speech audio cues (<code>[cheering]</code>, <code>♪ music ♪</code>), balances lines at 40 CPL, localizes proper nouns, and injects character/lore context from IMDb/TMDB.",
-          "onlyOneSourceTitle": "🎯 Pro Sync Tip",
-          "onlyOneSourceBody": "Because translation lists follow the same order as source subtitles, test the original subtitle for sync first (check near the beginning and middle) before translating, ensuring flawless timing.",
-          "syncTipBody": "<strong>Nuvio tip:</strong> Under Translation Settings, keep <em>Subtitle Track Label Style</em> set to <strong>\"Language Name + AI Tag\"</strong> or <strong>\"Pure ISO Code\"</strong> so Nuvio's language filter doesn't hide your tracks."
+          "eyebrow": "Udhëzuesi i SubMaker",
+          "title": "Si funksionon SubMaker në Stremio dhe Nuvio",
+          "closeAria": "Mbyll udhëzimet",
+          "intro": "Përktheni titrat në gjuhën tuaj menjëherë me AI, shijoni ngarkimin automatik të episodeve me <strong>Mënyrën e Shikimit Pa Ndërprerje (Binge Mode)</strong> dhe personalizoni përvojën tuaj të titrave në çdo luajtës videoje.",
+          "usageTitle": "⚡ Konfigurim i Shpejtë në 3 Hapa",
+          "step1": "Shtoni <strong>çelësin tuaj Gemini API</strong> (falas nga Google AI Studio) ose aktivizoni ofrues të tjerë AI (Claude, OpenAI, DeepSeek, Grok).",
+          "step2": "Zgjidhni <strong>gjuhët burimore</strong> (p.sh. Anglisht) dhe <strong>gjuhët e synuara</strong> (gjuha në të cilën dëshironi të shikoni).",
+          "step3": "Klikoni <strong>\"Instalo në Stremio\"</strong> (ose kopjoni lidhjen e manifestit për Nuvio/pajisje celulare) dhe hapni çdo video.",
+          "stremioTitle": "🍿 Përkthimi në Luajtësin Tuaj",
+          "stremioBody": "1. Hapni listën e titrave në Stremio ose Nuvio.<br>2. Zgjidhni pistën e përkthyer (p.sh. <strong>\"Shqip - AI Translated\"</strong> ose <strong>\"[AI Translate]\"</strong>).<br>3. AI përkthen në sfond dhe pjesët e para mbërrijnë brenda 15 sekondave. Rizgjidhni pistën për të ngarkuar titrat e plotë!",
+          "whenTitle": "⚡ Shikim Pa Ndërprerje Parashikues (Binge Mode)",
+          "whenBody": "Kur shikoni seriale ose anime, <strong>Binge Mode</strong> parapërkthen dhe ruan në memorien e përkohshme episodin tjetër automatikisht. Kur klikoni \"Episodi Tjetër\", titrat janë 100% gati me <strong>0 sekonda pritje</strong>!",
+          "quickTipTitle": "🔄 Ripërkthim i Menjëhershëm",
+          "quickTipBody": "Nëse një titër duket i pasinkronizuar ose dëshironi një përkthim të freskët, klikoni <strong>tri herë shpejt</strong> mbi pistën e titrave brenda 6 sekondave për të detyruar një ripërkthim të menjëhershëm dhe rifreskim të memories.",
+          "deliveryTitle": "🧠 Inteligjenca e Titrave",
+          "ps": "SubMaker heq automatikisht efektet zanore jo-fjalë (<code>[duartrokitje]</code>, <code>♪ muzikë ♪</code>), balancon rreshtat në 40 karaktere, lokalizon emrat e përveçëm dhe fut kontekstin e personazheve nga IMDb/TMDB.",
+          "onlyOneSourceTitle": "🎯 Këshillë Profesionale për Sinkronizimin",
+          "onlyOneSourceBody": "Meqenëse listat e përkthimit ndjekin të njëjtin rend si titrat origjinalë, provoni sinkronizimin e titrit origjinal para se të përktheni për të garantuar kohë perfekte.",
+          "syncTipBody": "<strong>Këshillë për Nuvio:</strong> Nën Cilësimet e Përkthimit, mbajeni <em>Stilin e Etiketës</em> të caktuar në <strong>\"Emri i Gjuhës + Etiketa AI\"</strong> ose <strong>\"Vetëm Kodi ISO\"</strong> që filtri i Nuvio të mos i fshehë pistat tuaja."
         },
         "toolbox": {
           "title": "🧰 Sub Toolbox Instructions",
@@ -998,7 +1034,11 @@
         "languagesDescription": "Choose your source and target languages for fetching and translations.",
         "languagesDescriptionNoTranslation": "Choose which subtitle languages you want to fetch!",
         "settingsTitle": "Settings",
-        "settingsDescription": "Adjust translation behavior and other preferences."
+        "settingsDescription": "Adjust translation behavior and other preferences.",
+        "sources": "Ofruesit e Titrave",
+        "ai": "Ofruesi i Inteligjencës Artificiale",
+        "languages": "Konfigurimi i Gjuhëve",
+        "advanced": "Cilësime të Avancuara"
       },
       "opensubs": {
         "title": "OpenSubtitles",
@@ -1172,6 +1212,22 @@
           "note": "Lower = faster responses but may miss slow providers. Higher = more reliable but slower. Default: 12s",
           "ariaLabel": "Subtitle provider timeout",
           "slowWarning": "Wyzie and SubSource might be slow. If you get no subtitle results, try a higher timeout value."
+        },
+        "gemini": {
+          "label": "Google Gemini",
+          "description": "Ofruesi kryesor i rekomanduar me kuota bujare falas dhe cilësi të lartë."
+        },
+        "openai": {
+          "label": "OpenAI"
+        },
+        "anthropic": {
+          "label": "Anthropic (Claude)"
+        },
+        "deepseek": {
+          "label": "DeepSeek"
+        },
+        "xai": {
+          "label": "xAI (Grok)"
         }
       },
       "providersUi": {
@@ -1288,117 +1344,124 @@
         "quickPopular": "Popular",
         "quickAll": "All",
         "quickClear": "Clear",
-        "sourceTitle": "Source Languages",
+        "sourceTitle": "Gjuhët Burimore",
         "sourceLabel": "* Source languages for translations",
-        "targetTitle": "Target Languages",
+        "targetTitle": "Gjuhët e Synuara",
         "targetLabel": "* Target languages for subtitles and translations",
         "learnTitle": "Learn Target Languages",
         "learnLabel": "Select Learn Mode Languages",
-        "learnDescription": "Creates \"Learn (Language)\" entries that pair source + translated lines in WebVTT. Select target \"Learn\" languages above after enabling."
+        "learnDescription": "Creates \"Learn (Language)\" entries that pair source + translated lines in WebVTT. Select target \"Learn\" languages above after enabling.",
+        "sourceDescription": "Zgjidhni gjuhët e titrave origjinalë që dëshironi të merrni (Rekomandohet 1 gjuhë).",
+        "targetDescription": "Zgjidhni gjuhët në të cilat dëshironi që SubMaker të përkthejë titrat.",
+        "noTranslationTitle": "Gjuhët pa Përkthim",
+        "noTranslationDescription": "Gjuhë shtesë për t'u shkarkuar/shfaqur pa krijuar pista përkthimi me AI."
       },
       "learnMode": {
         "label": "Learn Mode",
-        "description": "Adds \"Learn (Language)\" entries that output dual-language WebVTT with source and translated lines for language learning. After enabling, set Target Learn Languages in the \"Languages\" section above.",
-        "orderLabel": "Learn Mode Subtitle Order",
-        "orderDescription": "Choose which language appears at the top and bottom of the screen.",
-        "sourceTop": "Source Top - Target Bottom",
-        "targetTop": "Target Top - Source Bottom",
-        "italicLabel": "Italicize one language",
-        "italicDescription": "Italicize one of the subtitle lines to visually distinguish the two languages.",
-        "italicTarget": "Italicize Target (learned language)",
-        "italicSource": "Italicize Source (original language)"
+        "description": "Krijon titra me dy gjuhë (dyfishtë) për të ndihmuar në mësimin e gjuhëve të reja gjatë shikimit.",
+        "orderLabel": "Rendi i Titrave të Dyfishtë",
+        "orderDescription": "Zgjidhni cila gjuhë shfaqet sipër dhe cila poshtë në ekran.",
+        "sourceTop": "Burimi Sipër - Synimi Poshtë",
+        "targetTop": "Synimi Sipër - Burimi Poshtë",
+        "italicLabel": "Shkruaj njërën gjuhë me shkronja të pjerrëta (Italic)",
+        "italicDescription": "Vendos me shkronja të pjerrëta njërën nga linjat e titrave për të dalluar vizualisht të dyja gjuhët.",
+        "italicTarget": "Pjerrësi në Gjuhën e Synuar (gjuha që po mësoni)",
+        "italicSource": "Pjerrësi në Gjuhën Burimore (gjuha origjinale)",
+        "title": "Mënyra e Mësimit të Gjuhëve (Learn Mode)",
+        "languagesLabel": "Gjuhët për t'u mësuar",
+        "languagesDescription": "Zgjidhni gjuhët që dëshironi të mësoni. Për secilën gjuhë do të krijohet një titër i dyfishtë."
       },
       "translationSettings": {
-        "title": "Translation Settings",
+        "title": "Cilësimet e Përkthimit",
         "workflow": {
-          "label": "Translation Workflow",
-          "description": "Switching between modes is recommended if you have translation sync problems.",
-          "tooltip": "\"Original Timestamps\" sends a numbered list and reattaches original timecodes. \"Send Timestamps to AI\" sends full SRT and trusts the AI to preserve timecodes. \"XML Tags\" wraps each entry in <s id=\"N\"> tags for robust ID-based recovery. \"JSON\" sends and receives structured arrays for unambiguous parsing.",
-          "original": "Original Timestamps (Legacy)",
-          "ai": "Send Timestamps to AI",
-          "xml": "XML Tags (Default)",
-          "json": "JSON (Structured)"
+          "label": "Rrjedha e Përkthimit",
+          "description": "Kalimi midis mënyrave rekomandohet nëse keni probleme me sinkronizimin e përkthimit.",
+          "tooltip": "\"Vula Kohore Origjinale\" dërgon një listë të numëruar dhe rivendos vulat kohore origjinale pas përkthimit. \"Dërgo Vula Kohore tek AI\" dërgon SRT të plotë dhe i beson AI për ruajtjen e kohës. \"Etiketat XML\" mbështjell çdo rresht me etiketat <s id=\"N\"> për rikuperim të sigurt sipas ID-së. \"JSON\" dërgon dhe merr vargje të strukturuara për lexim pa paqartësi.",
+          "original": "Vula Kohore Origjinale (Trashëgimi)",
+          "ai": "Dërgo Vula Kohore tek AI",
+          "xml": "Etiketat XML (E parazgjedhur)",
+          "json": "JSON (I strukturuar)"
         },
         "jsonOutput": {
-          "label": "Enable JSON Structured Output (Beta)",
-          "description": "Request JSON array format from AI for unambiguous response parsing. May improve accuracy but not all providers support it. Disabled by default."
+          "label": "Aktivizo Daljen e Strukturuar JSON (Beta)",
+          "description": "Kërko formatin e vargut JSON nga AI për lexim të saktë të përgjigjeve. Mund të përmirësojë saktësinë, por jo të gjithë ofruesit e mbështesin. Çaktivizuar si parazgjedhje."
         },
         "promptStyle": {
-          "label": "Prompt Style",
-          "description": "Choose between strict structure preservation or natural flow adaptation",
+          "label": "Stili i Udhëzimit (Prompt)",
+          "description": "Zgjidhni midis ruajtjes strikte të strukturës ose përshtatjes natyrale të rrjedhës",
           "options": {
-            "natural": "Natural - Adapts structure for natural target language flow",
-            "strict": "Strict - Preserves exact timing and structure"
+            "natural": "Natyrale - Përshtat strukturën për rrjedhë natyrale në gjuhën e synuar",
+            "strict": "Strikte - Ruan kohën dhe strukturën e saktë"
           }
         },
         "database": {
-          "label": "SubMaker Database",
-          "description": "SubMaker's database caches translations permanently to reduce community AI API costs/usage.\nBypass mode skips the shared database and stores translations temporarily (12 hours).",
-          "use": "Use SubMaker Database",
-          "bypass": "Bypass Cache (Force Retranslation)",
-          "noteTitle": "⚠️ Bypass Mode Required:"
+          "label": "Baza e të Dhënave SubMaker",
+          "description": "Baza e të dhënave e SubMaker ruan përkthimet përgjithmonë për të ulur kostot dhe përdorimin e API-ve komunitare të AI.\nMënyra e anashkalimit të memories injoron bazën e përbashkët dhe ruan përkthimet përkohësisht (12 orë).",
+          "use": "Përdor Bazën e të Dhënave SubMaker",
+          "bypass": "Anashkalo Memorien (Forco Ripërkthimin)",
+          "noteTitle": "⚠️ Kërkohet Mënyra e Anashkalimit:"
         },
         "chunking": {
-          "label": "Enable Single Batch",
-          "description": "Translate the whole subtitle in one go (auto-splits only when extremely large).",
-          "multiple": "Multiple Batches (Default)",
-          "single": "Single-Batch"
+          "label": "Aktivizo Një Grup të Vetëm",
+          "description": "Përktheni të gjithë titrin me një hap të vetëm (ndahet automatikisht vetëm në madhësi jashtëzakonisht të mëdha). Përmirëson koherencën kontekstuale, por mund të arrijë kufijtë e ofruesit më shpejt.",
+          "multiple": "Grupe të Shumëfishta (E parazgjedhur)",
+          "single": "Një Grup i Vetëm"
         },
         "smartGlossary": {
-          "label": "Smart Media Lore & Context Glossary",
-          "description": "Automatically fetches movie/series title, character names, cast, and synopsis to inject into the AI prompt so proper nouns and lore are translated accurately."
+          "label": "Fjalor Inteligjent i Kontekstit dhe Historisë së Filmit",
+          "description": "Merr automatikisht titullin e filmit/serialit, emrat e personazheve, aktorët dhe përmbledhjen për t'i futur në udhëzimin e AI në mënyrë që emrat e përveçëm dhe termat të përkthehen saktë."
         },
         "customGlossary": {
-          "label": "Custom Glossary & Locked Terms (Optional)",
-          "description": "One rule per line. Enter terms to lock (e.g. <code>Kwisatz Haderach</code>) or mappings (e.g. <code>Spice -> Especia</code>).",
+          "label": "Fjalor i Personalizuar dhe Terma të Bllokuar (Opsionale)",
+          "description": "Një rregull për rresht. Futni terma për t'i kyçur (p.sh. <code>Kwisatz Haderach</code>) ose përputhje (p.sh. <code>Spice -> Especia</code>).",
           "placeholder": "Kwisatz Haderach\nSpice -> Especia"
         },
         "cleanSdh": {
-          "label": "Clean SDH & Hearing-Impaired Cues",
-          "description": "Strips sound effects ([dramatic music], (screams), ♪ notes), speaker tags (JOHN:), and normalizes all-caps shouting before translation."
+          "label": "Pastro Efektet SDH dhe Titrat për Personat me Dëgjim të Kufizuar",
+          "description": "Heq efektet zanore ([muzikë dramatike], (bërtet), nota ♪), emrat e folësve (GJONI:) dhe normalizon britmat me shkronja të mëdha para përkthimit."
         },
         "smartLineWrap": {
-          "label": "Smart Line-Wrapping & CPL Optimization",
-          "description": "Enforces streaming readability standards (max 40 chars per line, max 2 lines per cue) and balances multi-line subtitle breaks."
+          "label": "Thyerje Inteligjente e Rreshtave dhe Optimizim CPL",
+          "description": "Zbaton standardet e lexueshmërisë së transmetimit (maksimumi 40 karaktere për rresht, maksimumi 2 rreshta për titër) dhe balancon ndarjet e rreshtave."
         },
         "localizeProperNouns": {
-          "label": "Localize Proper Nouns & Names",
-          "description": "Adapts character names, places, and proper nouns into the target language's phonetic or standard local spelling."
+          "label": "Lokalizo Emrat e Përveçëm dhe Personazhet",
+          "description": "Përshtat emrat e personazheve, vendet dhe emrat e përveçëm sipas shqiptimit fonetik ose drejtshkrimit standard në gjuhën e synuar."
         },
         "bingeMode": {
-          "label": "🍿 Binge-Watching Mode (Auto Pre-Translate Next Episode)",
-          "description": "When watching TV shows or anime, predictively pre-translates the next episode in the background so subtitles are ready instantly (0s wait) when you hit Next Episode."
+          "label": "🍿 Mënyra e Shikimit Pa Ndërprerje (Parapërkthim Automatik i Episodit Tjetër)",
+          "description": "Gjatë shikimit të serialeve ose anime, parapërkthen automatikisht episodin tjetër në sfond që titrat të jenë gati menjëherë (0 sekonda pritje) kur kaloni tek Episodi Tjetër."
         },
         "subtitleLabelStyle": {
-          "label": "🏷️ Subtitle Track Label Style",
-          "description": "Choose how SubMaker names subtitle categories and tracks in your video player.",
-          "nameAiTag": "Language Name + AI Tag (e.g. Albanian - AI Translated / French - AI Translated)",
-          "isoAiTag": "ISO + AI Tag (e.g. sqi - [AI Translate] / fre - [AI Translate])",
-          "isoNameAiTag": "ISO + Full Name (e.g. sqi - Albanian [AI Translate])",
-          "isoMakeTag": "ISO + Make Tag (e.g. sqi - [Make Albanian])",
-          "classic": "Classic Stremio (e.g. Make Albanian)",
-          "isoOnly": "Pure ISO Code (e.g. sqi / fre)"
+          "label": "🏷️ Stili i Etiketës së Pistës së Titrave",
+          "description": "Zgjidhni se si SubMaker emërton kategoritë dhe pistat e titrave në luajtësin tuaj të videos.",
+          "nameAiTag": "Emri i Gjuhës + Etiketa AI (p.sh. Shqip - AI Translated / Frëngjisht - AI Translated)",
+          "isoAiTag": "Kodi ISO + Etiketa AI (p.sh. sqi - [AI Translate] / fre - [AI Translate])",
+          "isoNameAiTag": "ISO + Emri i Plotë (p.sh. sqi - Shqip [AI Translate])",
+          "isoMakeTag": "ISO + Etiketa Make (p.sh. sqi - [Make Shqip])",
+          "classic": "Stremio Klasik (p.sh. Make Shqip)",
+          "isoOnly": "Vetëm Kodi ISO (p.sh. sqi / fre)"
         }
       },
       "multiProvider": {
-        "label": "Multiple providers (beta)",
-        "description": "Enables multiple AI providers. You can set primary/secondary providers in \"Translation Settings\"."
+        "label": "Ofrues të shumtë (beta)",
+        "description": "Aktivizon ofrues të shumtë të AI. Mund të vendosni ofruesit parësorë/dytësorë në \"Cilësimet e Përkthimit\"."
       },
       "otherSettings": {
-        "title": "Other Settings",
+        "title": "Cilësime të Tjera",
         "subToolbox": {
-          "label": "Enable \"Sub Toolbox\" (Beta)",
-          "description": "Shows the Sub Toolbox entry in Stremio subtitles for brower access to all tools.",
-          "instructionsLink": "Read instructions",
-          "tools": "Tools: SRT Files Translation, Embedded Subs Extraction, AutoSync and AutoSubbing."
+          "label": "Aktivizo \"Kutinë e Mjeteve\" (Beta)",
+          "description": "Shfaq zërin e Kutisë së Mjeteve në titrat e Stremio për qasje në shfletues tek të gjitha mjetet.",
+          "instructionsLink": "Lexo udhëzimet",
+          "tools": "Mjetet: Përkthim skedarësh SRT, nxjerrje e titrave të integruar, AutoSync dhe AutoSubbing."
         },
         "mobileMode": {
-          "label": "Mobile Mode (fix/workaround)",
-          "description": "Stremio makes only 1 request for subtitles and caches it, so subtitles in Android can't be partially delivered. Mobile Mode holds translation requests and sends the final subtitle only when ready. Use this if you're watching on Android/iOS. No partial translations, no loading messages. Might freeze the stream until translation is ready. Flash-lite recommended. Wait 1-3 min, if it doesn't load automatically switch subtitles back and forth to load the translation."
+          "label": "Mënyra Celulare (zgjidhje/ndreqje)",
+          "description": "Stremio bën vetëm 1 kërkesë për titra dhe e ruan atë në memorie, kështu që titrat në Android nuk mund të dërgohen pjesërisht. Mënyra Celulare mban kërkesat e përkthimit dhe dërgon titrin përfundimtar vetëm kur të jetë gati. Përdoreni këtë nëse po shikoni në Android/iOS. Nuk ka përkthime të pjesshme, as mesazhe ngarkimi."
         },
         "excludeHearingImpaired": {
-          "label": "Hide SDH/HI subtitles",
-          "description": "Exclude subtitles labeled \"Subtitles for hearing impaired\" (SDH/HI) from results."
+          "label": "Fshih titrat për personat me dëgjim të kufizuar (SDH)",
+          "description": "Fsheh titrat që janë të shënuar për personat me dëgjim të kufizuar kur kërkohen titra."
         },
         "enableSeasonPacks": {
           "label": "Include Season Pack Subtitles",
@@ -1418,11 +1481,15 @@
         },
         "devMode": {
           "label": "Dev Mode"
+        },
+        "autoAdjustOffsets": {
+          "label": "Rregullim automatik i kohës (Auto-Sync)",
+          "description": "Përshtat automatikisht kohën e titrave sipas transmetimit."
         }
       },
       "advancedGemini": {
         "cardTitle": "Gemini Advanced Parameters",
-        "title": "Advanced Settings",
+        "title": "Cilësime të Avancuara të Gemini",
         "infoTitle": "Fine-tune Gemini behavior:",
         "infoBody": "Override default Gemini model and sampling parameters.",
         "cacheNotePrefix": "When any Gemini setting is changed from defaults,",
@@ -1446,8 +1513,8 @@
           "description": "Probability threshold (0.0-1.0). For Gemini 3.x models, sampling is automatically optimized by Google unless customized. Default: 0.95"
         },
         "batchContext": {
-          "label": "Enable Batch Context",
-          "description": "Include original surrounding context and previous translations when processing batches. Improves translation coherence but may break outputs and increases token usage. Disabled by default."
+          "label": "Aktivizo Kontekstin e Grupit",
+          "description": "Përfshin kontekstin rrethues origjinal dhe përkthimet e mëparshme gjatë përpunimit të grupeve. Përmirëson koherencën e përkthimit por rrit përdorimin e tokenave."
         },
         "contextSize": {
           "label": "Context Size",
@@ -1547,13 +1614,18 @@
       "embeddedSubs": "Extract Subs",
       "syncSubtitles": "Sync subtitles",
       "automaticSubs": "Auto subs",
-      "configure": "Configure",
-      "youAreHere": "You are here"
+      "configure": "Konfigurimi",
+      "youAreHere": "You are here",
+      "toolbox": "Kutia e Mjeteve",
+      "sync": "Sinkronizimi",
+      "history": "Historiku",
+      "fileUpload": "Ngarko Skedar",
+      "smdb": "SMDB"
     },
     "fileUpload": {
-      "title": "File Translation",
-      "documentTitle": "File Translation - SubMaker",
-      "subtitle": "Upload and translate your subtitle files",
+      "title": "Përkthe Skedar Titrash",
+      "documentTitle": "Përkthim Skedari SRT - SubMaker",
+      "subtitle": "Ngarkoni një skedar SRT nga pajisja juaj për ta përkthyer me AI",
       "help": "Show Instructions",
       "themeToggle": "Toggle theme",
       "drop": {
@@ -1771,12 +1843,16 @@
         "warningPrefix": "Warning: ",
         "targetMissing": "Please select a target language",
         "sourceMissing": "Please select a source language for DeepL translations"
-      }
+      },
+      "dropzone": "Tërhiqni dhe lëshoni skedarin SRT këtu ose klikoni për të zgjedhur",
+      "selectFile": "Zgjidh Skedarin",
+      "translate": "Fillo Përkthimin",
+      "download": "Shkarko Titrin e Përkthyer"
     },
     "sync": {
-      "documentTitle": "Subtitles Sync Studio - SubMaker",
-      "title": "Subtitles Sync Studio",
-      "subtitle": "Automatically synchronize subtitles with your video using audio analysis",
+      "documentTitle": "Sinkronizimi i Titrave - SubMaker",
+      "title": "Sinkronizimi i Titrave",
+      "subtitle": "Rregulloni kohën e titrave për t'u përputhur saktësisht me videon tuaj",
       "sectionHeading": "Link your stream, choose a subtitle, and sync",
       "badges": {
         "addon": "Addon",
@@ -2050,7 +2126,10 @@
       "errors": {
         "saveFailed": "Failed to save synced subtitle",
         "metaFetchFailed": "Failed to fetch metadata"
-      }
+      },
+      "offsetLabel": "Zhvendosja e Kohës (sekonda)",
+      "apply": "Apliko Zhvendosjen",
+      "save": "Ruaj Titrin e Sinkronizuar"
     }
   }
 }

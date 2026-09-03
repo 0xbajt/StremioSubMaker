@@ -729,6 +729,10 @@
           "label": "Inglês",
           "flag": "US"
         },
+        "sq": {
+          "label": "Albanês",
+          "flag": "AL"
+        },
         "es": {
           "label": "Espanhol",
           "flag": "ES"
@@ -941,26 +945,24 @@
         },
         "instructions": {
           "eyebrow": "Guia do SubMaker",
-          "title": "Como o SubMaker funciona no Stremio",
+          "title": "Como o SubMaker Funciona no Stremio e Nuvio",
           "closeAria": "Fechar instruções",
-          "intro": "Defina primeiro a ordem dos idiomas de origem e depois use as entradas <strong>\"Make\"</strong> correspondentes no Stremio para traduzir a partir da legenda de origem que já verificou.",
-          "usageTitle": "Configuração básica",
-          "step1": "Ative as fontes de legendas que quiser em <strong>Fontes de Legendas</strong>.",
-          "step2": "Adicione a sua <strong>chave da API Gemini</strong> na secção de IA.",
-          "step3": "Selecione <strong>idiomas de origem</strong>. Normalmente é melhor usar apenas um.",
-          "step4": "Selecione <strong>idiomas de destino</strong> para as listas <strong>\"Make [Idioma]\"</strong>.",
-          "step5": "<strong>Instale no Stremio</strong> e abra a lista de legendas de qualquer vídeo.",
-          "stremioTitle": "O que o SubMaker adiciona no Stremio",
-          "stremioBody": "1. Obtém e mostra legendas nos idiomas de origem e destino selecionados a partir dos fornecedores de legendas ativados.<br>2. Cria listas <strong>\"Make [Idioma de Destino]\"</strong> dentro do seletor de legendas do Stremio.<br>3. Cada lista <strong>\"Make\"</strong> mantém a mesma ordem da lista do idioma de origem selecionado.",
-          "whenTitle": "Quando usa uma entrada de legenda \"Make\"",
-          "whenBody": "Clique numa legenda dentro de uma lista <strong>\"Make\"</strong> e o SubMaker começa a traduzir a partir da legenda de origem correspondente.<br>Após cerca de 20-30 segundos, recarregue essa mesma entrada para ver a versão traduzida.",
-          "quickTipTitle": "Dica de recuperação",
-          "quickTipBody": "Se uma tradução parecer partida, errada ou fora de sincronização enquanto a legenda de origem está boa, faça triplo clique nessa mesma entrada de legenda para forçar uma nova retradução, ou altere as definições de tradução.",
-          "deliveryTitle": "Tempo de tradução",
-          "ps": "A tradução parcial chega em lotes para poder começar a ver rapidamente. A tradução completa ainda pode demorar de <strong>30 segundos a 5 minutos</strong>, dependendo da duração do filme ou episódio.",
-          "onlyOneSourceTitle": "É recomendado usar apenas 1 idioma de origem",
-          "onlyOneSourceBody": "Como as listas <strong>\"Make\"</strong> seguem a mesma ordem das legendas no idioma de origem, pode verificar primeiro a sincronização das legendas de origem e só depois escolher a entrada correspondente na lista de tradução, em vez de traduzir uma legenda de origem que já está dessincronizada.",
-          "syncTipBody": "<strong>Dica de sincronização:</strong> Verifique o meio e o fim das legendas de origem antes de traduzir, porque os desvios de sincronização costumam aparecer primeiro aí."
+          "intro": "Traduza legendas para o seu idioma instantaneamente com IA, desfrute do pré-carregamento automático de episódios com o <strong>Modo Maratona</strong> e personalize as suas legendas em qualquer reprodutor.",
+          "usageTitle": "⚡ Configuração Rápida em 3 Passos",
+          "step1": "Adicione a sua <strong>chave da API Gemini</strong> (gratuita no Google AI Studio) ou ative fornecedores alternativos de IA (Claude, OpenAI, DeepSeek, Grok).",
+          "step2": "Escolha os seus <strong>idiomas de origem</strong> (ex.: inglês) e <strong>idiomas de destino</strong> (o idioma no qual pretende ver).",
+          "step3": "Clique em <strong>\"Instalar no Stremio\"</strong> (ou copie o link de manifesto para Nuvio/dispositivos móveis) e abra qualquer transmissão.",
+          "stremioTitle": "🍿 A traduzir no seu reprodutor",
+          "stremioBody": "1. Abra a lista de legendas no Stremio ou Nuvio.<br>2. Selecione a faixa traduzida (ex.: <strong>\"Português - AI Translated\"</strong> ou <strong>\"[AI Translate]\"</strong>).<br>3. A IA traduz em segundo plano e os primeiros segmentos chegam em menos de 15 segundos. Selecione a faixa novamente para carregar as legendas completas!",
+          "whenTitle": "⚡ Maratona Preditiva (Binge Mode)",
+          "whenBody": "Ao ver séries ou anime, o <strong>Modo Maratona</strong> pré-traduz e guarda em cache o próximo episódio automaticamente. Ao clicar em \"Próximo Episódio\", as legendas já estão 100% prontas com <strong>0 segundos de espera</strong>!",
+          "quickTipTitle": "🔄 Retradução Instantânea",
+          "quickTipBody": "Se uma legenda parecer fora de sincronização ou pretender uma tradução nova, faça um <strong>clique triplo</strong> na faixa em menos de 6 segundos para forçar uma retradução imediata e atualizar a cache.",
+          "deliveryTitle": "🧠 Inteligência de Legendas",
+          "ps": "O SubMaker remove automaticamente efeitos sonoros não falados (<code>[aplausos]</code>, <code>♪ música ♪</code>), equilibra linhas a 40 CPL, localiza nomes próprios e injeta contexto de personagens do IMDb/TMDB.",
+          "onlyOneSourceTitle": "🎯 Dica de Sincronização Pro",
+          "onlyOneSourceBody": "Como as listas de tradução seguem a mesma ordem das legendas de origem, teste a sincronização da legenda original antes de traduzir para garantir tempos perfeitos.",
+          "syncTipBody": "<strong>Dica para o Nuvio:</strong> Nas Definições de Tradução, mantenha o <em>Estilo de Etiqueta</em> como <strong>\"Nome do Idioma + Etiqueta IA\"</strong> ou <strong>\"Apenas Código ISO\"</strong> para que o filtro do Nuvio não oculte as suas legendas."
         },
         "toolbox": {
           "title": "🧰 Instruções do Sub Toolbox",
@@ -1339,8 +1341,43 @@
           "single": "Lote-Único"
         },
         "jsonOutput": {
-          "label": "Enable JSON Structured Output (Beta)",
-          "description": "Request JSON array format from AI for unambiguous response parsing. May improve accuracy but not all providers support it. Disabled by default."
+          "label": "Ativar Saída Estruturada JSON (Beta)",
+          "description": "Pede à IA formato de array JSON para análise inequívoca da resposta. Pode melhorar a precisão, mas nem todos os fornecedores oferecem suporte. Desativado por padrão."
+        },
+        "smartGlossary": {
+          "label": "Glossário Inteligente de Contexto e Lore",
+          "description": "Obtém automaticamente título, nomes de personagens, elenco e sinopse do filme/série para injetar no prompt da IA, assegurando a tradução precisa de nomes próprios e termos da história."
+        },
+        "customGlossary": {
+          "label": "Glossário Personalizado e Termos Bloqueados (Opcional)",
+          "description": "Uma regra por linha. Introduza termos para fixar (ex.: <code>Kwisatz Haderach</code>) ou mapeamentos (ex.: <code>Spice -> Especiaria</code>).",
+          "placeholder": "Kwisatz Haderach\nSpice -> Especiaria"
+        },
+        "cleanSdh": {
+          "label": "Limpar Efeitos SDH e Acessibilidade",
+          "description": "Remove efeitos sonoros ([música dramática], (gritos), notas ♪), etiquetas de personagens (JOÃO:) e normaliza gritos em maiúsculas antes da tradução."
+        },
+        "smartLineWrap": {
+          "label": "Quebra de Linha Inteligente e Otimização CPL",
+          "description": "Aplica normas de legibilidade para streaming (máx. 40 caracteres por linha, máx. 2 linhas por legenda) e equilibra as quebras de linha."
+        },
+        "localizeProperNouns": {
+          "label": "Localizar Nomes Próprios e Personagens",
+          "description": "Adapta nomes de personagens, locais e substantivos próprios para a grafia fonética ou padrão no idioma de destino."
+        },
+        "bingeMode": {
+          "label": "🍿 Modo Maratona (Binge Mode - Pré-Tradução Automática)",
+          "description": "Ao ver séries ou anime, pré-traduz predictivamente o próximo episódio em segundo plano para que as legendas fiquem prontas instantaneamente (0s de espera) ao carregar em Próximo Episódio."
+        },
+        "subtitleLabelStyle": {
+          "label": "🏷️ Estilo de Etiqueta das Faixas de Legendas",
+          "description": "Escolha como o SubMaker atribui nomes às categorias e faixas de legendas no seu reprodutor de vídeo.",
+          "nameAiTag": "Nome do Idioma + Etiqueta IA (ex.: Português - AI Translated / Francês - AI Translated)",
+          "isoAiTag": "ISO + Etiqueta IA (ex.: por - [AI Translate] / fre - [AI Translate])",
+          "isoNameAiTag": "ISO + Nome Completo (ex.: por - Português [AI Translate])",
+          "isoMakeTag": "ISO + Etiqueta Make (ex.: por - [Make Português])",
+          "classic": "Stremio Clássico (ex.: Make Português)",
+          "isoOnly": "Apenas Código ISO (ex.: por / fre)"
         }
       },
       "multiProvider": {

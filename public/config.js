@@ -356,6 +356,13 @@
             fallbackFlag: 'US'
         },
         {
+            value: 'sq',
+            labelKey: 'config.uiLanguages.sq.label',
+            flagKey: 'config.uiLanguages.sq.flag',
+            fallbackLabel: 'Shqip',
+            fallbackFlag: 'AL'
+        },
+        {
             value: 'es',
             labelKey: 'config.uiLanguages.es.label',
             flagKey: 'config.uiLanguages.es.flag',
@@ -779,6 +786,7 @@
         if (!entry) return null;
         const codeLabelMap = {
             'en': 'EN',
+            'sq': 'SQ',
             'es': 'ES',
             'pt-br': 'BR',
             'pt-pt': 'PT',

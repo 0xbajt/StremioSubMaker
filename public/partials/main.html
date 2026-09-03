@@ -1719,8 +1719,9 @@
                         <div class="form-group">
                             <label>
                                 <input type="checkbox" id="smartGlossaryEnabled" checked>
-                                <span>Smart Media Lore & Context Glossary</span>
-                                <span class="label-description">Automatically fetches movie/series title, character
+                                <span data-i18n="config.translationSettings.smartGlossary.label">Smart Media Lore & Context Glossary</span>
+                                <span class="label-description"
+                                    data-i18n="config.translationSettings.smartGlossary.description">Automatically fetches movie/series title, character
                                     names, cast, and synopsis to inject into the AI prompt so proper nouns and lore are
                                     translated accurately.</span>
                             </label>
@@ -1728,21 +1729,24 @@
 
                         <div class="form-group" id="customGlossaryGroup">
                             <label for="customGlossaryInput">
-                                <span>Custom Glossary & Locked Terms (Optional)</span>
-                                <span class="label-description">One rule per line. Enter terms to lock (e.g.
+                                <span data-i18n="config.translationSettings.customGlossary.label">Custom Glossary & Locked Terms (Optional)</span>
+                                <span class="label-description"
+                                    data-i18n="config.translationSettings.customGlossary.description" data-i18n-attr="innerHTML">One rule per line. Enter terms to lock (e.g.
                                     <code>Kwisatz Haderach</code>) or mappings (e.g.
                                     <code>Spice -> Especia</code>).</span>
                             </label>
                             <textarea id="customGlossaryInput" class="styled-textarea" rows="2"
                                 placeholder="Kwisatz Haderach&#10;Spice -> Especia"
+                                data-i18n="config.translationSettings.customGlossary.placeholder" data-i18n-attr="placeholder"
                                 style="width: 100%; border-radius: 8px; padding: 0.5rem; font-family: monospace; font-size: 0.85rem;"></textarea>
                         </div>
 
                         <div class="form-group">
                             <label>
                                 <input type="checkbox" id="cleanSdhSubtitles">
-                                <span>Clean SDH & Hearing-Impaired Cues</span>
-                                <span class="label-description">Strips sound effects ([dramatic music], (screams), ♪
+                                <span data-i18n="config.translationSettings.cleanSdh.label">Clean SDH & Hearing-Impaired Cues</span>
+                                <span class="label-description"
+                                    data-i18n="config.translationSettings.cleanSdh.description">Strips sound effects ([dramatic music], (screams), ♪
                                     notes), speaker tags (JOHN:), and normalizes all-caps shouting before
                                     translation.</span>
                             </label>
@@ -1751,8 +1755,9 @@
                         <div class="form-group">
                             <label>
                                 <input type="checkbox" id="smartLineWrap" checked>
-                                <span>Smart Line-Wrapping & CPL Optimization</span>
-                                <span class="label-description">Enforces streaming readability standards (max 40 chars
+                                <span data-i18n="config.translationSettings.smartLineWrap.label">Smart Line-Wrapping & CPL Optimization</span>
+                                <span class="label-description"
+                                    data-i18n="config.translationSettings.smartLineWrap.description">Enforces streaming readability standards (max 40 chars
                                     per line, max 2 lines per cue) and balances multi-line subtitle breaks.</span>
                             </label>
                         </div>
@@ -1760,8 +1765,9 @@
                         <div class="form-group">
                             <label>
                                 <input type="checkbox" id="localizeProperNouns">
-                                <span>Localize Proper Nouns & Names</span>
-                                <span class="label-description">Adapts character names, places, and proper nouns into
+                                <span data-i18n="config.translationSettings.localizeProperNouns.label">Localize Proper Nouns & Names</span>
+                                <span class="label-description"
+                                    data-i18n="config.translationSettings.localizeProperNouns.description">Adapts character names, places, and proper nouns into
                                     the target language's phonetic or standard local spelling.</span>
                             </label>
                         </div>
@@ -1769,23 +1775,24 @@
                         <div class="form-group">
                             <label>
                                 <input type="checkbox" id="bingeModeEnabled">
-                                <span>🍿 Binge-Watching Mode (Auto Pre-Translate Next Episode)</span>
-                                <span class="label-description">When watching TV shows or anime, predictively pre-translates the next episode in the background so subtitles are ready instantly (0s wait) when you hit Next Episode.</span>
+                                <span data-i18n="config.translationSettings.bingeMode.label">🍿 Binge-Watching Mode (Auto Pre-Translate Next Episode)</span>
+                                <span class="label-description"
+                                    data-i18n="config.translationSettings.bingeMode.description">When watching TV shows or anime, predictively pre-translates the next episode in the background so subtitles are ready instantly (0s wait) when you hit Next Episode.</span>
                             </label>
                         </div>
 
                         <div class="form-group">
                             <label for="subtitleLabelStyle" class="form-label">
-                                <span class="label-title">🏷️ Subtitle Track Label Style</span>
-                                <span class="label-description">Choose how SubMaker names subtitle categories and tracks in your video player.</span>
+                                <span class="label-title" data-i18n="config.translationSettings.subtitleLabelStyle.label">🏷️ Subtitle Track Label Style</span>
+                                <span class="label-description" data-i18n="config.translationSettings.subtitleLabelStyle.description">Choose how SubMaker names subtitle categories and tracks in your video player.</span>
                             </label>
                             <select id="subtitleLabelStyle" class="styled-select">
-                                <option value="name_ai_tag" selected>Language Name + AI Tag (e.g. Albanian - AI Translated / French - AI Translated)</option>
-                                <option value="iso_ai_tag">ISO + AI Tag (e.g. sqi - [AI Translate] / fre - [AI Translate])</option>
-                                <option value="iso_name_ai_tag">ISO + Full Name (e.g. sqi - Albanian [AI Translate])</option>
-                                <option value="iso_make_tag">ISO + Make Tag (e.g. sqi - [Make Albanian])</option>
-                                <option value="classic">Classic Stremio (e.g. Make Albanian)</option>
-                                <option value="iso_only">Pure ISO Code (e.g. sqi / fre)</option>
+                                <option value="name_ai_tag" selected data-i18n="config.translationSettings.subtitleLabelStyle.nameAiTag">Language Name + AI Tag (e.g. Albanian - AI Translated / French - AI Translated)</option>
+                                <option value="iso_ai_tag" data-i18n="config.translationSettings.subtitleLabelStyle.isoAiTag">ISO + AI Tag (e.g. sqi - [AI Translate] / fre - [AI Translate])</option>
+                                <option value="iso_name_ai_tag" data-i18n="config.translationSettings.subtitleLabelStyle.isoNameAiTag">ISO + Full Name (e.g. sqi - Albanian [AI Translate])</option>
+                                <option value="iso_make_tag" data-i18n="config.translationSettings.subtitleLabelStyle.isoMakeTag">ISO + Make Tag (e.g. sqi - [Make Albanian])</option>
+                                <option value="classic" data-i18n="config.translationSettings.subtitleLabelStyle.classic">Classic Stremio (e.g. Make Albanian)</option>
+                                <option value="iso_only" data-i18n="config.translationSettings.subtitleLabelStyle.isoOnly">Pure ISO Code (e.g. sqi / fre)</option>
                             </select>
                         </div>
 

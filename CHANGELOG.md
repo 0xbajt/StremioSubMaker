@@ -6,6 +6,24 @@ All notable changes to this project will be documented in this file.
 
 **New Features & Improvements:**
 
+- **Albanian (Shqip) UI Language Integration (Positioned Second Below English):**
+  - Added Albanian (`sq`) as a fully supported dashboard language in the top-left language dock with the national flag 🇦🇱, positioned in second place right below default English.
+  - Added a complete native Albanian locale suite (`locales/sq.json`) covering the Quick Setup wizard, configuration controls, Sub Toolbox, file translation, and error messaging.
+
+- **Full Multi-Language Localization of Subtitle Intelligence & Binge Settings:**
+  - Fully translated all newly introduced translation intelligence and binge-watching settings across all supported UI languages (Spanish 🇪🇸, Portuguese-Brazil 🇧🇷, Portuguese-Portugal 🇵🇹, Arabic 🇸🇦, and Albanian 🇦🇱):
+    - Smart Media Lore & Context Glossary (`smartGlossary`)
+    - Custom Glossary & Locked Terms (`customGlossary`)
+    - Clean SDH & Hearing-Impaired Cues (`cleanSdh`)
+    - Smart Line-Wrapping & CPL Optimization (`smartLineWrap`)
+    - Localize Proper Nouns & Names (`localizeProperNouns`)
+    - 🍿 Binge-Watching Mode (`bingeMode`)
+    - 🏷️ Subtitle Track Label Style (`subtitleLabelStyle`)
+  - Added full `data-i18n` attribute bindings in `public/partials/main.html` for instantaneous dynamic UI translation.
+
+- **Multilingual Modernization of SubMaker Guide Modal:**
+  - Modernized the in-app guide copy across all locales (`en`, `sq`, `es`, `pt-br`, `pt-pt`, `ar`), removing legacy "Make" terminology and reflecting modern Stremio and Nuvio player workflows.
+
 - **Google Gemini 3.8 Family Integration (`Gemini 3.8 Flash`, `3.8 Flash-Lite`, `3.8 Pro`):**
   - Added full support for Google's newest Gemini 3.8 models in the dashboard Translation Model selector and backend services.
   - Automatically configures optimal dynamic thinking levels (`medium` for Flash, `high` for Pro, `minimal` for Flash-Lite) and temperature settings.
@@ -13,9 +31,6 @@ All notable changes to this project will be documented in this file.
 - **Cinematic Audiovisual Translation (AVT) Standards Across All AI Models:**
   - Upgraded translation prompts across Gemini, Claude, OpenAI, DeepSeek, Grok, and Mistral with professional AVT industry standards.
   - Prioritizes natural idiomatic dialogue, preserves emotional intensity and expletives without AI softening, and maintains subtitle reading speed (CPS) brevity.
-
-- **Modernized Interactive In-App SubMaker Guide:**
-  - Completely revamped the pop-up SubMaker guide modal to highlight modern features: Predictive Binge Mode (0s wait), Subtitle Intelligence (SDH audio cleaning, 40 CPL line-wrapping), instant triple-click retranslation, and Stremio/Nuvio compatibility.
 
 ## SubMaker v1.4.93
 
