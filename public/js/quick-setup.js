@@ -39,6 +39,9 @@
     const POPULAR_LANG_CODES = [];
 
     const QUICK_SETUP_MODEL_LABEL_FALLBACKS = {
+        'gemini-3.8-flash': 'Gemini 3.8 Flash',
+        'gemini-3.8-flash-lite': 'Gemini 3.8 Flash-Lite',
+        'gemini-3.8-pro': 'Gemini 3.8 Pro (beta)',
         'gemini-3.7-flash': 'Gemini 3.7 Flash',
         'gemini-3.6-flash': 'Gemini 3.6 Flash',
         'gemini-3.5-flash': 'Gemini 3.5 Flash',
@@ -196,13 +199,16 @@
         }
 
         switch (normalizedModel) {
+            case 'gemini-3.8-flash':
             case 'gemini-3.7-flash':
             case 'gemini-3.6-flash':
             case 'gemini-3.5-flash':
             case 'gemini-2.5-flash':
                 return { thinkingBudget: -1, temperature: 0.5 };
+            case 'gemini-3.8-pro':
             case 'gemini-3.1-pro-preview':
                 return { thinkingBudget: 1000, temperature: 0.5 };
+            case 'gemini-3.8-flash-lite':
             case 'gemini-3.5-flash-lite':
             case 'gemini-3.1-flash-lite':
             case 'gemini-2.5-flash-lite':

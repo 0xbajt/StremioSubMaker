@@ -991,6 +991,18 @@ Translate to {target_language}.`;
             thinkingBudget: 0,
             temperature: 0.7
         },
+        'gemini-3.8-flash': {
+            thinkingBudget: -1,
+            temperature: 0.5
+        },
+        'gemini-3.8-flash-lite': {
+            thinkingBudget: 0,
+            temperature: 0.8
+        },
+        'gemini-3.8-pro': {
+            thinkingBudget: 1000,
+            temperature: 0.5
+        },
         'gemini-3.7-flash': {
             thinkingBudget: -1,
             temperature: 0.5
@@ -9851,6 +9863,9 @@ Translate to {target_language}.`;
 
         // Define hardcoded multi-model options
         const hardcodedModels = [
+            { name: 'gemini-3.8-flash', displayName: 'Gemini 3.8 Flash' },
+            { name: 'gemini-3.8-flash-lite', displayName: 'Gemini 3.8 Flash-Lite' },
+            { name: 'gemini-3.8-pro', displayName: 'Gemini 3.8 Pro (beta)' },
             { name: 'gemini-3.7-flash', displayName: 'Gemini 3.7 Flash' },
             { name: 'gemini-3.6-flash', displayName: 'Gemini 3.6 Flash' },
             { name: 'gemini-3.5-flash', displayName: 'Gemini 3.5 Flash' },

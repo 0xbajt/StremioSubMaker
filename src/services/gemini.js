@@ -21,13 +21,13 @@ function resolveGeminiModelDefaults(modelName) {
   if (name.includes('gemma')) {
     return { thinkingBudget: 0, temperature: 0.7 };
   }
-  if (name.includes('3.1-pro') || name.includes('3-pro') || name.includes('2.5-pro')) {
+  if (name.includes('pro')) {
     return { thinkingBudget: -1, temperature: 0.5 };
   }
   if (name.includes('lite')) {
     return { thinkingBudget: 0, temperature: 0.8 };
   }
-  if (name.includes('3.5-flash') || name.includes('3.6-flash') || name.includes('3.7-flash') || name.includes('2.5-flash') || name.includes('flash-latest')) {
+  if (name.includes('flash')) {
     return { thinkingBudget: -1, temperature: 0.5 };
   }
   return { thinkingBudget: 0, temperature: 0.8 };

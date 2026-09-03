@@ -1138,6 +1138,18 @@ function encodeConfig(config) {
  * Each model has its own optimal settings for thinking and temperature
  */
 const MODEL_SPECIFIC_DEFAULTS = {
+  'gemini-3.8-flash': {
+    thinkingBudget: -1,     // Dynamic thinking
+    temperature: 0.5        // Lower temperature for consistency
+  },
+  'gemini-3.8-flash-lite': {
+    thinkingBudget: 0,      // No thinking for lite model
+    temperature: 0.8        // Higher temperature for creativity
+  },
+  'gemini-3.8-pro': {
+    thinkingBudget: -1,     // Dynamic thinking (high effort level)
+    temperature: 0.5        // Lower temperature for consistency
+  },
   'gemma-3-27b-it': {
     thinkingBudget: 0,      // Gemma models don't support thinking
     temperature: 0.7        // Balanced temperature for Gemma

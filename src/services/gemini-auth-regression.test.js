@@ -165,6 +165,9 @@ test('Gemini models normalization and defaults support all new Gemini 3.x and ac
   assert.equal(normalizeGeminiModelName('gemini-flash-latest'), 'gemini-flash-lite-latest');
 
   // Check active models retain their names
+  assert.equal(normalizeGeminiModelName('gemini-3.8-flash'), 'gemini-3.8-flash');
+  assert.equal(normalizeGeminiModelName('gemini-3.8-flash-lite'), 'gemini-3.8-flash-lite');
+  assert.equal(normalizeGeminiModelName('gemini-3.8-pro'), 'gemini-3.8-pro');
   assert.equal(normalizeGeminiModelName('gemini-3.7-flash'), 'gemini-3.7-flash');
   assert.equal(normalizeGeminiModelName('gemini-3.6-flash'), 'gemini-3.6-flash');
   assert.equal(normalizeGeminiModelName('gemini-3.5-flash'), 'gemini-3.5-flash');
@@ -175,6 +178,18 @@ test('Gemini models normalization and defaults support all new Gemini 3.x and ac
   assert.equal(normalizeGeminiModelName('gemini-2.5-flash-lite'), 'gemini-2.5-flash-lite');
 
   // Check model-specific defaults
+  const flash38Defaults = getModelSpecificDefaults('gemini-3.8-flash');
+  assert.equal(flash38Defaults.thinkingBudget, -1);
+  assert.equal(flash38Defaults.temperature, 0.5);
+
+  const flashLite38Defaults = getModelSpecificDefaults('gemini-3.8-flash-lite');
+  assert.equal(flashLite38Defaults.thinkingBudget, 0);
+  assert.equal(flashLite38Defaults.temperature, 0.8);
+
+  const pro38Defaults = getModelSpecificDefaults('gemini-3.8-pro');
+  assert.equal(pro38Defaults.thinkingBudget, -1);
+  assert.equal(pro38Defaults.temperature, 0.5);
+
   const flash37Defaults = getModelSpecificDefaults('gemini-3.7-flash');
   assert.equal(flash37Defaults.thinkingBudget, -1);
   assert.equal(flash37Defaults.temperature, 0.5);
