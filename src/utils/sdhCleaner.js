@@ -169,7 +169,30 @@ function cleanSdhText(text, options = {}) {
 }
 
 /**
+ * Extract speaker tag/prefix from a subtitle cue text if present.
+ * Matches: "JOHN: ...", "[SARAH]: ...", "- EMILY: ...", "[MARY] ..."
+ * @param {string} text - Subtitle cue text
+ * @returns {string|null} - Normalized Title-Cased speaker name, or null
+ */
+function extractSpeakerTag(text) {
+  if (!text || typeof text !== 'string') return null;
+  const match = text.match(/(?:^|\n)\s*(?:[-–—]\s*)?(?:\[([A-Za-z0-9\s.'_-]{2,30})\]\s*:?|([A-Za-z0-9\s.'_-]{2,30}):)\s*(?!\/)/m);
+  if (match) {
+    const raw = (match[1] || match[2] || '').trim();
+    if (!raw) return null;
+    // Guard against URLs, numbers-only, timecodes
+    if (/^(https?|ftp|file)$/i.test(raw) || /^\d+$/.test(raw) || /\d{2}:\d{2}/.test(raw)) return null;
+    // Guard against sound effects
+    if (SOUND_EFFECT_REGEX.test(raw)) return null;
+    // Normalize to Title Case
+    return raw.split(/\s+/).map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
+  }
+  return null;
+}
+
+/**
  * Clean an array of parsed SRT entries.
+ * Preserves detected speaker on the entry object for downstream AI gender/speaker agreement.
  * @param {Array<Object>} entries - Parsed SRT entries [{ id, timecode, text }]
  * @param {Object} [options={}] - Cleaning options
  * @returns {Array<Object>} - Cleaned entries
@@ -178,10 +201,12 @@ function cleanSdhEntries(entries, options = {}) {
   if (!Array.isArray(entries)) return [];
 
   return entries.map(entry => {
+    const speaker = extractSpeakerTag(entry.text);
     const cleanedText = cleanSdhText(entry.text, options);
     return {
       ...entry,
-      text: cleanedText
+      text: cleanedText,
+      ...(speaker ? { speaker } : {})
     };
   });
 }
@@ -189,6 +214,7 @@ function cleanSdhEntries(entries, options = {}) {
 module.exports = {
   cleanSdhText,
   cleanSdhEntries,
+  extractSpeakerTag,
   normalizeAllCaps,
   KNOWN_ACRONYMS
 };

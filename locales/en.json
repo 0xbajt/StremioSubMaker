@@ -1378,6 +1378,17 @@
           "isoMakeTag": "ISO + Make Tag (e.g. sqi - [Make Albanian])",
           "classic": "Classic Stremio (e.g. Make Albanian)",
           "isoOnly": "Pure ISO Code (e.g. sqi / fre)"
+        },
+        "speakerGender": {
+          "label": "👥 Speaker & Character Gender Agreement",
+          "description": "Extracts speaker tags from SDH subtitles and checks Cinemeta cast roles so past participles, adjectives, and verbs reflect correct character genders in dialogue."
+        },
+        "formality": {
+          "label": "🗣️ Dialogue Formality / Tone",
+          "description": "Control pronoun and verb formality for languages with T-V distinction (Spanish, Albanian, French, German, Portuguese, Italian, Arabic, etc.).",
+          "auto": "Automatic (Context-aware)",
+          "casual": "Casual / Informal (e.g. tú / ti / tu / du)",
+          "formal": "Formal / Respectful (e.g. usted / ju / vous / Sie)"
         }
       },
       "multiProvider": {

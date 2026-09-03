@@ -618,6 +618,11 @@ function normalizeConfig(config) {
   mergedConfig.smartLineWrap = mergedConfig.smartLineWrap !== false;
   mergedConfig.localizeProperNouns = mergedConfig.localizeProperNouns === true;
   mergedConfig.bingeModeEnabled = mergedConfig.bingeModeEnabled === true;
+  const validFormalityModes = ['auto', 'casual', 'formal'];
+  mergedConfig.formalityMode = validFormalityModes.includes(mergedConfig.formalityMode)
+    ? mergedConfig.formalityMode
+    : 'auto';
+  mergedConfig.speakerGenderAware = mergedConfig.speakerGenderAware !== false;
   const validLabelStyles = ['name_ai_tag', 'iso_ai_tag', 'iso_name_ai_tag', 'iso_make_tag', 'classic', 'iso_only'];
   mergedConfig.subtitleLabelStyle = validLabelStyles.includes(mergedConfig.subtitleLabelStyle)
     ? mergedConfig.subtitleLabelStyle
@@ -1371,6 +1376,8 @@ function getDefaultConfig(modelName = null) {
     maxCharactersPerLine: 40, // Target max characters per line for subtitle cues
     localizeProperNouns: false, // If true, phonetically transliterate/translate character names and proper nouns into target language spelling
     bingeModeEnabled: false, // If true, predictively pre-translates the next series episode in background for instant playback
+    speakerGenderAware: true, // If true, infer and enforce grammatical gender agreement for characters & speakers
+    formalityMode: 'auto', // Dialogue formality: 'auto' (contextual), 'casual' (T-form: tu/ti), 'formal' (V-form: vous/ju/usted)
     subtitleLabelStyle: 'name_ai_tag', // Track naming style: 'name_ai_tag' (Language Name - AI Translated), 'iso_ai_tag' (ISO + [AI Translate]), 'iso_name_ai_tag' (ISO + Name + [AI Translate]), 'iso_make_tag' (ISO + [Make Lang]), 'classic' (Make Lang), 'iso_only' (ISO)
     // If true, filter out SDH/HI (hearing impaired) subtitles from provider results
     excludeHearingImpairedSubtitles: false,

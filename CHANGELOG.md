@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file.
 
+## SubMaker v1.4.95
+
+**New Features & Improvements:**
+
+- **Speaker & Character Gender Agreement (AVT+):**
+  - Added smart speaker tag extraction (`extractSpeakerTag`) to detect speaker prefixes (e.g. `JOHN:`, `[SARAH]:`, `- EMILY:`, `DETECTIVE MILLER:`) from SDH subtitles before cleaning.
+  - Automatically tags XML subtitle cues (`<s id="N" speaker="...">`) and instructs AI models to strictly inflect adjectives, past participles, and verb conjugations to agree with the character's grammatical gender in target languages (Albanian, Spanish, Portuguese, Italian, French, Arabic, etc.).
+  - Cross-references Cinemeta cast lists and dialogue turn context to infer character genders even when standard subtitles lack explicit speaker tags.
+
+- **Dialogue Formality / Tone Setting:**
+  - Added a new `🗣️ Dialogue Formality / Tone` configuration selector to resolve T-V pronoun ambiguity across languages:
+    - **Automatic (Context-aware):** Intelligently infers formality from scene context (e.g. courtroom vs. casual conversation).
+    - **Casual / Informal:** Enforces conversational T-form pronouns and conjugations (*ti*, *tú*, *tu*, *du*).
+    - **Formal / Respectful:** Enforces polite V-form address (*ju*, *usted*, *vous*, *Sie*), ideal for period dramas, documentaries, and courtroom series.
+
+- **Full Dashboard Integration & Multilingual Localization:**
+  - Integrated the new settings into the **Subtitle & Translation Intelligence Settings** card in `/configure`.
+  - Added 100% key parity across all 6 supported locales (`en`, `sq`, `es`, `pt-br`, `pt-pt`, `ar`) with complete native translations.
+
+- **Parser Hardening & Test Suite Expansion:**
+  - Hardened XML subtitle response parsing to handle attribute-bearing opening tags seamlessly.
+  - Expanded test coverage in `subtitle-intelligence.test.js`, with all 69 tracked unit tests passing with 0 failures.
+
 ## SubMaker v1.4.94
 
 **New Features & Improvements:**

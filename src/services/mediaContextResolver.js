@@ -194,10 +194,19 @@ function buildGlossaryPromptContext(mediaContext, customGlossary, options = {}) 
 
     if (mediaContext.cast && mediaContext.cast.length > 0) {
       metaLines.push(`- Key Characters / Cast: ${mediaContext.cast.join(', ')}`);
+      if (options.speakerGenderAware !== false) {
+        metaLines.push(`- Speaker & Character Gender Agreement: Use the cast/characters above to deduce speaker and addressee genders. Ensure adjectives, participles, and verb conjugations in the target language strictly agree with the character's grammatical gender.`);
+      }
     }
 
     if (mediaContext.overview) {
       metaLines.push(`- Story Synopsis: ${mediaContext.overview}`);
+    }
+
+    if (options.formalityMode === 'formal') {
+      metaLines.push(`- Dialogue Formality: Use FORMAL / RESPECTFUL address (e.g. V-form: usted, vous, Sie, ju) for 'you' and polite grammatical forms.`);
+    } else if (options.formalityMode === 'casual') {
+      metaLines.push(`- Dialogue Formality: Use CASUAL / INFORMAL address (e.g. T-form: tú, tu, du, ti) for 'you' and conversational dialogue forms.`);
     }
 
     if (options.localizeProperNouns === true) {

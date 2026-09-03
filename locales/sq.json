@@ -1378,6 +1378,17 @@
           "isoMakeTag": "ISO + Etiketa Make (p.sh. sqi - [Make Shqip])",
           "classic": "Stremio Klasik (p.sh. Make Shqip)",
           "isoOnly": "Vetëm Kodi ISO (p.sh. sqi / fre)"
+        },
+        "speakerGender": {
+          "label": "👥 Përshtatja e Gjinisë së Folësit & Personazhit",
+          "description": "Nxjerr etiketat e folësit nga titrat SDH dhe verifikon rolet e aktorëve në Cinemeta që pjesoret, mbiemrat dhe foljet të përshtaten saktë me gjininë gramatikore në dialog."
+        },
+        "formality": {
+          "label": "🗣️ Formaliteti / Toni i Dialogut",
+          "description": "Kontrollon përemrat dhe trajtat e foljeve për gjuhët me dallim formal (ti vs. ju, tú vs. usted, tu vs. vous, etj.).",
+          "auto": "Automatik (Përcaktohet nga konteksti)",
+          "casual": "I thjeshtë / Joformal (p.sh. ti / tú / tu / du)",
+          "formal": "Formal / Me mirësjellje (p.sh. ju / usted / vous / Sie)"
         }
       },
       "multiProvider": {

@@ -1782,6 +1782,27 @@
                         </div>
 
                         <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="speakerGenderAware" checked>
+                                <span data-i18n="config.translationSettings.speakerGender.label">👥 Speaker & Character Gender Agreement</span>
+                                <span class="label-description"
+                                    data-i18n="config.translationSettings.speakerGender.description">Extracts speaker tags from SDH subtitles and checks Cinemeta cast roles so past participles, adjectives, and verbs reflect correct character genders in dialogue.</span>
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="formalityMode" class="form-label">
+                                <span class="label-title" data-i18n="config.translationSettings.formality.label">🗣️ Dialogue Formality / Tone</span>
+                                <span class="label-description" data-i18n="config.translationSettings.formality.description">Control pronoun and verb formality for languages with T-V distinction (Spanish, Albanian, French, German, Portuguese, Italian, Arabic, etc.).</span>
+                            </label>
+                            <select id="formalityMode" class="styled-select">
+                                <option value="auto" selected data-i18n="config.translationSettings.formality.auto">Automatic (Context-aware)</option>
+                                <option value="casual" data-i18n="config.translationSettings.formality.casual">Casual / Informal (e.g. tú / ti / tu / du)</option>
+                                <option value="formal" data-i18n="config.translationSettings.formality.formal">Formal / Respectful (e.g. usted / ju / vous / Sie)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
                             <label for="subtitleLabelStyle" class="form-label">
                                 <span class="label-title" data-i18n="config.translationSettings.subtitleLabelStyle.label">🏷️ Subtitle Track Label Style</span>
                                 <span class="label-description" data-i18n="config.translationSettings.subtitleLabelStyle.description">Choose how SubMaker names subtitle categories and tracks in your video player.</span>

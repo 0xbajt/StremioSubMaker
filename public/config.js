@@ -10634,6 +10634,10 @@ Translate to {target_language}.`;
         if (localizeProperNounsEl) localizeProperNounsEl.checked = currentConfig.localizeProperNouns === true;
         const bingeModeEl = document.getElementById('bingeModeEnabled');
         if (bingeModeEl) bingeModeEl.checked = currentConfig.bingeModeEnabled === true;
+        const speakerGenderEl = document.getElementById('speakerGenderAware');
+        if (speakerGenderEl) speakerGenderEl.checked = currentConfig.speakerGenderAware !== false;
+        const formalityModeEl = document.getElementById('formalityMode');
+        if (formalityModeEl) formalityModeEl.value = currentConfig.formalityMode || 'auto';
         const subtitleLabelStyleEl = document.getElementById('subtitleLabelStyle');
         if (subtitleLabelStyleEl) subtitleLabelStyleEl.value = currentConfig.subtitleLabelStyle || 'name_ai_tag';
 
@@ -11121,6 +11125,14 @@ Translate to {target_language}.`;
             bingeModeEnabled: (function () {
                 const el = document.getElementById('bingeModeEnabled');
                 return el ? el.checked === true : (currentConfig?.bingeModeEnabled === true);
+            })(),
+            speakerGenderAware: (function () {
+                const el = document.getElementById('speakerGenderAware');
+                return el ? el.checked === true : (currentConfig?.speakerGenderAware !== false);
+            })(),
+            formalityMode: (function () {
+                const el = document.getElementById('formalityMode');
+                return el ? el.value : (currentConfig?.formalityMode || 'auto');
             })(),
             subtitleLabelStyle: (function () {
                 const el = document.getElementById('subtitleLabelStyle');

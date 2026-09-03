@@ -5206,7 +5206,9 @@ async function performTranslation(sourceFileId, targetLanguage, config, { cacheK
         cleanSdhSubtitles: config.cleanSdhSubtitles === true,
         smartLineWrap: config.smartLineWrap !== false,
         maxCharactersPerLine: config.maxCharactersPerLine || 40,
-        localizeProperNouns: config.localizeProperNouns === true
+        localizeProperNouns: config.localizeProperNouns === true,
+        speakerGenderAware: config.speakerGenderAware !== false,
+        formalityMode: config.formalityMode || 'auto'
       }
     );
 

@@ -2,7 +2,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 
 const { buildGlossaryPromptContext } = require('./mediaContextResolver');
-const { cleanSdhText, cleanSdhEntries, normalizeAllCaps } = require('../utils/sdhCleaner');
+const { cleanSdhText, cleanSdhEntries, extractSpeakerTag, normalizeAllCaps } = require('../utils/sdhCleaner');
 const { formatSubtitleText, formatSubtitleEntries, getVisualLength, balanceLine } = require('../utils/subtitleFormatter');
 const { getDefaultConfig, normalizeConfig } = require('../utils/config');
 const TranslationEngine = require('./translationEngine');
@@ -319,6 +319,131 @@ test('Translation prompts include Audiovisual Translation (AVT) standards', () =
   assert.ok(xmlPrompt.includes('TONE & PROFANITY FIDELITY'));
   assert.ok(xmlPrompt.includes('SUBTITLE BREVITY & CONCISENESS'));
 });
+
+// 10. Speaker & Gender Agreement and Formality Tests
+test('extractSpeakerTag correctly detects speaker prefixes across diverse formats', () => {
+  assert.equal(extractSpeakerTag('JOHN: Look over there!'), 'John');
+  assert.equal(extractSpeakerTag('[SARAH]: Where are you going?'), 'Sarah');
+  assert.equal(extractSpeakerTag('- EMILY: Don\'t do it.'), 'Emily');
+  assert.equal(extractSpeakerTag('[MARY] What is that?'), 'Mary');
+  assert.equal(extractSpeakerTag('DETECTIVE MILLER: Any clues?'), 'Detective Miller');
+  assert.equal(extractSpeakerTag('MAN 1: We must go.'), 'Man 1');
+
+  // Negative tests
+  assert.equal(extractSpeakerTag('Just normal dialogue without speaker.'), null);
+  assert.equal(extractSpeakerTag('https://example.com'), null);
+  assert.equal(extractSpeakerTag('00:01:23 --> 00:01:25'), null);
+  assert.equal(extractSpeakerTag('[dramatic music] Hello!'), null);
+  assert.equal(extractSpeakerTag('(screams) Help me!'), null);
+});
+
+test('cleanSdhEntries preserves detected speaker on entry object', () => {
+  const entries = [
+    { id: 1, timecode: '00:00:01,000 --> 00:00:03,000', text: 'SARAH: I am exhausted.' },
+    { id: 2, timecode: '00:00:04,000 --> 00:00:06,000', text: '[JOHN] You should rest.' },
+    { id: 3, timecode: '00:00:07,000 --> 00:00:09,000', text: 'I agree with him.' }
+  ];
+
+  const cleaned = cleanSdhEntries(entries);
+  assert.equal(cleaned[0].speaker, 'Sarah');
+  assert.equal(cleaned[0].text, 'I am exhausted.');
+  assert.equal(cleaned[1].speaker, 'John');
+  assert.equal(cleaned[1].text, 'You should rest.');
+  assert.equal(cleaned[2].speaker, undefined);
+  assert.equal(cleaned[2].text, 'I agree with him.');
+});
+
+test('TranslationEngine injects speaker attributes in XML and prompts with gender and formality rules', () => {
+  const mockGemini = {
+    apiKey: 'mock-key',
+    model: 'gemini-3.8-flash',
+    countTokensForTranslation: async () => 100,
+    buildUserPrompt: (text, lang, prompt) => ({ userPrompt: prompt })
+  };
+
+  const mediaContext = {
+    title: 'Yellowstone',
+    cast: ['Kevin Costner (John Dutton)', 'Kelly Reilly (Beth Dutton)'],
+    overview: 'A ranching family in Montana faces off against others encroaching on their land.'
+  };
+
+  // Test 1: Formal tone and gender awareness enabled
+  const engineFormal = new TranslationEngine(
+    mockGemini,
+    'gemini-3.8-flash',
+    { translationWorkflow: 'xml' },
+    {
+      mediaContext,
+      speakerGenderAware: true,
+      formalityMode: 'formal'
+    }
+  );
+
+  const batch = [
+    { id: 1, text: 'I am ready for the meeting.', speaker: 'Beth Dutton' },
+    { id: 2, text: 'Are you sure about this?', speaker: null }
+  ];
+
+  const xmlBatchText = engineFormal.prepareBatchXml(batch);
+  assert.ok(xmlBatchText.includes('<s id="1" speaker="Beth Dutton">I am ready for the meeting.</s>'));
+  assert.ok(xmlBatchText.includes('<s id="2">Are you sure about this?</s>'));
+
+  const formalPrompt = engineFormal.createXmlBatchPrompt(xmlBatchText, 'Albanian', null, 2);
+  assert.ok(formalPrompt.includes('SPEAKER & GENDER AGREEMENT'));
+  assert.ok(formalPrompt.includes('DIALOGUE FORMALITY: Enforce FORMAL / RESPECTFUL'));
+  assert.ok(formalPrompt.includes('Speaker & Character Gender Agreement'));
+
+  // Test 2: Casual tone
+  const engineCasual = new TranslationEngine(
+    mockGemini,
+    'gemini-3.8-flash',
+    { translationWorkflow: 'xml' },
+    {
+      mediaContext,
+      speakerGenderAware: true,
+      formalityMode: 'casual'
+    }
+  );
+
+  const casualPrompt = engineCasual.createXmlBatchPrompt(xmlBatchText, 'Spanish', null, 2);
+  assert.ok(casualPrompt.includes('DIALOGUE FORMALITY: Enforce CASUAL / INFORMAL'));
+
+  // Test 3: Gender awareness disabled
+  const engineDisabled = new TranslationEngine(
+    mockGemini,
+    'gemini-3.8-flash',
+    { translationWorkflow: 'xml' },
+    {
+      mediaContext,
+      speakerGenderAware: false,
+      formalityMode: 'auto'
+    }
+  );
+
+  const disabledBatchText = engineDisabled.prepareBatchXml(batch);
+  assert.ok(!disabledBatchText.includes('speaker='));
+  const disabledPrompt = engineDisabled.createXmlBatchPrompt(disabledBatchText, 'Albanian', null, 2);
+  assert.ok(!disabledPrompt.includes('SPEAKER & GENDER AGREEMENT'));
+});
+
+test('config normalization correctly handles formalityMode and speakerGenderAware', () => {
+  const defaults = getDefaultConfig();
+  assert.equal(defaults.speakerGenderAware, true);
+  assert.equal(defaults.formalityMode, 'auto');
+
+  const custom = normalizeConfig({
+    speakerGenderAware: false,
+    formalityMode: 'formal'
+  });
+  assert.equal(custom.speakerGenderAware, false);
+  assert.equal(custom.formalityMode, 'formal');
+
+  const invalid = normalizeConfig({
+    formalityMode: 'invalid_mode'
+  });
+  assert.equal(invalid.formalityMode, 'auto');
+});
+
 
 
 

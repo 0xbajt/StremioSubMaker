@@ -1378,6 +1378,17 @@
           "isoMakeTag": "ISO + Etiqueta Make (ex.: por - [Make Português])",
           "classic": "Stremio Clássico (ex.: Make Português)",
           "isoOnly": "Apenas Código ISO (ex.: por / fre)"
+        },
+        "speakerGender": {
+          "label": "👥 Concordância de Género do Locutor e Personagem",
+          "description": "Extrai etiquetas de fala de legendas SDH e consulta o elenco no Cinemeta para que particípios, adjetivos e verbos reflitam o género gramatical correto nos diálogos."
+        },
+        "formality": {
+          "label": "🗣️ Formalidade / Tom do Diálogo",
+          "description": "Controla os pronomes e a formalidade dos verbos em idiomas com distinção de tratamento (tu vs. você/o senhor, tu vs. vous, etc.).",
+          "auto": "Automático (orientado pelo contexto)",
+          "casual": "Casual / Informal (ex.: tu / ti)",
+          "formal": "Formal / Respeitoso (ex.: você / o senhor / a senhora)"
         }
       },
       "multiProvider": {
@@ -1661,7 +1672,8 @@
           "unavailable": "Sobrepor modelo não disponível para Google Translate",
           "fetching": "A obter modelos...",
           "loaded": "Modelos carregados!",
-          "failed": "Falhou ao obter modelos"
+          "failed": "Falhou ao obter modelos",
+          "empty": "Nenhum modelo de provedor retornado"
         }
       },
       "toast": {

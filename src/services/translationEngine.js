@@ -26,7 +26,7 @@ const { normalizeTargetLanguageForPrompt } = require('./utils/normalizeTargetLan
 const { recordKeyError: recordKeyErrorRedis, isKeyCoolingDown: isKeyCoolingDownRedis, getNextRotationIndex, resetKeyHealth } = require('../utils/sharedCache');
 const { executeParallelTranslation } = require('../utils/parallelTranslation');
 const { buildGlossaryPromptContext } = require('./mediaContextResolver');
-const { cleanSdhEntries } = require('../utils/sdhCleaner');
+const { cleanSdhEntries, extractSpeakerTag } = require('../utils/sdhCleaner');
 const { formatSubtitleEntries } = require('../utils/subtitleFormatter');
 
 // Extract normalized tokens from a language label/code (split on common separators)
@@ -308,13 +308,19 @@ class TranslationEngine {
     this.smartLineWrap = options.smartLineWrap !== false;
     this.maxCharactersPerLine = Number(options.maxCharactersPerLine) || 40;
     this.localizeProperNouns = options.localizeProperNouns === true;
+    this.speakerGenderAware = options.speakerGenderAware !== false;
+    this.formalityMode = ['casual', 'formal'].includes(options.formalityMode) ? options.formalityMode : 'auto';
   }
 
   /**
    * Format media context and custom glossary for prompt injection
    */
   getGlossaryPromptContext() {
-    return buildGlossaryPromptContext(this.mediaContext, this.customGlossary, { localizeProperNouns: this.localizeProperNouns });
+    return buildGlossaryPromptContext(this.mediaContext, this.customGlossary, {
+      localizeProperNouns: this.localizeProperNouns,
+      speakerGenderAware: this.speakerGenderAware,
+      formalityMode: this.formalityMode
+    });
   }
 
   /**
@@ -687,6 +693,11 @@ class TranslationEngine {
     }
     if (this.cleanSdhSubtitles) {
       entries = cleanSdhEntries(entries);
+    } else if (this.speakerGenderAware) {
+      entries = entries.map(entry => {
+        const speaker = extractSpeakerTag(entry.text);
+        return speaker ? { ...entry, speaker } : entry;
+      });
     }
     // Stats: entry count
     this.translationStats.entryCount = entries.length;
@@ -894,6 +905,11 @@ class TranslationEngine {
     let entries = rawEntries;
     if (this.cleanSdhSubtitles) {
       entries = cleanSdhEntries(entries);
+    } else if (this.speakerGenderAware) {
+      entries = entries.map(entry => {
+        const speaker = extractSpeakerTag(entry.text);
+        return speaker ? { ...entry, speaker } : entry;
+      });
     }
     log.info(() => `[TranslationEngine] Single-batch translation: ${entries.length} entries`);
 
@@ -1779,7 +1795,8 @@ class TranslationEngine {
     const xmlEntries = batch.map((entry, index) => {
       const num = index + 1;
       const cleanText = entry.text.trim().replace(/\n+/g, '\n');
-      return `<s id="${num}">${cleanText}</s>`;
+      const speakerAttr = (this.speakerGenderAware && entry.speaker) ? ` speaker="${String(entry.speaker).replace(/"/g, '')}"` : '';
+      return `<s id="${num}"${speakerAttr}>${cleanText}</s>`;
     }).join('\n');
 
     result += xmlEntries;
@@ -1808,6 +1825,20 @@ CONTEXT PROVIDED:
       ? `\n8. PROPER NOUNS & NAMES: Adapt, transliterate, and phonetically translate character names, proper nouns, and geographic places to match the standard orthography and phonetic conventions of ${targetLabel} (e.g. Kayce -> Kejsi, Washington -> Uashington).`
       : '';
 
+    const genderRule = this.speakerGenderAware
+      ? `\n- SPEAKER & GENDER AGREEMENT: When an entry has a speaker attribute (e.g. <s id="N" speaker="Sarah">) or character context implies speaker/addressee gender, ensure past participles, adjectives, and verb conjugations in ${targetLabel} strictly reflect the speaker's grammatical gender. Output MUST keep ONLY the standard <s id="N">...</s> tags without returning the speaker attribute.`
+      : '';
+
+    const formalityRule = (() => {
+      if (this.formalityMode === 'formal') {
+        return `\n- DIALOGUE FORMALITY: Enforce FORMAL / RESPECTFUL address (e.g. V-form: usted, vous, Sie, ju) for 'you' and polite grammatical forms.`;
+      }
+      if (this.formalityMode === 'casual') {
+        return `\n- DIALOGUE FORMALITY: Enforce CASUAL / INFORMAL address (e.g. T-form: tú, tu, du, ti) for 'you' and conversational dialogue forms.`;
+      }
+      return '';
+    })();
+
     const promptBody = `You are a professional audiovisual subtitle translator. Translate to ${targetLabel} adhering to cinematic translation standards.
 ${glossarySection ? glossarySection + '\n' : ''}${contextInstructions}
 CRITICAL RULES:
@@ -1818,7 +1849,7 @@ CRITICAL RULES:
 5. IDIOMATIC & NATURAL DIALOGUE: Translate idioms, metaphors, humor, sarcasm, and colloquialisms into natural, authentic dialogue in ${targetLabel}. Avoid literal word-for-word machine translation.
 6. TONE & PROFANITY FIDELITY: Preserve the exact emotional intensity, character voice, and expletives/profanity without sanitization or softening.
 7. SUBTITLE BREVITY & CONCISENESS: Keep phrasing concise and punchy for on-screen subtitle reading speed while preserving meaning.
-8. Preserve any existing formatting tags (<font>, <i>, <b>)${context ? '\n9. Use the provided context to ensure dialogue flow and character continuity' : ''}${properNounRule}
+8. Preserve any existing formatting tags (<font>, <i>, <b>)${context ? '\n9. Use the provided context to ensure dialogue flow and character continuity' : ''}${properNounRule}${genderRule}${formalityRule}
 ${glossarySection ? '\nFollow all media context, characters, and glossary rules strictly.' : ''}
 
 Do NOT add acknowledgements, explanations, notes, or commentary.
@@ -1938,8 +1969,8 @@ OUTPUT (EXACTLY ${expectedCount} entries as JSON array):`;
     cleaned = cleaned.replace(/<\/s>\s*(?:(?!<s[\s>])[\s\S])*?(?=<s[\s>])/gi, '</s>\n');
 
     const entries = [];
-    // Simpler regex now that inter-tag content is stripped
-    const xmlPattern = /<s\s+id\s*=\s*"?(\d+)"?\s*>([\s\S]*?)<\/s>/gi;
+    // Simpler regex now that inter-tag content is stripped; accepts attributes like speaker="..."
+    const xmlPattern = /<s\s+[^>]*\bid\s*=\s*"?(\d+)"?[^>]*>([\s\S]*?)<\/s>/gi;
     let match;
     while ((match = xmlPattern.exec(cleaned)) !== null) {
       const id = parseInt(match[1], 10);

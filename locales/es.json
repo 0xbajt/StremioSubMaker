@@ -1378,6 +1378,17 @@
           "isoMakeTag": "ISO + Etiqueta Make (ej. spa - [Make Español])",
           "classic": "Stremio clásico (ej. Make Español)",
           "isoOnly": "Código ISO puro (ej. spa / fre)"
+        },
+        "speakerGender": {
+          "label": "👥 Concordancia de Género del Hablante y Personaje",
+          "description": "Extrae las etiquetas de los hablantes de los subtítulos SDH y consulta los personajes en Cinemeta para que los participios, adjetivos y verbos reflejen el género gramatical correcto en los diálogos."
+        },
+        "formality": {
+          "label": "🗣️ Formalidad / Tono del Diálogo",
+          "description": "Controla los pronombres y la formalidad verbal en idiomas con distinción T-V (español, albanés, francés, alemán, portugués, italiano, etc.).",
+          "auto": "Automático (según contexto)",
+          "casual": "Informal / Coloquial (p. ej. tú / vos / ti)",
+          "formal": "Formal / De cortesía (p. ej. usted / ju / vous / Sie)"
         }
       },
       "multiProvider": {
@@ -1661,7 +1672,8 @@
           "unavailable": "No hay sobrescritura de modelo disponible para Google Translate",
           "fetching": "Obteniendo modelos...",
           "loaded": "¡Modelos cargados!",
-          "failed": "No se pudieron obtener los modelos"
+          "failed": "No se pudieron obtener los modelos",
+          "empty": "No se devolvieron modelos del proveedor"
         }
       },
       "toast": {
