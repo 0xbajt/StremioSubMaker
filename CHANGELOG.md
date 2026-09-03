@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## SubMaker v1.4.94
+
+**New Features & Improvements:**
+
+- **Google Gemini 3.8 Family Integration (`Gemini 3.8 Flash`, `3.8 Flash-Lite`, `3.8 Pro`):**
+  - Added full support for Google's newest Gemini 3.8 models in the dashboard Translation Model selector and backend services.
+  - Automatically configures optimal dynamic thinking levels (`medium` for Flash, `high` for Pro, `minimal` for Flash-Lite) and temperature settings.
+
+- **Cinematic Audiovisual Translation (AVT) Standards Across All AI Models:**
+  - Upgraded translation prompts across Gemini, Claude, OpenAI, DeepSeek, Grok, and Mistral with professional AVT industry standards.
+  - Prioritizes natural idiomatic dialogue, preserves emotional intensity and expletives without AI softening, and maintains subtitle reading speed (CPS) brevity.
+
+- **Modernized Interactive In-App SubMaker Guide:**
+  - Completely revamped the pop-up SubMaker guide modal to highlight modern features: Predictive Binge Mode (0s wait), Subtitle Intelligence (SDH audio cleaning, 40 CPL line-wrapping), instant triple-click retranslation, and Stremio/Nuvio compatibility.
+
 ## SubMaker v1.4.93
 
 **New Features & Improvements:**

@@ -13,9 +13,9 @@
         <div class="modal instructions-modal">
             <div class="modal-header instructions-modal-header">
                 <div class="instructions-hero-copy">
-                    <div class="instructions-eyebrow" data-i18n="config.overlays.instructions.eyebrow">SubMaker guide</div>
-                    <h2 data-i18n="config.overlays.instructions.title">How SubMaker works in Stremio</h2>
-                    <p class="instructions-intro" data-i18n="config.overlays.instructions.intro" data-i18n-attr="innerHTML">Set your source-language order first, then use the matching <strong>"Make"</strong> entries in Stremio to translate from the source subtitle you already checked.</p>
+                    <div class="instructions-eyebrow" data-i18n="config.overlays.instructions.eyebrow">SubMaker Guide</div>
+                    <h2 data-i18n="config.overlays.instructions.title">How SubMaker Works in Stremio & Nuvio</h2>
+                    <p class="instructions-intro" data-i18n="config.overlays.instructions.intro" data-i18n-attr="innerHTML">Translate subtitles into your language instantly with AI, enjoy automated episode prefetching with <strong>Binge Mode</strong>, and customize your subtitle experience across any video player.</p>
                 </div>
                 <button type="button" class="modal-close" id="closeInstructionsBtn"
                     title="Close instructions" aria-label="Close instructions"
@@ -24,40 +24,38 @@
             </div>
             <div class="modal-content instructions-modal-content">
                 <section class="instructions-panel instructions-panel-primary">
-                    <h3 data-i18n="config.overlays.instructions.usageTitle">Basic setup</h3>
+                    <h3 data-i18n="config.overlays.instructions.usageTitle">⚡ Quick 3-Step Setup</h3>
                     <ol class="instructions-step-list">
-                        <li data-i18n="config.overlays.instructions.step1" data-i18n-attr="innerHTML">Enable the subtitle sources you want in <strong>Subtitles Sources</strong>.</li>
-                        <li data-i18n="config.overlays.instructions.step2" data-i18n-attr="innerHTML">Add your <strong>Gemini API key</strong> in the AI section.</li>
-                        <li data-i18n="config.overlays.instructions.step3" data-i18n-attr="innerHTML">Select <strong>source languages</strong>. One source language is usually best.</li>
-                        <li data-i18n="config.overlays.instructions.step4" data-i18n-attr="innerHTML">Select <strong>target languages</strong> for the <strong>"Make [Language]"</strong> lists.</li>
-                        <li data-i18n="config.overlays.instructions.step5" data-i18n-attr="innerHTML"><strong>Install in Stremio</strong> and open any video's subtitles list.</li>
+                        <li data-i18n="config.overlays.instructions.step1" data-i18n-attr="innerHTML">Add your <strong>Gemini API key</strong> (free from Google AI Studio) or enable alternative AI providers (Claude, OpenAI, DeepSeek, Grok).</li>
+                        <li data-i18n="config.overlays.instructions.step2" data-i18n-attr="innerHTML">Pick your <strong>Source Languages</strong> (e.g. English) and <strong>Target Languages</strong> (the language you want to watch in).</li>
+                        <li data-i18n="config.overlays.instructions.step3" data-i18n-attr="innerHTML">Click <strong>"Install in Stremio"</strong> (or copy the manifest link for Nuvio/mobile) and open any movie or series stream.</li>
                     </ol>
                 </section>
 
                 <div class="instructions-grid">
                     <article class="instructions-card">
-                        <h3 data-i18n="config.overlays.instructions.stremioTitle">What SubMaker adds in Stremio</h3>
-                        <p data-i18n="config.overlays.instructions.stremioBody" data-i18n-attr="innerHTML">1. Fetches and shows subtitles in your selected source and target languages from the enabled subtitle providers.<br>2. Creates <strong>"Make [Target Language]"</strong> lists inside Stremio's subtitle picker.<br>3. Each <strong>"Make"</strong> list keeps the same order as the selected source-language list.</p>
+                        <h3 data-i18n="config.overlays.instructions.stremioTitle">🍿 Translating in Your Player</h3>
+                        <p data-i18n="config.overlays.instructions.stremioBody" data-i18n-attr="innerHTML">1. Open the subtitles list in Stremio or Nuvio.<br>2. Select the translated track option (e.g. <strong>"Albanian - AI Translated"</strong> or <strong>"[AI Translate]"</strong>).<br>3. The AI translates in the background while progressive chunks stream in within 15 seconds. Reselect to load the complete translated subtitles!</p>
                     </article>
 
                     <article class="instructions-card">
-                        <h3 data-i18n="config.overlays.instructions.whenTitle">When you use a "Make" subtitle entry</h3>
-                        <p data-i18n="config.overlays.instructions.whenBody" data-i18n-attr="innerHTML">Click a subtitle inside a <strong>"Make"</strong> list and SubMaker starts translating from the matching source subtitle.<br>After about 20-30 seconds, reload that same subtitle entry to see the translated version.</p>
+                        <h3 data-i18n="config.overlays.instructions.whenTitle">⚡ Predictive Binge-Watching</h3>
+                        <p data-i18n="config.overlays.instructions.whenBody" data-i18n-attr="innerHTML">When watching TV shows or anime, <strong>Binge Mode</strong> automatically pre-translates and caches the next episode in the background. When you click "Next Episode", subtitles are already 100% ready with <strong>0-second wait time</strong>!</p>
                     </article>
                 </div>
 
                 <div class="instructions-grid instructions-grid-secondary">
                     <article class="instructions-callout instructions-callout-info">
-                        <h3 data-i18n="config.overlays.instructions.quickTipTitle">Recovery tip</h3>
-                        <p data-i18n="config.overlays.instructions.quickTipBody" data-i18n-attr="innerHTML">If a translation looks broken, wrong, or out of sync while the source subtitle is fine, triple-click that same subtitle entry to force a fresh re-translation, or change translation settings.</p>
-                        <p class="instructions-footnote-title" data-i18n="config.overlays.instructions.deliveryTitle">Translation timing</p>
-                        <p class="instructions-footnote instructions-footnote-muted" data-i18n="config.overlays.instructions.ps" data-i18n-attr="innerHTML">Partial translation arrives in batches so you can start watching quickly. Full translation can still take <strong>30 seconds to 5 minutes</strong>, depending on the length of the movie or episode.</p>
+                        <h3 data-i18n="config.overlays.instructions.quickTipTitle">🔄 Instant Retranslation</h3>
+                        <p data-i18n="config.overlays.instructions.quickTipBody" data-i18n-attr="innerHTML">If a subtitle seems out of sync or you want a fresh translation, <strong>triple-click</strong> the subtitle track within 6 seconds to force an immediate re-translation and cache refresh.</p>
+                        <p class="instructions-footnote-title" data-i18n="config.overlays.instructions.deliveryTitle">🧠 Subtitle Intelligence</p>
+                        <p class="instructions-footnote instructions-footnote-muted" data-i18n="config.overlays.instructions.ps" data-i18n-attr="innerHTML">SubMaker automatically strips non-speech audio cues (<code>[cheering]</code>, <code>♪ music ♪</code>), balances lines at 40 CPL, localizes proper nouns, and injects character/lore context from IMDb/TMDB.</p>
                     </article>
 
                     <article class="instructions-callout instructions-callout-warm">
-                        <h3 data-i18n="config.overlays.instructions.onlyOneSourceTitle">Only 1 source language is recommended</h3>
-                        <p data-i18n="config.overlays.instructions.onlyOneSourceBody" data-i18n-attr="innerHTML">Because the <strong>"Make"</strong> lists follow the same order as the source-language subtitles, you can test the source subtitles for sync first, then choose the matching entry in the translation list instead of translating a source subtitle that is already out of sync.</p>
-                        <p class="instructions-footnote" data-i18n="config.overlays.instructions.syncTipBody" data-i18n-attr="innerHTML"><strong>Sync tip:</strong> Check the middle and end of the source subtitles before translating, because sync drift often shows up there first.</p>
+                        <h3 data-i18n="config.overlays.instructions.onlyOneSourceTitle">🎯 Pro Sync Tip</h3>
+                        <p data-i18n="config.overlays.instructions.onlyOneSourceBody" data-i18n-attr="innerHTML">Because translation lists follow the same order as source subtitles, test the original subtitle for sync first (check near the beginning and middle) before translating, ensuring flawless timing.</p>
+                        <p class="instructions-footnote" data-i18n="config.overlays.instructions.syncTipBody" data-i18n-attr="innerHTML"><strong>Nuvio tip:</strong> Under Translation Settings, keep <em>Subtitle Track Label Style</em> set to <strong>"Language Name + AI Tag"</strong> or <strong>"Pure ISO Code"</strong> so Nuvio's language filter doesn't hide your tracks.</p>
                     </article>
                 </div>
             </div>
