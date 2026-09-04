@@ -166,7 +166,6 @@ test('Gemini models normalization and defaults support all new Gemini 3.x and ac
 
   // Check active models retain their names
   assert.equal(normalizeGeminiModelName('gemini-3.8-flash'), 'gemini-3.8-flash');
-  assert.equal(normalizeGeminiModelName('gemini-3.8-flash-lite'), 'gemini-3.8-flash-lite');
   assert.equal(normalizeGeminiModelName('gemini-3.8-pro'), 'gemini-3.8-pro');
   assert.equal(normalizeGeminiModelName('gemini-3.7-flash'), 'gemini-3.7-flash');
   assert.equal(normalizeGeminiModelName('gemini-3.6-flash'), 'gemini-3.6-flash');
@@ -181,10 +180,6 @@ test('Gemini models normalization and defaults support all new Gemini 3.x and ac
   const flash38Defaults = getModelSpecificDefaults('gemini-3.8-flash');
   assert.equal(flash38Defaults.thinkingBudget, -1);
   assert.equal(flash38Defaults.temperature, 0.5);
-
-  const flashLite38Defaults = getModelSpecificDefaults('gemini-3.8-flash-lite');
-  assert.equal(flashLite38Defaults.thinkingBudget, 0);
-  assert.equal(flashLite38Defaults.temperature, 0.8);
 
   const pro38Defaults = getModelSpecificDefaults('gemini-3.8-pro');
   assert.equal(pro38Defaults.thinkingBudget, -1);
@@ -218,6 +213,7 @@ test('Gemini models normalization and defaults support all new Gemini 3.x and ac
   assert.ok(DEPRECATED_MODEL_NAMES.includes('gemini-2.5-pro'));
   assert.ok(DEPRECATED_MODEL_NAMES.includes('gemini-3-flash-preview'));
   assert.ok(DEPRECATED_MODEL_NAMES.includes('gemini-3-pro-preview'));
+  assert.ok(DEPRECATED_MODEL_NAMES.includes('gemini-3.8-flash-lite'));
 });
 
 test('parseRedisUrl correctly parses rediss:// and redis:// connection strings', () => {

@@ -263,6 +263,7 @@ const DEPRECATED_MODEL_NAMES = [
   'gemini-2.5-pro',
   'gemini-3-flash-preview',
   'gemini-3-pro-preview',
+  'gemini-3.8-flash-lite',
   GEMINI_FLASH_LATEST_MODEL
 ];
 
@@ -1146,10 +1147,6 @@ const MODEL_SPECIFIC_DEFAULTS = {
   'gemini-3.8-flash': {
     thinkingBudget: -1,     // Dynamic thinking
     temperature: 0.5        // Lower temperature for consistency
-  },
-  'gemini-3.8-flash-lite': {
-    thinkingBudget: 0,      // No thinking for lite model
-    temperature: 0.8        // Higher temperature for creativity
   },
   'gemini-3.8-pro': {
     thinkingBudget: -1,     // Dynamic thinking (high effort level)
