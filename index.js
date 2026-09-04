@@ -5301,15 +5301,11 @@ app.get('/addon/:config/translate/:sourceFileId/:targetLang', normalizeSubtitleF
         // Check if already in flight BEFORE logging to reduce confusion
         const isAlreadyInFlight = inFlightRequests.has(dedupKey);
 
-        if (isAlreadyInFlight && waitForFullTranslation) {
-            // Don't keep piling up long-held connections in mobile mode; the first request will deliver the final SRT
-            // IMPORTANT: Use 200 (not 202) and NO Retry-After header to prevent Stremio/libmpv from
-            // continuously polling. 202 + Retry-After causes exponential request spam when libmpv
-            // prefetches all translation URLs simultaneously.
-            log.debug(() => `[Translation] Mobile mode duplicate request for ${sourceFileId} to ${targetLang} - returning loading message (primary request in progress)`);
-            setSubtitleCacheHeaders(res, 'loading');
-            return res.send(t('server.errors.translationInProgress', {}, 'Translation already in progress; waiting on primary request.'));
-        } else if (isAlreadyInFlight) {
+        // In standard (non-mobile) mode, duplicate requests immediately check for available partials
+        // or return a lightweight loading cue instead of holding a concurrent duplicate connection.
+        // In mobile mode, duplicate/probe requests from players (e.g. Nuvio, ExoPlayer) coalesce
+        // via deduplicate() below so the active rendering connection receives the final translated SRT.
+        if (isAlreadyInFlight && !waitForFullTranslation) {
             log.debug(() => `[Translation] Duplicate request detected for ${sourceFileId} to ${targetLang} - checking for partial results`);
 
             // Generate cache keys using shared utility (single source of truth for cache key scoping)

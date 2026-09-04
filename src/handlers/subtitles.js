@@ -1601,7 +1601,9 @@ async function waitForFinalCachedTranslation(storageKey, bypassKey, cacheOptions
     if (result) {
       return result;
     }
-    await new Promise(res => setTimeout(res, 5000));
+    // Responsive polling (350ms) so mobile players like Nuvio receive subtitles
+    // immediately upon translation completion without exceeding player network timeouts.
+    await new Promise(res => setTimeout(res, 350));
   }
   return null;
 }
