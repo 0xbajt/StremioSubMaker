@@ -89,7 +89,7 @@ SubMaker features built-in subtitle optimization and context awareness:
 
 | Provider | Notes |
 |----------|-------|
-| **Google Gemini** | Default, Gemini 3.x family (3.8 Flash, 3.8 Pro, 3.7 Flash, 3.6 Flash, 3.5 Flash-Lite, 3.1 Flash Lite), free tier available, key rotation supported |
+| **Google Gemini** | Default, Gemini 3.x family (3.8 Flash, 3.7 Flash, 3.6 Flash, 3.5 Flash-Lite, 3.1 Flash Lite, 3.1 Pro), free tier available, key rotation supported |
 | OpenAI | GPT models |
 | Anthropic | Claude models |
 | DeepL | Traditional translation API |

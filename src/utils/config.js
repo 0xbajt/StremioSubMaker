@@ -225,7 +225,7 @@ function normalizeGeminiModelName(modelName) {
   if (normalized === 'gemini-3-flash-preview') {
     return 'gemini-3.7-flash';
   }
-  if (normalized === 'gemini-3-pro-preview' || normalized === 'gemini-2.5-pro-preview-05-06' || normalized === 'gemini-2.5-pro') {
+  if (normalized === 'gemini-3-pro-preview' || normalized === 'gemini-2.5-pro-preview-05-06' || normalized === 'gemini-2.5-pro' || normalized === 'gemini-3.8-pro') {
     return 'gemini-3.1-pro-preview';
   }
   if (normalized === 'gemini-2.5-flash-preview-09-2025') {
@@ -264,6 +264,7 @@ const DEPRECATED_MODEL_NAMES = [
   'gemini-3-flash-preview',
   'gemini-3-pro-preview',
   'gemini-3.8-flash-lite',
+  'gemini-3.8-pro',
   GEMINI_FLASH_LATEST_MODEL
 ];
 
@@ -1146,10 +1147,6 @@ function encodeConfig(config) {
 const MODEL_SPECIFIC_DEFAULTS = {
   'gemini-3.8-flash': {
     thinkingBudget: -1,     // Dynamic thinking
-    temperature: 0.5        // Lower temperature for consistency
-  },
-  'gemini-3.8-pro': {
-    thinkingBudget: -1,     // Dynamic thinking (high effort level)
     temperature: 0.5        // Lower temperature for consistency
   },
   'gemma-3-27b-it': {

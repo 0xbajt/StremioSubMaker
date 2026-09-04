@@ -47,9 +47,9 @@ All notable changes to this project will be documented in this file.
 - **Multilingual Modernization of SubMaker Guide Modal:**
   - Modernized the in-app guide copy across all locales (`en`, `sq`, `es`, `pt-br`, `pt-pt`, `ar`), removing legacy "Make" terminology and reflecting modern Stremio and Nuvio player workflows.
 
-- **Google Gemini 3.8 Family Integration (`Gemini 3.8 Flash`, `3.8 Pro`):**
-  - Added full support for Google's newest Gemini 3.8 models in the dashboard Translation Model selector and backend services.
-  - Automatically configures optimal dynamic thinking levels (`medium` for Flash, `high` for Pro) and temperature settings.
+- **Google Gemini 3.8 Flash Integration:**
+  - Added full support for Google's newest Gemini 3.8 Flash model in the dashboard Translation Model selector and backend services.
+  - Automatically configures optimal dynamic thinking levels (`medium` for Flash) and temperature settings.
 
 - **Cinematic Audiovisual Translation (AVT) Standards Across All AI Models:**
   - Upgraded translation prompts across Gemini, Claude, OpenAI, DeepSeek, Grok, and Mistral with professional AVT industry standards.
